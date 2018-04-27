@@ -95,4 +95,3 @@ class SentenceModelFactory(object):
 
         x = Dense(self.num_classes, activation=output_activation)(x)
         return Model(doc_input, x)
-
