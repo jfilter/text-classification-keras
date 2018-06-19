@@ -1,6 +1,7 @@
 sudo: required
 dist: trusty
 language: python
+cache: pip
 matrix:
     include:
         - python: 2.7
@@ -15,32 +16,12 @@ matrix:
         #   env: KERAS_BACKEND=theano
 
 install:
-  # code below is taken from http://conda.pydata.org/docs/travis.html
-  # We do this conditionally because it saves us some downloading if the
-  # version is the same.
-  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - hash -r
-  - conda config --set always_yes yes --set changeps1 no
-  - conda update -q conda
-  # Useful for debugging any issues with conda
-  - conda info -a
-
-  - conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION numpy pytest pytest-pep8 pytest-cov matplotlib
-  - source activate test-environment
-  - conda install mkl mkl-service
-  - pip install theano
-
-  # set library path
-  - export LD_LIBRARY_PATH=$HOME/miniconda/envs/test-environment/lib/:$LD_LIBRARY_PATH
+  - pip install mkl mkl-service pytest pytest-pep8 pytest-cov matplotlib
 
   # install TensorFlow
   - pip install tensorflow
+
+  #- pip install theano
 
   # Install package and test requirements.
   - pip install -e .[tests]
