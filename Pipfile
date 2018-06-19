@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+keras = "*"
+tensorflow = "*"
+six = "*"
+spacy = "*"
+joblib = "*"
+jsonpickle = "*"
+pickle = "*"
+
+[dev-packages]
+pylint = "*"
+"autopep8" = "*"
+pytest = "*"
+
+[requires]
+python_version = "3.6"
