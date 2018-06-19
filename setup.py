@@ -14,7 +14,7 @@ setup(name='keras-text',
           version),
       license='MIT',
       install_requires=['keras>=2.1.2', 'six',
-                        'spacy>=2.0.3', 'scikit-learn', 'joblib', 'jsonpickle', 'pickle'],
+                        'spacy>=2.0.3', 'scikit-learn', 'joblib', 'jsonpickle'],
       extras_require={
           'tests': ['pytest',
                     'pytest-pep8',

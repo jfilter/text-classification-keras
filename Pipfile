@@ -10,7 +10,6 @@ six = "*"
 spacy = "*"
 joblib = "*"
 jsonpickle = "*"
-pickle = "*"
 
 [dev-packages]
 pylint = "*"
