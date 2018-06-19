@@ -1,4 +1,4 @@
-# Text Classification Keras [![Build Status](https://travisci.com/jfilter/text-classification-keras.svg?branch=master)](https://travisci.com/jfilter/text-classification-keras)
+# Text Classification Keras [![Build Status](https://travis-ci.com/jfilter/text-classification-keras.svg?branch=master)](https://travis-ci.com/jfilter/text-classification-keras)
 
 A one-stop text classification library implementing various state of the art models with a clean and extendable interface to implement custom architectures.
 
