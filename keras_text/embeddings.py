@@ -10,12 +10,15 @@ logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
 
 # Add more types here as needed.
+# - glove: https://nlp.stanford.edu/projects/glove/
+
 _EMBEDDING_TYPES = {
+    # 42 Billion tokens Common Crawl
     'glove.42B.300d': {
         'file': 'glove.42B.300d.txt',
         'url': 'http://nlp.stanford.edu/data/glove.42B.300d.zip'
     },
-
+    # 6 Billion tokens from Wikipedia 2014 + Gigaword 5
     'glove.6B.50d': {
         'file': 'glove.6B.50d.txt',
         'url': 'http://nlp.stanford.edu/data/glove.6B.zip'
@@ -35,11 +38,28 @@ _EMBEDDING_TYPES = {
         'file': 'glove.6B.300d.txt',
         'url': 'http://nlp.stanford.edu/data/glove.6B.zip'
     },
-
+    #  840 Billion tokens Common Crawl
     'glove.840B.300d': {
         'file': 'glove.840B.300d.txt',
         'url': 'http://nlp.stanford.edu/data/glove.840B.300d.zip'
-    }
+    },
+    # 2 Billion tweets, 27 Billion tokens Twitter
+    'glove.twitter.27B.25d': {
+        'file': 'glove.twitter.27B.25d.txt',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+    },
+    'glove.twitter.27B.50d': {
+        'file': 'glove.twitter.27B.50d.txt',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+    },
+    'glove.twitter.27B.100d': {
+        'file': 'glove.twitter.27B.100d.txt',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+    },
+    'glove.twitter.27B.200d': {
+        'file': 'glove.twitter.27B.200d.txt',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+    },
 }
 
 
