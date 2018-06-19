@@ -8,9 +8,9 @@ This is a fork of [keras-text](https://github.com/raghakot/keras-text) and still
 
 ### Create a tokenizer to build your vocabulary
 
-- To represent you dataset as `(docs, words)` use `WordTokenizer`
-- To represent you dataset as `(docs, sentences, words)` use `SentenceWordTokenizer`
-- To create arbitrary hierarchies, extend `Tokenizer` and implement the `token_generator` method.
+-   To represent you dataset as `(docs, words)` use `WordTokenizer`
+-   To represent you dataset as `(docs, sentences, words)` use `SentenceWordTokenizer`
+-   To create arbitrary hierarchies, extend `Tokenizer` and implement the `token_generator` method.
 
 ```python
 from keras_text.processing import WordTokenizer
@@ -62,9 +62,9 @@ model.summary()
 
 Currently supported models include:
 
-- [Yoon Kim CNN](https://arxiv.org/abs/1408.5882)
-- Stacked RNNs
-- Attention (with/without context) based RNN encoders.
+-   [Yoon Kim CNN](https://arxiv.org/abs/1408.5882)
+-   Stacked RNNs
+-   Attention (with/without context) based RNN encoders.
 
 `TokenModelFactory.build_model` uses the provided word encoder which is then classified via `Dense` block.
 
@@ -91,18 +91,18 @@ model.summary()
 
 Currently supported models include:
 
-- [Yoon Kim CNN](https://arxiv.org/abs/1408.5882)
-- Stacked RNNs
-- Attention (with/without context) based RNN encoders.
+-   [Yoon Kim CNN](https://arxiv.org/abs/1408.5882)
+-   Stacked RNNs
+-   Attention (with/without context) based RNN encoders.
 
 `SentenceModelFactory.build_model` created a tiered model where words within a sentence is first encoded using
 `word_encoder_model`. All such encodings per sentence is then encoded using `sentence_encoder_model`.
 
-- [Hierarchical attention networks](http://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf)
-  (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.
-- For smaller document a reasonable way to encode sentences is to average words within it. This can be done by using
-  `token_encoder_model=AveragingEncoder()`
-- Mix and match encoders as you see fit for your problem.
+-   [Hierarchical attention networks](http://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf)
+    (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.
+-   For smaller document a reasonable way to encode sentences is to average words within it. This can be done by using
+    `token_encoder_model=AveragingEncoder()`
+-   Mix and match encoders as you see fit for your problem.
 
 ## Resources
 
@@ -113,23 +113,19 @@ Until then, the best resource is to refer to the [API docs](https://raghakot.git
 
 ## Installation
 
-1.  Install [keras](https://github.com/fchollet/keras/blob/master/README.md#installation)
-    with theano or tensorflow backend. Note that this library requires Keras > 2.0
+1.  Install [Keras](https://github.com/fchollet/keras/blob/master/README.md#installation) with Tensorflow as backend (Theano and CNTK are not fully supported for now). Note that this library requires Keras > 2.0
 
 2.  Install keras-text
-    > From sources
 
 ```bash
-sudo python setup.py install
-```
-
-> PyPI package
-
-```bash
-sudo pip install keras-text
+pip install git+https://github.com/jfilter/text-classification-keras#egg=keras_text
 ```
 
 3.  Download target spacy model
+
+```bash
+python -m spacy download en
+```
 
 keras-text uses the excellent spacy library for tokenization. See instructions on how to
 [download model](https://spacy.io/docs/usage/models#download) for target language.
