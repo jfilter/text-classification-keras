@@ -19,3 +19,4 @@ build/*
 # Datasets
 examples/datasets/*
 .vscode
+.pytest_cache
