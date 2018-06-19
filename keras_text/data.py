@@ -7,6 +7,8 @@ import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelBinarizer, MultiLabelBinarizer
 
+from . import utils
+
 logger = logging.getLogger(__name__)
 
 
