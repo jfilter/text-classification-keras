@@ -13,7 +13,8 @@ setup(name='keras-text',
       download_url='https://github.com/jfilter/text-classification-keras/tarball/{}'.format(
           version),
       license='MIT',
-      install_requires=['keras>=2.1.2', 'six', 'spacy>=2.0.3', 'scikit-learn'],
+      install_requires=['keras>=2.1.2', 'six',
+                        'spacy>=2.0.3', 'scikit-learn', 'joblib', 'jsonpickle', 'pickle'],
       extras_require={
           'tests': ['pytest',
                     'pytest-pep8',
