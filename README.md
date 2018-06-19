@@ -95,7 +95,7 @@ Currently supported models include:
 - Stacked RNNs
 - Attention (with/without context) based RNN encoders.
 
-`SentenceModelFactory.build_model` created a tiered model where words within a sentence is first encoded using  
+`SentenceModelFactory.build_model` created a tiered model where words within a sentence is first encoded using
 `word_encoder_model`. All such encodings per sentence is then encoded using `sentence_encoder_model`.
 
 - [Hierarchical attention networks](http://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf)
