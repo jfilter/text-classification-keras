@@ -1,10 +1,11 @@
 from __future__ import absolute_import
 
-import os
 import logging
-import numpy as np
-from keras.utils.data_utils import get_file
+import os
 
+import numpy as np
+
+from keras.utils.data_utils import get_file
 
 logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
@@ -110,7 +111,8 @@ def get_embeddings_index(embedding_type='glove.42B.300d'):
 
     data_obj = _EMBEDDING_TYPES.get(embedding_type)
     if data_obj is None:
-        raise ValueError("Embedding name should be one of '{}'".format(_EMBEDDING_TYPES.keys()))
+        raise ValueError("Embedding name should be one of '{}'".format(
+            _EMBEDDING_TYPES.keys()))
 
     cache_dir = os.path.expanduser(os.path.join('~', '.keras-text'))
     if not os.path.exists(cache_dir):

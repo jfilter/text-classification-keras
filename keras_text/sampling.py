@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 
 import logging
-import numpy as np
 from fractions import Fraction
 
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,8 @@ def equal_distribution_folds(y, folds=2):
         else:
             normed_folds = fold_dist.T / fold_dist.sum(axis=1)
             how_off = normed_folds.T - dist
-            target_fold = np.argmin(np.dot((y[i] - .5).reshape(1, -1), how_off.T))
+            target_fold = np.argmin(
+                np.dot((y[i] - .5).reshape(1, -1), how_off.T))
         fold_dist[target_fold] += y[i]
         index_list[target_fold].append(i)
 

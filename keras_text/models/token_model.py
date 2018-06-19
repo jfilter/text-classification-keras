@@ -1,9 +1,9 @@
 from __future__ import absolute_import
 
-from keras.layers import Input, Embedding, Dense
+from keras.layers import Dense, Embedding, Input
 from keras.models import Model
 
-from ..embeddings import get_embeddings_index, build_embedding_weights
+from ..embeddings import build_embedding_weights, get_embeddings_index
 from .sequence_encoders import SequenceEncoderBase
 
 
@@ -29,7 +29,8 @@ class TokenModelFactory(object):
 
         if embedding_type is not None:
             self.embeddings_index = get_embeddings_index(embedding_type)
-            self.embedding_dims = list(self.embeddings_index.values())[0].shape[-1]
+            self.embedding_dims = list(self.embeddings_index.values())[
+                0].shape[-1]
         else:
             self.embeddings_index = None
             self.embedding_dims = embedding_dims
@@ -51,7 +52,8 @@ class TokenModelFactory(object):
             The model output tensor.
         """
         if not isinstance(token_encoder_model, SequenceEncoderBase):
-            raise ValueError("`token_encoder_model` should be an instance of `{}`".format(SequenceEncoderBase))
+            raise ValueError("`token_encoder_model` should be an instance of `{}`".format(
+                SequenceEncoderBase))
 
         if not token_encoder_model.allows_dynamic_length() and self.max_tokens is None:
             raise ValueError("The provided `token_encoder_model` does not allow variable length mini-batches. "
@@ -67,7 +69,8 @@ class TokenModelFactory(object):
         else:
             embedding_layer = Embedding(len(self.token_index) + 1,
                                         self.embedding_dims,
-                                        weights=[build_embedding_weights(self.token_index, self.embeddings_index)],
+                                        weights=[build_embedding_weights(
+                                            self.token_index, self.embeddings_index)],
                                         input_length=self.max_tokens,
                                         mask_zero=True,
                                         trainable=trainable_embeddings)

@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 
 import numpy as np
+
 from keras.utils import Sequence
 
 
@@ -26,8 +27,10 @@ class ProcessingSequence(Sequence):
         pass
 
     def __getitem__(self, batch_idx):
-        batch_X = self.X[batch_idx * self.batch_size:(batch_idx + 1) * self.batch_size]
-        batch_y = self.y[batch_idx * self.batch_size:(batch_idx + 1) * self.batch_size]
+        batch_X = self.X[batch_idx *
+                         self.batch_size:(batch_idx + 1) * self.batch_size]
+        batch_y = self.y[batch_idx *
+                         self.batch_size:(batch_idx + 1) * self.batch_size]
         return self.process_fn(batch_X), batch_y
 
 
@@ -65,8 +68,10 @@ class BalancedSequence(Sequence):
             neg_indices = self.neg_indices.copy()
             np.random.shuffle(pos_indices)
             np.random.shuffle(neg_indices)
-            self._index_array = np.concatenate((pos_indices[:self.n], neg_indices[:self.n]))
+            self._index_array = np.concatenate(
+                (pos_indices[:self.n], neg_indices[:self.n]))
             np.random.shuffle(self._index_array)
 
-        indices = self._index_array[batch_idx * self.batch_size: (batch_idx + 1) * self.batch_size]
+        indices = self._index_array[batch_idx *
+                                    self.batch_size: (batch_idx + 1) * self.batch_size]
         return self.process_fn(self.X[indices]), self.y[indices]

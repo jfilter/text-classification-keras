@@ -1,14 +1,11 @@
 from __future__ import absolute_import
 
 import logging
+
 import numpy as np
 
-from .import utils
-from .import sampling
-
-from sklearn.preprocessing import MultiLabelBinarizer, LabelBinarizer
 from sklearn.model_selection import StratifiedShuffleSplit
-
+from sklearn.preprocessing import LabelBinarizer, MultiLabelBinarizer
 
 logger = logging.getLogger(__name__)
 
@@ -52,10 +49,12 @@ class Dataset(object):
             test_size: The test proportion in [0, 1] (Default value: 0.1)
         """
         if self.is_multi_label:
-            self._train_indices, self._test_indices = sampling.multi_label_train_test_split(self.y, test_size)
+            self._train_indices, self._test_indices = sampling.multi_label_train_test_split(
+                self.y, test_size)
         else:
             sss = StratifiedShuffleSplit(n_splits=1, test_size=test_size)
-            self._train_indices, self._test_indices = next(sss.split(self.X, self.y))
+            self._train_indices, self._test_indices = next(
+                sss.split(self.X, self.y))
 
     def save(self, file_path):
         """Serializes this dataset to a file.
@@ -75,7 +74,8 @@ class Dataset(object):
             The stratified train and val subsets. Multi-label outputs are handled as well.
         """
         if self.is_multi_label:
-            train_indices, val_indices = sampling.multi_label_train_test_split(self.y, split_ratio)
+            train_indices, val_indices = sampling.multi_label_train_test_split(
+                self.y, split_ratio)
         else:
             sss = StratifiedShuffleSplit(n_splits=1, test_size=split_ratio)
             train_indices, val_indices = next(sss.split(self.X, self.y))
@@ -103,7 +103,8 @@ class Dataset(object):
             self._train_indices = np.arange(0, len(self.y))
         else:
             self._test_indices = test_indices
-            self._train_indices = np.setdiff1d(np.arange(0, len(self.y)), self.test_indices)
+            self._train_indices = np.setdiff1d(
+                np.arange(0, len(self.y)), self.test_indices)
 
     @property
     def train_indices(self):

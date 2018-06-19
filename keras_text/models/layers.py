@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 
 import numpy as np
+
 from keras import backend as K
+from keras import constraints, initializers, regularizers
 from keras.layers import Layer
-from keras import initializers, regularizers, constraints
 
 
 def _softmax(x, dim):
@@ -91,7 +92,8 @@ class AttentionLayer(Layer):
 
     def build(self, input_shape):
         if len(input_shape) < 3:
-            raise ValueError("Expected input shape of `(..., time_steps, features)`, found `{}`".format(input_shape))
+            raise ValueError(
+                "Expected input shape of `(..., time_steps, features)`, found `{}`".format(input_shape))
 
         attention_dims = input_shape[-1] if self.attention_dims is None else self.attention_dims
         self.kernel = self.add_weight(shape=(input_shape[-1], attention_dims),
@@ -152,7 +154,8 @@ class AttentionLayer(Layer):
 
     def get_attention_tensor(self):
         if not hasattr(self, 'at'):
-            raise ValueError('Attention tensor is available after calling this layer with an input')
+            raise ValueError(
+                'Attention tensor is available after calling this layer with an input')
         return self.at
 
     def get_config(self):

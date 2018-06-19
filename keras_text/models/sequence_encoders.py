@@ -1,8 +1,8 @@
 from __future__ import absolute_import
 
-from keras.layers import Conv1D, Bidirectional, LSTM
-from keras.layers import GlobalMaxPooling1D, GlobalAveragePooling1D, Dropout
+from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D
 from keras.layers.merge import concatenate
+
 from .layers import AttentionLayer, ConsumeMask
 
 
@@ -73,11 +73,13 @@ class YoonKimCNN(SequenceEncoderBase):
     def build_model(self, x):
         pooled_tensors = []
         for filter_size in self.filter_sizes:
-            x_i = Conv1D(self.num_filters, filter_size, activation='elu', **self.conv_kwargs)(x)
+            x_i = Conv1D(self.num_filters, filter_size,
+                         activation='elu', **self.conv_kwargs)(x)
             x_i = GlobalMaxPooling1D()(x_i)
             pooled_tensors.append(x_i)
 
-        x = pooled_tensors[0] if len(self.filter_sizes) == 1 else concatenate(pooled_tensors, axis=-1)
+        x = pooled_tensors[0] if len(
+            self.filter_sizes) == 1 else concatenate(pooled_tensors, axis=-1)
         return x
 
 
@@ -101,7 +103,8 @@ class StackedRNN(SequenceEncoderBase):
     def build_model(self, x):
         for i, n in enumerate(self.hidden_dims):
             is_last_layer = i == len(self.hidden_dims) - 1
-            rnn = self.rnn_class(n, return_sequences=not is_last_layer, **self.rnn_kwargs)
+            rnn = self.rnn_class(
+                n, return_sequences=not is_last_layer, **self.rnn_kwargs)
             if self.bidirectional:
                 x = Bidirectional(rnn)(x)
             else:
@@ -132,7 +135,8 @@ class AttentionRNN(SequenceEncoderBase):
         self.rnn_kwargs = rnn_kwargs
 
     def build_model(self, x):
-        rnn = self.rnn_class(self.encoder_dims, return_sequences=True, **self.rnn_kwargs)
+        rnn = self.rnn_class(
+            self.encoder_dims, return_sequences=True, **self.rnn_kwargs)
         if self.bidirectional:
             word_activations = Bidirectional(rnn)(x)
         else:

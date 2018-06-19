@@ -2,18 +2,17 @@ from __future__ import absolute_import
 
 import abc
 import logging
-import spacy
-
-from . import utils
-import numpy as np
-
+from collections import OrderedDict, defaultdict
 from copy import deepcopy
-from collections import defaultdict, OrderedDict
 from multiprocessing import cpu_count
 
+import numpy as np
+
+import spacy
 from keras.preprocessing.sequence import pad_sequences as keras_pad_sequences
 from keras.utils.generic_utils import Progbar
 
+from . import utils
 
 logger = logging.getLogger(__name__)
 

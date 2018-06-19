@@ -1,11 +1,13 @@
 from __future__ import absolute_import
 
-import numpy as np
 import pickle
+
+import numpy as np
+
 import joblib
 import jsonpickle
-
 from jsonpickle.ext import numpy as jsonpickle_numpy
+
 jsonpickle_numpy.register_handlers()
 
 
