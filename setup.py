@@ -6,11 +6,12 @@ version = '0.1'
 
 setup(name='keras-text',
       version=version,
-      description='Text classification library for Keras',
-      author='Raghavendra Kotikalapudi',
-      author_email='ragha@outlook.com',
-      url='https://github.com/raghakot/keras-text',
-      download_url='https://github.com/raghakot/keras-text/tarball/{}'.format(version),
+      description='Text Classification Library for Keras',
+      author='Raghavendra Kotikalapudi, Johannes Filter',
+      author_email='ragha@outlook.com, hi@jfilter.de',
+      url='https://github.com/jfilter/text-classification-keras',
+      download_url='https://github.com/jfilter/text-classification-keras/tarball/{}'.format(
+          version),
       license='MIT',
       install_requires=['keras>=2.1.2', 'six', 'spacy>=2.0.3', 'scikit-learn'],
       extras_require={

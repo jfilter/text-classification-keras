@@ -1,10 +1,8 @@
-# Keras Text Classification Library
-[![Build Status](https://travis-ci.org/raghakot/keras-text.svg?branch=master)](https://travis-ci.org/raghakot/keras-text)
-[![license](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/raghakot/keras-text/blob/master/LICENSE)
-[![Slack](https://img.shields.io/badge/slack-discussion-E01563.svg)](https://join.slack.com/t/keras-text/shared_invite/MjMzNDU3NDAxODMxLTE1MDM4NTg0MTktNzgxZTNjM2E4Zg)
+# Text Classification Keras [![Build Status](https://travis-ci.org/jfilter/text-classification-keras.svg?branch=master)](https://travis-ci.org/jfilter/text-classification-keras)
 
-keras-text is a one-stop text classification library implementing various state of the art models with a clean and 
-extendable interface to implement custom architectures.
+A one-stop text classification library implementing various state of the art models with a clean and extendable interface to implement custom architectures.
+
+This is a fork of [keras-text](https://github.com/jfilter/text-classification-keras) and still WIP.
 
 ## Quick start
 
@@ -24,11 +22,10 @@ tokenizer.build_vocab(texts)
 
 Want to tokenize with character tokens to leverage character models? Use `CharTokenizer`.
 
-
 ### Build a dataset
 
-A dataset encapsulates tokenizer, X, y and the test set. This allows you to focus your efforts on 
-trying various architectures/hyperparameters without having to worry about inconsistent evaluation. A dataset can be 
+A dataset encapsulates tokenizer, X, y and the test set. This allows you to focus your efforts on
+trying various architectures/hyperparameters without having to worry about inconsistent evaluation. A dataset can be
 saved and loaded from the disk.
 
 ```python
@@ -61,7 +58,7 @@ word_encoder_model = YoonKimCNN()
 model = factory.build_model(token_encoder_model=word_encoder_model)
 model.compile(optimizer='adam', loss='categorical_crossentropy')
 model.summary()
-``` 
+```
 
 Currently supported models include:
 
@@ -90,7 +87,7 @@ sentence_encoder_model = AttentionRNN()
 model = factory.build_model(word_encoder_model, sentence_encoder_model)
 model.compile(optimizer='adam', loss='categorical_crossentropy')
 model.summary()
-``` 
+```
 
 Currently supported models include:
 
@@ -101,42 +98,41 @@ Currently supported models include:
 `SentenceModelFactory.build_model` created a tiered model where words within a sentence is first encoded using  
 `word_encoder_model`. All such encodings per sentence is then encoded using `sentence_encoder_model`.
 
-- [Hierarchical attention networks](http://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf) 
-(HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.
+- [Hierarchical attention networks](http://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf)
+  (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.
 - For smaller document a reasonable way to encode sentences is to average words within it. This can be done by using
-`token_encoder_model=AveragingEncoder()`
+  `token_encoder_model=AveragingEncoder()`
 - Mix and match encoders as you see fit for your problem.
-
 
 ## Resources
 
 TODO: Update documentation and add notebook examples.
 
-Stay tuned for better documentation and examples. 
+Stay tuned for better documentation and examples.
 Until then, the best resource is to refer to the [API docs](https://raghakot.github.io/keras-text/)
-
 
 ## Installation
 
-1) Install [keras](https://github.com/fchollet/keras/blob/master/README.md#installation) 
-with theano or tensorflow backend. Note that this library requires Keras > 2.0
+1.  Install [keras](https://github.com/fchollet/keras/blob/master/README.md#installation)
+    with theano or tensorflow backend. Note that this library requires Keras > 2.0
 
-2) Install keras-text
-> From sources
+2.  Install keras-text
+    > From sources
+
 ```bash
 sudo python setup.py install
 ```
 
 > PyPI package
+
 ```bash
 sudo pip install keras-text
 ```
 
-3) Download target spacy model
+3.  Download target spacy model
 
-keras-text uses the excellent spacy library for tokenization. See instructions on how to 
+keras-text uses the excellent spacy library for tokenization. See instructions on how to
 [download model](https://spacy.io/docs/usage/models#download) for target language.
-
 
 ## Citation
 
@@ -144,10 +140,14 @@ Please cite keras-text in your publications if it helped your research. Here is 
 
 ```
 @misc{raghakotkerastext
-  title={keras-text},
-  author={Kotikalapudi, Raghavendra and contributors},
-  year={2017},
+  title={Text-Classification-Keras},
+  author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},
+  year={2018},
   publisher={GitHub},
-  howpublished={\url{https://github.com/raghakot/keras-text}},
+  howpublished={\url{https://github.com/jfilter/text-classification-keras}},
 }
 ```
+
+## License
+
+MIT.
