@@ -16,7 +16,7 @@ matrix:
         #   env: KERAS_BACKEND=theano
 
 install:
-  - pip install mkl mkl-service pytest pytest-pep8 pytest-cov matplotlib
+  - pip install pytest pytest-pep8 pytest-cov
 
   # install TensorFlow
   - pip install tensorflow
@@ -27,7 +27,6 @@ install:
   - pip install -e .[tests]
 
 script:
-  - export MKL_THREADING_LAYER="GNU"
   # run keras backend init to initialize backend config
   - python -c "import keras.backend"
   # set up keras backend
