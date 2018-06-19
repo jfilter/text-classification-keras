@@ -10,6 +10,8 @@ six = "*"
 spacy = "*"
 joblib = "*"
 jsonpickle = "*"
+scikit-learn = "*"
+numpy = "*"
 
 [dev-packages]
 pylint = "*"
