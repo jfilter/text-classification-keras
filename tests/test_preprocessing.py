@@ -4,10 +4,10 @@ import keras
 import pytest
 
 from keras_text.data import Dataset
-from keras_text.processing import WordTokenizer, pad_sequences
+from keras_text.processing import WordTokenizer, pad_sequences, SentenceWordTokenizer, unicodify
 
 
-def test_pre(tmpdir):
+def test_token_preprocessing(tmpdir):
     tokenizer = WordTokenizer()
 
     X = ['hello', 'world', 'welcome', 'earth']
@@ -32,3 +32,23 @@ def test_pre(tmpdir):
 
     # only first word
     assert(all([a == b for a, b in zip(ds_new.X[0], X_fin[0])]))
+
+
+def test_sentence_tokenizer():
+    texts = [
+        "HELLO world hello. How are you today? Did you see the S.H.I.E.L.D?",
+        "Quick brown fox. Ran over the, building 1234?",
+    ]
+
+    texts = unicodify(texts)
+    tokenizer = SentenceWordTokenizer()
+    tokenizer.build_vocab(texts)
+    tokenizer.apply_encoding_options(max_tokens=5)
+    encoded = tokenizer.encode_texts(texts)
+    decoded = tokenizer.decode_texts(encoded, inplace=False)
+
+    assert(len(decoded) == 2)
+
+    decoded_flat = sum(sum(decoded, []), [])
+
+    assert(len(set(decoded_flat)) == 5)
