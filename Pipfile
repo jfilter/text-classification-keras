@@ -12,6 +12,7 @@ joblib = "*"
 jsonpickle = "*"
 scikit-learn = "*"
 numpy = "*"
+"e1839a8" = {path = ".", editable = true}
 
 [dev-packages]
 pylint = "*"

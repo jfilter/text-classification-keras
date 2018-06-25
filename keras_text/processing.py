@@ -7,7 +7,7 @@ from copy import deepcopy
 from multiprocessing import cpu_count
 
 import numpy as np
-
+import six
 import spacy
 from keras.preprocessing.sequence import pad_sequences as keras_pad_sequences
 from keras.utils.generic_utils import Progbar
@@ -102,7 +102,7 @@ def _recursive_apply(lst, apply_fn):
 
 
 def _to_unicode(text):
-    if not isinstance(text, unicode):
+    if not isinstance(text, six.text_type):
         text = text.decode('utf-8')
     return text
 
@@ -147,7 +147,6 @@ def _pad_sent_sequences(sequences, max_sentences=None, max_tokens=None,
 
         if max_tokens is None:
             max_tokens = max_tokens_computed
-
 
     result = np.ones(shape=(len(sequences), max_sentences, max_tokens)) * value
 
@@ -290,12 +289,12 @@ class Tokenizer(object):
 
         # Remove tokens with freq < min_token_count
         token_counts = list(self._token_counts.items())
-        token_counts = filter(lambda x: x[1] >= min_token_count, token_counts)
+        token_counts = [x for x in token_counts if x[1] >= min_token_count]
 
         # Clip to max_tokens.
         if max_tokens is not None:
             token_counts.sort(key=lambda x: x[1], reverse=True)
-            filtered_tokens = zip(*token_counts)[0]
+            filtered_tokens = list(zip(*token_counts))[0]
             filtered_tokens = filtered_tokens[:max_tokens]
         else:
             filtered_tokens = zip(*token_counts)[0]
@@ -716,18 +715,3 @@ class SentenceCharTokenizer(CharTokenizer):
                 for word in sent:
                     for char in word:
                         yield text_idx, sent_idx, char
-
-
-if __name__ == '__main__':
-    texts = [
-        "HELLO world hello. How are you today? Did you see the S.H.I.E.L.D?",
-        "Quick brown fox. Ran over the, building 1234?",
-    ]
-
-    texts = unicodify(texts)
-    tokenizer = SentenceWordTokenizer()
-    tokenizer.build_vocab(texts)
-    tokenizer.apply_encoding_options(max_tokens=5)
-    encoded = tokenizer.encode_texts(texts)
-    decoded = tokenizer.decode_texts(encoded, inplace=False)
-    w = 1
