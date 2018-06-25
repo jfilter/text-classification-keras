@@ -138,7 +138,8 @@ def _pad_sent_sequences(sequences, max_sentences=None, max_tokens=None,
         max_tokens_computed = 0
         for sent_seq in sequences:
             max_sentences_computed = max(max_sentences_computed, len(sent_seq))
-            max_tokens_computed = max(max_tokens_computed, np.max([len(token_seq) for token_seq in sent_seq]))
+            max_tokens_computed = max(max_tokens_computed, np.max(
+                [len(token_seq) for token_seq in sent_seq]))
 
         # Only use inferred values for None.
         if max_sentences is None:
@@ -162,13 +163,16 @@ def _pad_sent_sequences(sequences, max_sentences=None, max_tokens=None,
         elif truncating == 'post':
             trunc = sent_seq[:max_sentences]
         else:
-            raise ValueError('Truncating type "%s" not understood' % truncating)
+            raise ValueError(
+                'Truncating type "%s" not understood' % truncating)
 
         # Apply padding.
         if padding == 'post':
-            result[idx, :len(trunc)] = _pad_token_sequences(trunc, max_tokens, padding, truncating, value)
+            result[idx, :len(trunc)] = _pad_token_sequences(
+                trunc, max_tokens, padding, truncating, value)
         elif padding == 'pre':
-            result[idx, -len(trunc):] = _pad_token_sequences(trunc, max_tokens, padding, truncating, value)
+            result[idx, -len(trunc):] = _pad_token_sequences(trunc,
+                                                             max_tokens, padding, truncating, value)
         else:
             raise ValueError('Padding type "%s" not understood' % padding)
     return result
@@ -196,9 +200,11 @@ def pad_sequences(sequences, max_sentences=None, max_tokens=None,
 
     # Determine if input is (samples, max_sentences, max_tokens) or not.
     if isinstance(sequences[0][0], list):
-        x = _pad_sent_sequences(sequences, max_sentences, max_tokens, padding, truncating, value)
+        x = _pad_sent_sequences(sequences, max_sentences,
+                                max_tokens, padding, truncating, value)
     else:
-        x = _pad_token_sequences(sequences, max_tokens, padding, truncating, value)
+        x = _pad_token_sequences(
+            sequences, max_tokens, padding, truncating, value)
     return np.array(x, dtype='int32')
 
 
@@ -314,7 +320,8 @@ class Tokenizer(object):
             The encoded texts.
         """
         if not self.has_vocab:
-            raise ValueError("You need to build the vocabulary using `build_vocab` before using `encode_texts`")
+            raise ValueError(
+                "You need to build the vocabulary using `build_vocab` before using `encode_texts`")
 
         progbar = Progbar(len(texts), verbose=verbose, interval=0.25)
         encoded_texts = []
@@ -347,7 +354,8 @@ class Tokenizer(object):
             The decoded texts.
         """
         if len(self._token2idx) == 0:
-            raise ValueError("You need to build vocabulary using `build_vocab` before using `decode_texts`")
+            raise ValueError(
+                "You need to build vocabulary using `build_vocab` before using `decode_texts`")
 
         if not inplace:
             encoded_texts = deepcopy(encoded_texts)
@@ -364,7 +372,8 @@ class Tokenizer(object):
             **kwargs: The kwargs for `token_generator`.
         """
         if self.has_vocab:
-            logger.warn("Tokenizer already has existing vocabulary. Overriding and building new vocabulary.")
+            logger.warn(
+                "Tokenizer already has existing vocabulary. Overriding and building new vocabulary.")
 
         progbar = Progbar(len(texts), verbose=verbose, interval=0.25)
         count_tracker = _CountTracker()
@@ -397,7 +406,8 @@ class Tokenizer(object):
         `get_stats` method.
         """
         if not self.has_vocab:
-            raise ValueError("You need to build the vocabulary using `build_vocab` before using `get_counts`")
+            raise ValueError(
+                "You need to build the vocabulary using `build_vocab` before using `get_counts`")
         return self._counts[i]
 
     def get_stats(self, i):
@@ -702,7 +712,8 @@ class SentenceCharTokenizer(CharTokenizer):
         }
 
         # Perf optimization: Lower the entire text instead of individual tokens.
-        texts_gen = _apply_generator(texts, lambda x: x.lower()) if self.lower else texts
+        texts_gen = _apply_generator(
+            texts, lambda x: x.lower()) if self.lower else texts
         for text_idx, doc in enumerate(nlp.pipe(texts_gen, **kwargs)):
             for sent_idx, sent in enumerate(doc.sents):
                 for word in sent:
