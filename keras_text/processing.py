@@ -353,6 +353,10 @@ class Tokenizer(object):
             raise ValueError(
                 "You need to build vocabulary using `build_vocab` before using `decode_texts`")
 
+        if not isinstance(encoded_texts, list):
+            # assume it's a numpy array
+            encoded_texts = encoded_texts.tolist()
+
         if not inplace:
             encoded_texts = deepcopy(encoded_texts)
         _recursive_apply(encoded_texts,
