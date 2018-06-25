@@ -144,13 +144,10 @@ def _pad_sent_sequences(sequences, max_sentences=None, max_tokens=None,
         # Only use inferred values for None.
         if max_sentences is None:
             max_sentences = max_sentences_computed
-        else:
-            max_sentences = min(max_sentences, max_sentences_computed)
 
         if max_tokens is None:
             max_tokens = max_tokens_computed
-        else:
-            max_tokens = min(max_tokens, max_tokens_computed)
+
 
     result = np.ones(shape=(len(sequences), max_sentences, max_tokens)) * value
 
