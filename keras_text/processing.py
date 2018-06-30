@@ -125,13 +125,14 @@ def _parse_spacy_kwargs(**kwargs):
     return n_threads, batch_size
 
 
-def _pad_token_sequences(sequences, max_tokens=None,
-                         padding='pre', truncating='pre', value=0.):
+def _pad_token_sequences(sequences, max_tokens,
+                         padding, truncating, value):
+    # TODO: better variable names (see below)
     return keras_pad_sequences(sequences, maxlen=max_tokens, padding=padding, truncating=truncating, value=value)
 
 
-def _pad_sent_sequences(sequences, max_sentences=None, max_tokens=None,
-                        padding='pre', truncating='pre', value=0.):
+def _pad_sent_sequences(sequences, max_sentences, max_tokens, padding, truncating, value):
+    # TODO: better names (see below)
     # Infer max lengths if needed.
     if max_sentences is None or max_tokens is None:
         max_sentences_computed = 0
@@ -174,43 +175,6 @@ def _pad_sent_sequences(sequences, max_sentences=None, max_tokens=None,
     return result
 
 
-def pad_sequences(sequences, max_sentences=None, max_tokens=None,
-                  padding='pre', truncating='post', value=0.):
-    """Pads each sequence to the same length (length of the longest sequence or provided override).
-
-    Args:
-        sequences: list of list (samples, words) or list of list of list (samples, sentences, words)
-        max_sentences: The max sentence length to use. If None, largest sentence length is used.
-        max_tokens: The max word length to use. If None, largest word length is used.
-        padding: 'pre' or 'post', pad either before or after each sequence.
-        truncating: 'pre' or 'post', remove values from sequences larger than max_sentences or max_tokens
-            either in the beginning or in the end of the sentence or word sequence respectively.
-        value: The padding value.
-
-    Returns:
-        Numpy array of (samples, max_sentences, max_tokens) or (samples, max_tokens) depending on the sequence input.
-
-    Raises:
-        ValueError: in case of invalid values for `truncating` or `padding`.
-    """
-
-    # Determine if input is (samples, max_sentences, max_tokens) or not.
-    if isinstance(sequences[0][0], list):
-        x = _pad_sent_sequences(sequences, max_sentences,
-                                max_tokens, padding, truncating, value)
-    else:
-        x = _pad_token_sequences(
-            sequences, max_tokens, padding, truncating, value)
-    return np.array(x, dtype='int32')
-
-
-# def pad_sequences1(sequences, max_values, padding='pre', truncating='post', pad_value=0, dynamic_max=True):
-#     computed_max_values = [0] * len(max_values)
-#
-#     def _compute_max(lst, level):
-#         for lst in
-
-
 def unicodify(texts):
     """Encodes all text sequences as unicode. This is a python2 hassle.
 
@@ -227,17 +191,21 @@ class Tokenizer(object):
 
     def __init__(self,
                  lang='en',
-                 lower=True):
+                 lower=True,
+                 special_token=['<UNK>', '<PAD>']):
         """Encodes text into `(samples, aux_indices..., token)` where each token is mapped to a unique index starting
-        from `1`. Note that `0` is a reserved for unknown tokens.
+        from `i`. `i` is the number of special tokens.
 
         Args:
             lang: The spacy language to use. (Default value: 'en')
             lower: Lower cases the tokens if True. (Default value: True)
+            special_token: The tokens that are reserved. Default: ['<UNK>', '<PAD>'], <UNK> for unknown words and <PAD> for padding token.
+
         """
 
         self.lang = lang
         self.lower = lower
+        self.special_token = special_token
 
         self._token2idx = dict()
         self._idx2token = dict()
@@ -266,10 +234,15 @@ class Tokenizer(object):
         a desired strategy and regenerate `token_index` using this method. The token index is subsequently used
         when `encode_texts` or `decode_texts` methods are called.
         """
-        # Since 0 is reserved.
-        indices = list(range(1, len(tokens) + 1))
-        self._token2idx = dict(list(zip(tokens, indices)))
-        self._idx2token = dict(list(zip(indices, tokens)))
+        start_index = len(self.special_token)
+        indices = list(range(len(tokens) + start_index))
+        # prepend because the special tokens come in the beginning
+
+        print(type(self.special_token))
+
+        tokens_with_special = self.special_token + list(tokens)
+        self._token2idx = dict(list(zip(tokens_with_special, indices)))
+        self._idx2token = dict(list(zip(indices, tokens_with_special)))
 
     def apply_encoding_options(self, min_token_count=1, max_tokens=None):
         """Applies the given settings for subsequent calls to `encode_texts` and `decode_texts`. This allows you to
@@ -302,13 +275,13 @@ class Tokenizer(object):
         # Generate indices based on filtered tokens.
         self.create_token_indices(filtered_tokens)
 
-    def encode_texts(self, texts, include_oov=False, verbose=1, **kwargs):
+    def encode_texts(self, texts, unknown_token="<UNK>", verbose=1, **kwargs):
         """Encodes the given texts using internal vocabulary with optionally applied encoding options. See
         ``apply_encoding_options` to set various options.
 
         Args:
             texts: The list of text items to encode.
-            include_oov: True to map unknown (out of vocab) tokens to 0. False to exclude the token.
+            unknown_token: The token to replace words that out of vocabulary. If none, those words are omitted.
             verbose: The verbosity level for progress. Can be 0, 1, 2. (Default value = 1)
             **kwargs: The kwargs for `token_generator`.
 
@@ -319,14 +292,18 @@ class Tokenizer(object):
             raise ValueError(
                 "You need to build the vocabulary using `build_vocab` before using `encode_texts`")
 
+        if unknown_token and unknown_token not in self.special_token:
+            raise ValueError(
+                "Your special token (" + unknown_token + ") to replace unknown words is not in the list of special token: " + self.special_token)
+
         progbar = Progbar(len(texts), verbose=verbose, interval=0.25)
         encoded_texts = []
         for token_data in self.token_generator(texts, **kwargs):
             indices, token = token_data[:-1], token_data[-1]
 
             token_idx = self._token2idx.get(token)
-            if token_idx is None and include_oov:
-                token_idx = 0
+            if token_idx is None and unknown_token:
+                token_idx = self.special_token.index(unknown_token)
 
             if token_idx is not None:
                 _append(encoded_texts, indices, token_idx)
@@ -396,6 +373,38 @@ class Tokenizer(object):
         count_tracker.finalize()
         self._counts = count_tracker.counts
         progbar.update(len(texts))
+
+    def pad_sequences(self, sequences, fixed_sentences_seq_length=None, fixed_token_seq_length=None,
+                      padding='pre', truncating='post', padding_token="<PAD>"):
+        """Pads each sequence to the same fixed length (length of the longest sequence or provided override).
+
+        Args:
+            sequences: list of list (samples, words) or list of list of list (samples, sentences, words)
+            fixed_sentences_seq_length: The fix sentence sequence length to use. If None, largest sentence length is used.
+            fixed_token_seq_length: The fix token sequence length to use. If None, largest word length is used.
+            padding: 'pre' or 'post', pad either before or after each sequence.
+            truncating: 'pre' or 'post', remove values from sequences larger than fixed_sentences_seq_length or fixed_token_seq_length
+                either in the beginning or in the end of the sentence or word sequence respectively.
+            padding_token: The token to add for padding.
+
+        Returns:
+            Numpy array of (samples, max_sentences, max_tokens) or (samples, max_tokens) depending on the sequence input.
+
+        Raises:
+            ValueError: in case of invalid values for `truncating` or `padding`.
+        """
+        value = self.special_token.index(padding_token)
+        if value < 0:
+            raise ValueError('The padding token "' + padding_token +
+                             " is not in the special tokens of the tokenizer.")
+        # Determine if input is (samples, max_sentences, max_tokens) or not.
+        if isinstance(sequences[0][0], list):
+            x = _pad_sent_sequences(sequences, fixed_sentences_seq_length,
+                                    fixed_token_seq_length, padding, truncating, value)
+        else:
+            x = _pad_token_sequences(
+                sequences, fixed_token_seq_length, padding, truncating, value)
+        return np.array(x, dtype='int32')
 
     def get_counts(self, i):
         """Numpy array of count values for aux_indices. For example, if `token_generator` generates
