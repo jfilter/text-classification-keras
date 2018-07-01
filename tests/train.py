@@ -8,7 +8,7 @@ import pytest
 from keras_text.corpus import imdb
 from keras_text.data import Dataset
 from keras_text.models import AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN
-from keras_text.processing import WordTokenizer
+from keras_text.preprocessing import WordTokenizer
 
 max_len = 50
 

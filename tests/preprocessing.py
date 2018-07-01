@@ -4,7 +4,8 @@ import keras
 import pytest
 
 from keras_text.data import Dataset
-from keras_text.processing import WordTokenizer, SentenceWordTokenizer, unicodify
+from keras_text.preprocessing import WordTokenizer, SentenceWordTokenizer
+from keras_text.preprocessing.utils import unicodify
 
 
 def test_token_preprocessing(tmpdir):
@@ -40,7 +41,8 @@ def test_sentence_tokenizer():
         "Quick brown fox. Ran over the, building 1234?",
     ]
 
-    texts = unicodify(texts)
+    texts
+    from keras_text.preprocessing.utils import unicodify(texts)
     tokenizer = SentenceWordTokenizer()
     tokenizer.build_vocab(texts)
     tokenizer.apply_encoding_options(max_tokens=5)
