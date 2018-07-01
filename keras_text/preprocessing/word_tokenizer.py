@@ -189,3 +189,16 @@ class TwokenizeTokenizer(Tokenizer):
             tokens = twokenize.tokenize(text)
             for t in tokens:
                 yield id, t
+
+
+class SimpleTokenizer(Tokenizer):
+    def __init__(self, lang='en', lower=True):
+        super(SimpleTokenizer, self).__init__(lang, lower)
+
+    def token_generator(self, texts):
+        for id, text in enumerate(texts):
+            if self.lower:
+                text = text.lower()
+            tokens = text.split()
+            for t in tokens:
+                yield id, t

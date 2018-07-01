@@ -4,7 +4,7 @@ import keras
 import pytest
 
 from keras_text.data import Dataset
-from keras_text.preprocessing import WordTokenizer, SentenceWordTokenizer, TwokenizeTokenizer
+from keras_text.preprocessing import WordTokenizer, SentenceWordTokenizer, TwokenizeTokenizer, SimpleTokenizer
 from keras_text.preprocessing.utils import unicodify
 
 
@@ -87,3 +87,15 @@ def test_twokenizer():
     tokenizer.build_vocab(texts)
     assert('1.2.3.5' in tokenizer.token_index)
     assert('1' not in tokenizer.token_index)
+
+
+def test_simple_tokenizer():
+    texts = [
+        "HELLO world hello.",
+        "Quick brown fox. Ran over the, building 1234 1.2.3.5?",
+        "Peter is a cool guy.",
+    ]
+    tokenizer = SimpleTokenizer()
+    tokenizer.build_vocab(texts)
+    assert('fox.' in tokenizer.token_index)
+    assert(' ' not in tokenizer.token_index)
