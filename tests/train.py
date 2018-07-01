@@ -21,7 +21,7 @@ def test_train():
     tokenizer.build_vocab(X)
 
     # only select top 10k tokens
-    tokenizer.apply_encoding_options(max_tokens=20)
+    tokenizer.apply_encoding_options(limit_top_tokens=20)
 
     X_encoded = tokenizer.encode_texts(X)
     X_padded = tokenizer.pad_sequences(

@@ -45,7 +45,7 @@ def test_sentence_tokenizer():
     from keras_text.preprocessing.utils import unicodify(texts)
     tokenizer = SentenceWordTokenizer()
     tokenizer.build_vocab(texts)
-    tokenizer.apply_encoding_options(max_tokens=5)
+    tokenizer.apply_encoding_options(limit_top_tokens=5)
     encoded = tokenizer.encode_texts(texts)
     decoded = tokenizer.decode_texts(encoded, inplace=False)
 
