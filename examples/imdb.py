@@ -49,6 +49,7 @@ def train():
     # RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.
     factory = TokenModelFactory(
         2, ds.tokenizer.token_index, max_tokens=max_len, embedding_type='glove.6B.300d')
+    # 2, ds.tokenizer.token_index, max_tokens=max_len, embedding_type='fasttext.simple')
 
     word_encoder_model = YoonKimCNN()
     # word_encoder_model = AlexCNN(dropout_rate=[0, 0])

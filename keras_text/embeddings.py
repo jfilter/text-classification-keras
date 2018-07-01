@@ -19,18 +19,13 @@ _EMBEDDINGS_CACHE = dict()
 _EMBEDDING_TYPES = {
     # simple English
     'fasttext.simple': {
-        'file': 'fasttext.simple.txt',
+        'file': 'fasttext.simple.vec',
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
     },
     # English
     'fasttext.en': {
-        'file': 'fasttext.en.txt',
+        'file': 'fasttext.en.vec',
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.en.vec'
-    },
-    # replace XX with your language code e.g. ES for Spanish or DE for German
-    'fasttext.XX': {
-        'file': 'fasttext.XX.txt',
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.XX.vec'
     },
     # 42 Billion tokens Common Crawl
     'glove.42B.300d': {
@@ -82,18 +77,27 @@ _EMBEDDING_TYPES = {
 }
 
 
-def _build_embeddings_index(embeddings_path):
+def _build_embeddings_index(embeddings_path, num_dimension):
     logger.info('Building embeddings index...')
     index = {}
     with io.open(embeddings_path, encoding="utf-8") as f:
         for line in f:
             values = line.split()
-            word = values[0]
+
+            # some hack for fasttext vectors where the first line is (num_token, dimensions)
+            if len(values) <= 2:
+                continue
+
+            word = ' '.join(values[:-num_dimension])
+            floats = values[-num_dimension:]
+
+            if (len(word.split()) != 1):
+                print(word)
 
             if not isinstance(word, six.text_type):
                 word = word.decode()
 
-            vector = np.asarray(values[1:], dtype='float32')
+            vector = np.asarray(floats, dtype='float32')
             index[word] = vector
     logger.info('Done')
     return index
@@ -117,7 +121,41 @@ def build_embedding_weights(word_index, embeddings_index):
     return embedding_weights
 
 
-def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None):
+def build_fasttest_embedding_obj(embedding_type):
+    """All fasttext vectors
+    Args:
+        embedding_type: A string in the format `fastext.$LANG_CODE`. e.g. `fasttext.de` or `fasttest.es`
+    Returns:
+        name and url
+    """
+    lang = embedding_type.split('.')[1]
+    return {
+        'file': 'wiki.{}.vec'.format(lang),
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.{}.vec'.format(lang),
+        'extract': False,
+        'num_dimension': 300
+    }
+
+
+def get_embedding_type(embedding_type):
+    if embedding_type.startswith('fasttext.'):
+        return build_fasttest_embedding_obj(embedding_type)
+
+    data_obj = _EMBEDDING_TYPES.get(embedding_type)
+
+    if data_obj is None:
+        raise ValueError("Embedding name should be one of '{}'".format(
+            _EMBEDDING_TYPES.keys()))
+
+    # infert dimension from string, the last part
+    num_dimension = int(embedding_type.split('.')[-1][:-1])
+
+    data_obj['num_dimension'] = num_dimension
+
+    return data_obj
+
+
+def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None, num_dimension=None):
     """Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.
 
     Args:
@@ -136,16 +174,13 @@ def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None):
         return embeddings_index
 
     if embedding_path is None:
-        data_obj = _EMBEDDING_TYPES.get(embedding_type)
-        if data_obj is None:
-            raise ValueError("Embedding name should be one of '{}'".format(
-                _EMBEDDING_TYPES.keys()))
+        embedding_type_obj = get_embedding_type(embedding_type)
+        num_dimension = embedding_type_obj['num_dimension']
         file_path = get_file(
-            data_obj['file'], origin=data_obj['url'], extract=True, cache_subdir='embeddings')
-        file_path = os.path.join(os.path.dirname(file_path), data_obj['file'])
+            embedding_type_obj['file'], origin=embedding_type_obj['url'], extract=embedding_type_obj.get('extract', True), cache_subdir='embeddings')
     else:
         file_path = embedding_path
 
-    embeddings_index = _build_embeddings_index(file_path)
+    embeddings_index = _build_embeddings_index(file_path, num_dimension)
     _EMBEDDINGS_CACHE[embedding_type] = embeddings_index
     return embeddings_index
