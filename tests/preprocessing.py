@@ -4,7 +4,7 @@ import keras
 import pytest
 
 from keras_text.data import Dataset
-from keras_text.preprocessing import WordTokenizer, SentenceWordTokenizer
+from keras_text.preprocessing import WordTokenizer, SentenceWordTokenizer, TwokenizeTokenizer
 from keras_text.preprocessing.utils import unicodify
 
 
@@ -40,9 +40,7 @@ def test_sentence_tokenizer():
         "HELLO world hello. How are you today? Did you see the S.H.I.E.L.D?",
         "Quick brown fox. Ran over the, building 1234?",
     ]
-
-    texts
-    from keras_text.preprocessing.utils import unicodify(texts)
+    unicodify(texts)
     tokenizer = SentenceWordTokenizer()
     tokenizer.build_vocab(texts)
     tokenizer.apply_encoding_options(limit_top_tokens=5)
@@ -77,3 +75,15 @@ def test_padding():
     decoded = tokenizer.decode_texts(padded, inplace=False)
     print(decoded)
     assert('guy' not in decoded[-1])
+
+
+def test_twokenizer():
+    texts = [
+        "HELLO world hello.",
+        "Quick brown fox. Ran over the, building 1234 1.2.3.5?",
+        "Peter is a cool guy.",
+    ]
+    tokenizer = TwokenizeTokenizer()
+    tokenizer.build_vocab(texts)
+    assert('1.2.3.5' in tokenizer.token_index)
+    assert('1' not in tokenizer.token_index)

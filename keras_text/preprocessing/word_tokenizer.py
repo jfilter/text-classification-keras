@@ -4,9 +4,10 @@ from .tokenizer import Tokenizer
 
 from . import utils
 
+from ..libs import twokenize
+
 
 class WordTokenizer(Tokenizer):
-
     def __init__(self,
                  lang='en',
                  lower=True,
@@ -106,7 +107,6 @@ class WordTokenizer(Tokenizer):
 
 
 class SentenceWordTokenizer(WordTokenizer):
-
     def __init__(self,
                  lang='en',
                  lower=True,
@@ -176,3 +176,16 @@ class SentenceWordTokenizer(WordTokenizer):
                     processed_word = self._apply_options(word)
                     if processed_word is not None:
                         yield text_idx, sent_idx, processed_word
+
+
+class TwokenizeTokenizer(Tokenizer):
+    def __init__(self, lang='en', lower=True):
+        super(TwokenizeTokenizer, self).__init__(lang, lower)
+
+    def token_generator(self, texts):
+        for id, text in enumerate(texts):
+            if self.lower:
+                text = text.lower()
+            tokens = twokenize.tokenize(text)
+            for t in tokens:
+                yield id, t
