@@ -46,3 +46,6 @@ script:
     else
       PYTHONPATH=$PWD:$PYTHONPATH/tests py.test;
     fi
+
+notifications:
+    email: false
