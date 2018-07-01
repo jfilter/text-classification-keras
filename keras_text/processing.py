@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import abc
 import logging
@@ -237,9 +237,6 @@ class Tokenizer(object):
         start_index = len(self.special_token)
         indices = list(range(len(tokens) + start_index))
         # prepend because the special tokens come in the beginning
-
-        print(type(self.special_token))
-
         tokens_with_special = self.special_token + list(tokens)
         self._token2idx = dict(list(zip(tokens_with_special, indices)))
         self._idx2token = dict(list(zip(indices, tokens_with_special)))
