@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
-from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D
-from keras.layers.merge import concatenate
+from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D, MaxPooling1D, Dense, Flatten
+from keras.layers.merge import Concatenate, concatenate
 
 from .layers import AttentionLayer, ConsumeMask
 
@@ -80,6 +80,42 @@ class YoonKimCNN(SequenceEncoderBase):
 
         x = pooled_tensors[0] if len(
             self.filter_sizes) == 1 else concatenate(pooled_tensors, axis=-1)
+        return x
+
+
+class AlexCNN(SequenceEncoderBase):
+    def __init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20):
+        """Alexander Rakhlin's CNN model: https://github.com/alexander-rakhlin/CNN-for-Sentence-Classification-in-Keras/
+
+        Args:
+            num_filters: The number of filters to use per `filter_size`. (Default value = 64)
+            filter_sizes: The filter sizes for each convolutional layer. (Default value = [3, 4, 5])
+            dropout_rate: Array for one dropout layer after the embedding and one before the final dense layer (Default value = [0.5, 0.8])
+        """
+        super(AlexCNN, self).__init__(dropout_rate[0])
+        self.num_filters = num_filters
+        self.filter_sizes = filter_sizes
+        self.dropout_rate = dropout_rate[0]
+        self.dropout_rate2 = dropout_rate[1]
+        self.hidden_dims = hidden_dims
+
+    def build_model(self, x):
+        conv_blocks = []
+        for sz in self.filter_sizes:
+            conv = Conv1D(filters=self.num_filters,
+                                 kernel_size=sz,
+                                 padding="valid",
+                                 activation="relu",
+                                 strides=1)(x)
+            conv = MaxPooling1D(pool_size=2)(conv)
+            conv = Flatten()(conv)
+            conv_blocks.append(conv)
+
+        x = Concatenate()(conv_blocks) if len(
+            conv_blocks) > 1 else conv_blocks[0]
+
+        x = Dropout(self.dropout_rate2)(x)
+        x = Dense(self.hidden_dims, activation="relu")(x)
         return x
 
 
