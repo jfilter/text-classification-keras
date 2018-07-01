@@ -103,10 +103,10 @@ class AlexCNN(SequenceEncoderBase):
         conv_blocks = []
         for sz in self.filter_sizes:
             conv = Conv1D(filters=self.num_filters,
-                                 kernel_size=sz,
-                                 padding="valid",
-                                 activation="relu",
-                                 strides=1)(x)
+                          kernel_size=sz,
+                          padding="valid",
+                          activation="relu",
+                          strides=1)(x)
             conv = MaxPooling1D(pool_size=2)(conv)
             conv = Flatten()(conv)
             conv_blocks.append(conv)

@@ -7,7 +7,7 @@ import pytest
 
 from keras_text.corpus import imdb
 from keras_text.data import Dataset
-from keras_text.models import AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, AlexCNN
+from keras_text.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN
 from keras_text.processing import WordTokenizer
 
 max_len = 50
@@ -56,7 +56,6 @@ def train():
     # word_encoder_model = StackedRNN()
     model = factory.build_model(
         token_encoder_model=word_encoder_model, trainable_embeddings=False)
-
 
     model.compile(optimizer='sgd',
                   loss='categorical_crossentropy', metrics=['accuracy'])

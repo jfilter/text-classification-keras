@@ -59,4 +59,3 @@ def imdb(limit=None):
     X_test, y_test = read_pos_neg_data(path, 'test', limit)
 
     return X_train, y_train, X_test, y_test
-

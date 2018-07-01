@@ -12,6 +12,7 @@ from keras_text.processing import WordTokenizer
 
 max_len = 50
 
+
 def test_train():
     X, y, _, _ = imdb(10)
 
@@ -31,7 +32,6 @@ def test_train():
     ds = Dataset(X_padded, y_cat, tokenizer=tokenizer)
 
     X_train, _, y_train, _ = ds.train_val_split()
-
 
     # RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.
     factory = TokenModelFactory(
