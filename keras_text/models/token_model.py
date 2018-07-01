@@ -61,13 +61,13 @@ class TokenModelFactory(object):
 
         if self.embeddings_index is None:
             # The +1 is for unknown token index 0.
-            embedding_layer = Embedding(len(self.token_index) + 1,
+            embedding_layer = Embedding(len(self.token_index),
                                         self.embedding_dims,
                                         input_length=self.max_tokens,
                                         mask_zero=True,
                                         trainable=trainable_embeddings)
         else:
-            embedding_layer = Embedding(len(self.token_index) + 1,
+            embedding_layer = Embedding(len(self.token_index),
                                         self.embedding_dims,
                                         weights=[build_embedding_weights(
                                             self.token_index, self.embeddings_index)],
