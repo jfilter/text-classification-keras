@@ -120,7 +120,6 @@ class AlexCNN(SequenceEncoderBase):
 
 
 class StackedRNN(SequenceEncoderBase):
-
     def __init__(self, rnn_class=LSTM, hidden_dims=[50, 50], bidirectional=True, dropout_rate=0.5, **rnn_kwargs):
         """Creates a stacked RNN.
 
@@ -149,6 +148,12 @@ class StackedRNN(SequenceEncoderBase):
 
     def allows_dynamic_length(self):
         return True
+
+
+class BasicLSTM(StackedRNN):
+    def __init__(self, hidden_dims=50, bidirectional=True, dropout_rate=0.5):
+        super(BasicLSTM, self).__init__(rnn_class=LSTM, hidden_dims=[
+            hidden_dims], bidirectional=bidirectional, dropout_rate=dropout_rate)
 
 
 class AttentionRNN(SequenceEncoderBase):
