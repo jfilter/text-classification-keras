@@ -12,12 +12,15 @@ joblib = "*"
 jsonpickle = "*"
 scikit-learn = "*"
 numpy = "*"
-"e1839a8" = {path = ".", editable = true}
+pytest = "*"
 
 [dev-packages]
 pylint = "*"
-"autopep8" = "*"
-pytest = "*"
+autopep8 = "*"
 
 [requires]
 python_version = "3.6"
+
+[packages.e1839a8]
+path = "."
+editable = true
