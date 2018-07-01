@@ -1,19 +1,37 @@
-from __future__ import absolute_import
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
 import logging
 import os
+import io
 
 import numpy as np
-
+import six
 from keras.utils.data_utils import get_file
 
 logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
 
 # Add more types here as needed.
+# – fastText: https://github.com/facebookresearch/fastText/blob/master/pretrained-vectors.md
 # - glove: https://nlp.stanford.edu/projects/glove/
 
 _EMBEDDING_TYPES = {
+    # simple English
+    'fasttext.simple': {
+        'file': 'fasttext.simple.txt',
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
+    },
+    # English
+    'fasttext.en': {
+        'file': 'fasttext.en.txt',
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.en.vec'
+    },
+    # replace XX with your language code e.g. ES for Spanish or DE for German
+    'fasttext.XX': {
+        'file': 'fasttext.XX.txt',
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.XX.vec'
+    },
     # 42 Billion tokens Common Crawl
     'glove.42B.300d': {
         'file': 'glove.42B.300d.txt',
@@ -67,10 +85,14 @@ _EMBEDDING_TYPES = {
 def _build_embeddings_index(embeddings_path):
     logger.info('Building embeddings index...')
     index = {}
-    with open(embeddings_path, 'rb') as f:
+    with io.open(embeddings_path, encoding="utf-8") as f:
         for line in f:
             values = line.split()
             word = values[0]
+
+            if not isinstance(word, six.text_type):
+                word = word.decode()
+
             vector = np.asarray(values[1:], dtype='float32')
             index[word] = vector
     logger.info('Done')
@@ -83,7 +105,7 @@ def build_embedding_weights(word_index, embeddings_index):
     logger.info('Loading embeddings for all words in the corpus')
     embedding_dim = list(embeddings_index.values())[0].shape[-1]
 
-    # +1 since tokenizer words are indexed from 1. 0 is reserved for padding and unknown words.
+    # +1 since catzer words are indexed from 1. 0 is reserved for padding and unknown words.
     embedding_weights = np.zeros((len(word_index) + 1, embedding_dim))
 
     for word, i in word_index.items():
@@ -95,32 +117,34 @@ def build_embedding_weights(word_index, embeddings_index):
     return embedding_weights
 
 
-def get_embeddings_index(embedding_type='glove.42B.300d'):
-    """Retrieves embeddings index from embedding name. Will automatically download and cache as needed.
+def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None):
+    """Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.
 
     Args:
         embedding_type: The embedding type to load.
+        embedding_path: Path to a local embedding to use instead of the embedding type. Ignores `embedding_type` if specified.
 
     Returns:
         The embeddings indexed by word.
     """
 
+    if embedding_path is not None:
+        embedding_type = embedding_path  # identify embedding by path
+
     embeddings_index = _EMBEDDINGS_CACHE.get(embedding_type)
     if embeddings_index is not None:
         return embeddings_index
 
-    data_obj = _EMBEDDING_TYPES.get(embedding_type)
-    if data_obj is None:
-        raise ValueError("Embedding name should be one of '{}'".format(
-            _EMBEDDING_TYPES.keys()))
-
-    cache_dir = os.path.expanduser(os.path.join('~', '.keras-text'))
-    if not os.path.exists(cache_dir):
-        os.makedirs(cache_dir)
-
-    file_path = get_file(embedding_type, origin=data_obj['url'], extract=True,
-                         cache_dir=cache_dir, cache_subdir='embeddings')
-    file_path = os.path.join(os.path.dirname(file_path), data_obj['file'])
+    if embedding_path is None:
+        data_obj = _EMBEDDING_TYPES.get(embedding_type)
+        if data_obj is None:
+            raise ValueError("Embedding name should be one of '{}'".format(
+                _EMBEDDING_TYPES.keys()))
+        file_path = get_file(
+            data_obj['file'], origin=data_obj['url'], extract=True, cache_subdir='embeddings')
+        file_path = os.path.join(os.path.dirname(file_path), data_obj['file'])
+    else:
+        file_path = embedding_path
 
     embeddings_index = _build_embeddings_index(file_path)
     _EMBEDDINGS_CACHE[embedding_type] = embeddings_index
