@@ -17,6 +17,7 @@ pytest = "*"
 [dev-packages]
 pylint = "*"
 autopep8 = "*"
+pytest-pep8 = "*"
 
 [requires]
 python_version = "3.6"
