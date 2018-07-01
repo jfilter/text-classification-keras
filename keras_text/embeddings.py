@@ -77,7 +77,7 @@ _EMBEDDING_TYPES = {
 }
 
 
-def _build_embeddings_index(embeddings_path, num_dimension):
+def _build_embeddings_index(embeddings_path, embedding_dims):
     logger.info('Building embeddings index...')
     index = {}
     with io.open(embeddings_path, encoding="utf-8") as f:
@@ -85,11 +85,11 @@ def _build_embeddings_index(embeddings_path, num_dimension):
             values = line.split()
 
             # some hack for fasttext vectors where the first line is (num_token, dimensions)
-            if len(values) <= 2 and num_dimension > 1:
+            if len(values) <= 2 and embedding_dims > 1:
                 continue
 
-            word = ' '.join(values[:-num_dimension])
-            floats = values[-num_dimension:]
+            word = ' '.join(values[:-embedding_dims])
+            floats = values[-embedding_dims:]
 
             if not isinstance(word, six.text_type):
                 word = word.decode()
@@ -130,7 +130,6 @@ def build_fasttest_embedding_obj(embedding_type):
         'file': 'wiki.{}.vec'.format(lang),
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.{}.vec'.format(lang),
         'extract': False,
-        'num_dimension': 300
     }
 
 
@@ -144,15 +143,10 @@ def get_embedding_type(embedding_type):
         raise ValueError("Embedding name should be one of '{}'".format(
             _EMBEDDING_TYPES.keys()))
 
-    # infert dimension from string, the last part
-    num_dimension = int(embedding_type.split('.')[-1][:-1])
-
-    data_obj['num_dimension'] = num_dimension
-
     return data_obj
 
 
-def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None, num_dimension=None):
+def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None, embedding_dims=None):
     """Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.
 
     Args:
@@ -172,12 +166,11 @@ def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None, n
 
     if embedding_path is None:
         embedding_type_obj = get_embedding_type(embedding_type)
-        num_dimension = embedding_type_obj['num_dimension']
         file_path = get_file(
             embedding_type_obj['file'], origin=embedding_type_obj['url'], extract=embedding_type_obj.get('extract', True), cache_subdir='embeddings')
     else:
         file_path = embedding_path
 
-    embeddings_index = _build_embeddings_index(file_path, num_dimension)
+    embeddings_index = _build_embeddings_index(file_path, embedding_dims)
     _EMBEDDINGS_CACHE[embedding_type] = embeddings_index
     return embeddings_index
