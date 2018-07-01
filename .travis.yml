@@ -1,6 +1,11 @@
 dist: trusty
 language: python
-cache: pip
+cache:
+  packages: true
+  directories:
+    - $HOME/.keras
+    - $HOME/.cache/pip
+
 matrix:
     include:
         - python: 2.7
@@ -8,6 +13,8 @@ matrix:
         - python: 2.7
           env: KERAS_BACKEND=tensorflow
         - python: 3.6
+          env: KERAS_BACKEND=tensorflow
+        - python: 3.7
           env: KERAS_BACKEND=tensorflow
         # - python: 2.7
         #   env: KERAS_BACKEND=theano
