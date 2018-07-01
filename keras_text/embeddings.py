@@ -85,14 +85,11 @@ def _build_embeddings_index(embeddings_path, num_dimension):
             values = line.split()
 
             # some hack for fasttext vectors where the first line is (num_token, dimensions)
-            if len(values) <= 2:
+            if len(values) <= 2 and num_dimension > 1:
                 continue
 
             word = ' '.join(values[:-num_dimension])
             floats = values[-num_dimension:]
-
-            if (len(word.split()) != 1):
-                print(word)
 
             if not isinstance(word, six.text_type):
                 word = word.decode()
