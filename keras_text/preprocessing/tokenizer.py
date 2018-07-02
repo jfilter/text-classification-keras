@@ -23,7 +23,7 @@ class Tokenizer(object):
     def __init__(self,
                  lang='en',
                  lower=True,
-                 special_token=['<UNK>', '<PAD>']):
+                 special_token=['<PAD>', '<UNK>']):  # 0 - Pad, 1 - Unkown
         """Encodes text into `(samples, aux_indices..., token)` where each token is mapped to a unique index starting
         from `i`. `i` is the number of special tokens.
 
