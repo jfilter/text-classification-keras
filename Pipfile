@@ -18,6 +18,7 @@ pytest = "*"
 pylint = "*"
 autopep8 = "*"
 pytest-pep8 = "*"
+rope = "*"
 
 [requires]
 python_version = "3.6"
