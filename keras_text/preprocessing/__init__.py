@@ -1,2 +1,3 @@
-from .char_tokenizer import CharTokenizer, SentenceCharTokenizer
-from .word_tokenizer import WordTokenizer, SentenceWordTokenizer, TwokenizeTokenizer, SimpleTokenizer
+from .char_tokenizer import *
+from .word_tokenizer import *
+from .sentence_tokenizer import *

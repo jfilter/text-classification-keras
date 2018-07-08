@@ -8,7 +8,7 @@ import pytest
 from keras_text.corpus import imdb
 from keras_text.data import Dataset
 from keras_text.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, BasicLSTM
-from keras_text.preprocessing import WordTokenizer
+from keras_text.preprocessing import SpacyTokenizer
 
 max_len = 50
 
@@ -18,7 +18,7 @@ path = 'imdb_proc_data.bin'
 def build_dataset():
     X, y, _, _ = imdb(1000)
 
-    tokenizer = WordTokenizer()
+    tokenizer = SpacyTokenizer()
 
     tokenizer.build_vocab(X)
 

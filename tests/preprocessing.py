@@ -4,12 +4,12 @@ import keras
 import pytest
 
 from keras_text.data import Dataset
-from keras_text.preprocessing import WordTokenizer, SentenceWordTokenizer, TwokenizeTokenizer, SimpleTokenizer
+from keras_text.preprocessing import SpacyTokenizer, SpacySentenceTokenizer, TwokenizeTokenizer, SimpleTokenizer
 from keras_text.preprocessing.utils import unicodify
 
 
 def test_token_preprocessing(tmpdir):
-    tokenizer = WordTokenizer()
+    tokenizer = SpacyTokenizer()
 
     X = ['hello', 'world', 'welcome', 'earth']
     y = [0, 1, 0, 1]
@@ -41,7 +41,7 @@ def test_sentence_tokenizer():
         "Quick brown fox. Ran over the, building 1234?",
     ]
     unicodify(texts)
-    tokenizer = SentenceWordTokenizer()
+    tokenizer = SpacySentenceTokenizer()
     tokenizer.build_vocab(texts)
     tokenizer.apply_encoding_options(limit_top_tokens=5)
     encoded = tokenizer.encode_texts(texts)
@@ -62,7 +62,7 @@ def test_padding():
     ]
 
     texts = unicodify(texts)
-    tokenizer = WordTokenizer()
+    tokenizer = SpacyTokenizer()
     tokenizer.build_vocab(texts[:-1])
 
     encoded = tokenizer.encode_texts(texts)

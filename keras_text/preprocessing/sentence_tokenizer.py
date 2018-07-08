@@ -1,11 +1,10 @@
 import spacy
 
 from . import utils
-from ..libs import twokenize
-from .tokenizer import Tokenizer
+from .word_tokenizer import SpacyTokenizer
 
 
-class SpacyTokenizer(Tokenizer):
+class SpacySentenceTokenizer(SpacyTokenizer):
     def __init__(self,
                  lang='en',
                  lower=True,
@@ -16,7 +15,7 @@ class SpacyTokenizer(Tokenizer):
                  exclude_oov=False,
                  exclude_pos_tags=None,
                  exclude_entities=['PERSON']):
-        """Encodes text into `(samples, words)`
+        """Encodes text into `(samples, sentences, words)`
 
         Args:
             lang: The spacy language to use. (Default value: 'en')
@@ -35,46 +34,18 @@ class SpacyTokenizer(Tokenizer):
                 Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types
                 (Default value: ['PERSON'])
         """
-
-        super(SpacyTokenizer, self).__init__(lang, lower)
-        self.lemmatize = lemmatize
-        self.remove_punct = remove_punct
-        self.remove_digits = remove_digits
-        self.remove_stop_words = remove_stop_words
-
-        self.exclude_oov = exclude_oov
-        self.exclude_pos_tags = set(exclude_pos_tags or [])
-        self.exclude_entities = set(exclude_entities or [])
-
-    def _apply_options(self, token):
-        """Applies various filtering and processing options on token.
-
-        Returns:
-            The processed token. None if filtered.
-        """
-        # Apply work token filtering.
-        if token.is_punct and self.remove_punct:
-            return None
-        if token.is_stop and self.remove_stop_words:
-            return None
-        if token.is_digit and self.remove_digits:
-            return None
-        if token.is_oov and self.exclude_oov:
-            return None
-        if token.pos_ in self.exclude_pos_tags:
-            return None
-        if token.ent_type_ in self.exclude_entities:
-            return None
-
-        # Lemmatized ones are already lowered.
-        if self.lemmatize:
-            return token.lemma_
-        if self.lower:
-            return token.lower_
-        return token.orth_
+        super(SpacySentenceTokenizer, self).__init__(lang,
+                                                     lower,
+                                                     lemmatize,
+                                                     remove_punct,
+                                                     remove_digits,
+                                                     remove_stop_words,
+                                                     exclude_oov,
+                                                     exclude_pos_tags,
+                                                     exclude_entities)
 
     def token_generator(self, texts, **kwargs):
-        """Yields tokens from texts as `(text_idx, word)`
+        """Yields tokens from texts as `(text_idx, sent_idx, word)`
 
         Args:
             texts: The list of texts.
@@ -87,7 +58,7 @@ class SpacyTokenizer(Tokenizer):
         n_threads, batch_size = utils._parse_spacy_kwargs(**kwargs)
         nlp = spacy.load(self.lang)
 
-        disabled = ['parser']
+        disabled = []
         if len(self.exclude_entities) > 0:
             disabled.append('ner')
 
@@ -98,33 +69,8 @@ class SpacyTokenizer(Tokenizer):
         }
 
         for text_idx, doc in enumerate(nlp.pipe(texts, **kwargs)):
-            for word in doc:
-                processed_word = self._apply_options(word)
-                if processed_word is not None:
-                    yield text_idx, processed_word
-
-
-class TwokenizeTokenizer(Tokenizer):
-    def __init__(self, lang='en', lower=True):
-        super(TwokenizeTokenizer, self).__init__(lang, lower)
-
-    def token_generator(self, texts):
-        for id, text in enumerate(texts):
-            if self.lower:
-                text = text.lower()
-            tokens = twokenize.tokenize(text)
-            for t in tokens:
-                yield id, t
-
-
-class SimpleTokenizer(Tokenizer):
-    def __init__(self, lang='en', lower=True):
-        super(SimpleTokenizer, self).__init__(lang, lower)
-
-    def token_generator(self, texts):
-        for id, text in enumerate(texts):
-            if self.lower:
-                text = text.lower()
-            tokens = text.split()
-            for t in tokens:
-                yield id, t
+            for sent_idx, sent in enumerate(doc.sents):
+                for word in sent:
+                    processed_word = self._apply_options(word)
+                    if processed_word is not None:
+                        yield text_idx, sent_idx, processed_word

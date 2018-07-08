@@ -8,7 +8,7 @@ import pytest
 from keras_text.corpus import imdb
 from keras_text.data import Dataset
 from keras_text.models import AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN
-from keras_text.preprocessing import WordTokenizer
+from keras_text.preprocessing import SpacyTokenizer
 
 max_len = 50
 
@@ -16,7 +16,7 @@ max_len = 50
 def test_train():
     X, y, _, _ = imdb(10)
 
-    tokenizer = WordTokenizer()
+    tokenizer = SpacyTokenizer()
 
     tokenizer.build_vocab(X)
 
