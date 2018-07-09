@@ -151,9 +151,9 @@ class StackedRNN(SequenceEncoderBase):
 
 
 class BasicLSTM(StackedRNN):
-    def __init__(self, hidden_dims=50, bidirectional=True, dropout_rate=0.5):
+    def __init__(self, hidden_dims=50, bidirectional=True, dropout_rate=0.5, **rnn_kwargs):
         super(BasicLSTM, self).__init__(rnn_class=LSTM, hidden_dims=[
-            hidden_dims], bidirectional=bidirectional, dropout_rate=dropout_rate)
+            hidden_dims], bidirectional=bidirectional, dropout_rate=dropout_rate, **rnn_kwargs)
 
 
 class AttentionRNN(SequenceEncoderBase):
