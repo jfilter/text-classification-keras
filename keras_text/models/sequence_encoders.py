@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 
-from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D, MaxPooling1D, Dense, Flatten
+from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D, MaxPooling1D, Dense, Flatten, GRU
 from keras.layers.merge import Concatenate, concatenate
 
 from .layers import AttentionLayer, ConsumeMask
@@ -82,6 +82,13 @@ class YoonKimCNN(SequenceEncoderBase):
             self.filter_sizes) == 1 else concatenate(pooled_tensors, axis=-1)
         return x
 
+    def __str__(self):
+        rnn_kwargs_str = str(self.rnn_kwargs) if len(
+            self.rnn_kwargs) > 0 else ''
+        li = ['cnn', str(self.num_filters), *[str(x) for x in self.filter_sizes],
+              'do', str(round(self.dropout_rate, 4)), rnn_kwargs_str]
+        return '_'.join(li)
+
 
 class AlexCNN(SequenceEncoderBase):
     def __init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20):
@@ -149,10 +156,20 @@ class StackedRNN(SequenceEncoderBase):
     def allows_dynamic_length(self):
         return True
 
+    def __str__(self):
+        bi = 'bi' if self.bidirectional else 'nobi'
+        rnn_classs_str = 'GRU' if self.rnn_class == GRU else 'LSTM?'
+        rnn_kwargs_str = str(self.rnn_kwargs) if len(
+            self.rnn_kwargs) > 0 else ''
+        li = ['stacked', rnn_classs_str, *[str(x) for x in self.hidden_dims],
+              bi, 'do', str(round(self.dropout_rate, 4)), rnn_kwargs_str]
+
+        return '_'.join(li)
+
 
 class BasicLSTM(StackedRNN):
-    def __init__(self, hidden_dims=50, bidirectional=True, dropout_rate=0.5, **rnn_kwargs):
-        super(BasicLSTM, self).__init__(rnn_class=LSTM, hidden_dims=[
+    def __init__(self, rnn_class=LSTM, hidden_dims=50, bidirectional=True, dropout_rate=0.5, **rnn_kwargs):
+        super(BasicLSTM, self).__init__(rnn_class=rnn_class, hidden_dims=[
             hidden_dims], bidirectional=bidirectional, dropout_rate=dropout_rate, **rnn_kwargs)
 
 
@@ -195,6 +212,15 @@ class AttentionRNN(SequenceEncoderBase):
 
     def allows_dynamic_length(self):
         return True
+
+    def __str__(self):
+        bi = 'bi' if self.bidirectional else 'nobi'
+        rnn_kwargs_str = str(self.rnn_kwargs) if len(
+            self.rnn_kwargs) > 0 else ''
+        li = ['stacked', str(self.rnn_class), str(self.encoder_dims),
+              bi, 'do', str(round(self.dropout_rate, 4)), rnn_kwargs_str]
+
+        return '_'.join(li)
 
 
 class AveragingEncoder(SequenceEncoderBase):
