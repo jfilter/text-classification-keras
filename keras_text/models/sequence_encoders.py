@@ -83,10 +83,10 @@ class YoonKimCNN(SequenceEncoderBase):
         return x
 
     def __str__(self):
-        rnn_kwargs_str = str(self.rnn_kwargs) if len(
-            self.rnn_kwargs) > 0 else ''
+        conv_kwargs_str = str(self.conv_kwargs) if len(
+            self.conv_kwargs) > 0 else ''
         li = ['cnn', str(self.num_filters), *[str(x) for x in self.filter_sizes],
-              'do', str(round(self.dropout_rate, 4)), rnn_kwargs_str]
+              'do', str(round(self.dropout_rate, 4)), conv_kwargs_str]
         return '_'.join(li)
 
 
