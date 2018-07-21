@@ -164,9 +164,9 @@ class StackedRNN(SequenceEncoderBase):
         return '_'.join(li)
 
 
-class BasicLSTM(StackedRNN):
+class BasicRNN(StackedRNN):
     def __init__(self, rnn_class=LSTM, hidden_dims=50, bidirectional=True, dropout_rate=0.5, **rnn_kwargs):
-        super(BasicLSTM, self).__init__(rnn_class=rnn_class, hidden_dims=[
+        super(BasicRNN, self).__init__(rnn_class=rnn_class, hidden_dims=[
             hidden_dims], bidirectional=bidirectional, dropout_rate=dropout_rate, **rnn_kwargs)
 
 

@@ -7,7 +7,7 @@ import pytest
 
 from keras_text.corpus import imdb
 from keras_text.data import Dataset
-from keras_text.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, BasicLSTM
+from keras_text.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, BasicRNN
 from keras_text.preprocessing import SpacyTokenizer
 
 max_len = 50
@@ -55,7 +55,7 @@ def train():
     # word_encoder_model = AlexCNN(dropout_rate=[0, 0])
     # word_encoder_model = AttentionRNN()
     # word_encoder_model = StackedRNN()
-    word_encoder_model = BasicLSTM()
+    word_encoder_model = BasicRNN()
     model = factory.build_model(
         token_encoder_model=word_encoder_model, trainable_embeddings=False)
 
