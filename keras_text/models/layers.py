@@ -172,15 +172,3 @@ class AttentionLayer(Layer):
         }
         base_config = super(AttentionLayer, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
-
-
-class ConsumeMask(Layer):
-    """Layer that prevents mask propagation.
-    """
-
-    def compute_mask(self, input, input_mask=None):
-        # do not pass the mask to the next layers
-        return None
-
-    def call(self, x, mask=None):
-        return x

@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePooling1D, GlobalMaxPooling1D, MaxPooling1D, Dense, Flatten, GRU
 from keras.layers.merge import Concatenate, concatenate
 
-from .layers import AttentionLayer, ConsumeMask
+from .layers import AttentionLayer
 
 
 class SequenceEncoderBase(object):
@@ -25,9 +25,6 @@ class SequenceEncoderBase(object):
         Returns:
             The model output tensor.
         """
-        # Avoid mask propagation when dynamic mini-batches are not supported.
-        if not self.allows_dynamic_length():
-            x = ConsumeMask()(x)
 
         x = self.build_model(x)
         if self.dropout_rate > 0:
