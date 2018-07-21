@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.model_selection import StratifiedShuffleSplit
 from sklearn.preprocessing import LabelBinarizer, MultiLabelBinarizer
 
-from . import io_utils
+from .utils import io, sampling
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +64,7 @@ class Dataset(object):
         Args:
             file_path: The file path to use.
         """
-        io_utils.dump(self, file_path)
+        io.dump(self, file_path)
 
     def train_val_split(self, split_ratio=0.1):
         """Generates train and validation sets from the training indices.
@@ -93,7 +93,7 @@ class Dataset(object):
         Returns:
             The `Dataset` instance.
         """
-        return io_utils.load(file_path)
+        return io.load(file_path)
 
     @property
     def test_indices(self):
