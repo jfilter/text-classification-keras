@@ -4,6 +4,7 @@ from keras.layers import LSTM, Bidirectional, Conv1D, Dropout, GlobalAveragePool
 from keras.layers.merge import Concatenate, concatenate
 
 from .layers import AttentionLayer
+from ..utils.format import to_fixed_digits
 
 
 class SequenceEncoderBase(object):
@@ -82,13 +83,14 @@ class YoonKimCNN(SequenceEncoderBase):
     def __str__(self):
         conv_kwargs_str = str(self.conv_kwargs) if len(
             self.conv_kwargs) > 0 else ''
-        li = ['cnn', str(self.num_filters), *[str(x) for x in self.filter_sizes],
-              'do', str(round(self.dropout_rate, 4)), conv_kwargs_str]
+        filter_sizes_li = [str(x) for x in self.filter_sizes]
+        li = ['cnn_kim', str(self.num_filters)] + filter_sizes_li + [
+            'do', to_fixed_digits(self.dropout_rate), conv_kwargs_str]
         return '_'.join(li)
 
 
 class AlexCNN(SequenceEncoderBase):
-    def __init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20):
+    def __init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20, **conv_kwargs):
         """Alexander Rakhlin's CNN model: https://github.com/alexander-rakhlin/CNN-for-Sentence-Classification-in-Keras/
 
         Args:
@@ -102,6 +104,7 @@ class AlexCNN(SequenceEncoderBase):
         self.dropout_rate = dropout_rate[0]
         self.dropout_rate2 = dropout_rate[1]
         self.hidden_dims = hidden_dims
+        self.conv_kwargs = conv_kwargs
 
     def build_model(self, x):
         conv_blocks = []
@@ -110,7 +113,7 @@ class AlexCNN(SequenceEncoderBase):
                           kernel_size=sz,
                           padding="valid",
                           activation="relu",
-                          strides=1)(x)
+                          strides=1, **self.conv_kwargs)(x)
             conv = MaxPooling1D(pool_size=2)(conv)
             conv = Flatten()(conv)
             conv_blocks.append(conv)
@@ -121,6 +124,14 @@ class AlexCNN(SequenceEncoderBase):
         x = Dropout(self.dropout_rate2)(x)
         x = Dense(self.hidden_dims, activation="relu")(x)
         return x
+
+    def __str__(self):
+        conv_kwargs_str = str(self.conv_kwargs) if len(
+            self.conv_kwargs) > 0 else ''
+        filter_sizes_li = [str(x) for x in self.filter_sizes]
+        li = ['cnn_kim', str(self.num_filters)] + filter_sizes_li + [
+            'do', to_fixed_digits(self.dropout_rate), conv_kwargs_str]
+        return '_'.join(li)
 
 
 class StackedRNN(SequenceEncoderBase):
@@ -155,12 +166,12 @@ class StackedRNN(SequenceEncoderBase):
 
     def __str__(self):
         bi = 'bi' if self.bidirectional else 'nobi'
-        rnn_classs_str = 'GRU' if self.rnn_class == GRU else 'LSTM?'
+        rnn_classs_str = self.rnn_class.__name__
         rnn_kwargs_str = str(self.rnn_kwargs) if len(
             self.rnn_kwargs) > 0 else ''
-        li = ['stacked', rnn_classs_str, *[str(x) for x in self.hidden_dims],
-              bi, 'do', str(round(self.dropout_rate, 4)), rnn_kwargs_str]
-
+        hidden_dims_li = [str(x) for x in self.hidden_dims]
+        li = ['stacked', rnn_classs_str] + hidden_dims_li + [
+            bi, 'do', to_fixed_digits(self.dropout_rate), rnn_kwargs_str]
         return '_'.join(li)
 
 
@@ -168,6 +179,16 @@ class BasicRNN(StackedRNN):
     def __init__(self, rnn_class=LSTM, hidden_dims=50, bidirectional=True, dropout_rate=0.5, **rnn_kwargs):
         super(BasicRNN, self).__init__(rnn_class=rnn_class, hidden_dims=[
             hidden_dims], bidirectional=bidirectional, dropout_rate=dropout_rate, **rnn_kwargs)
+
+    def __str__(self):
+        bi = 'bi' if self.bidirectional else 'nobi'
+        rnn_classs_str = self.rnn_class.__name__
+        rnn_kwargs_str = str(self.rnn_kwargs) if len(
+            self.rnn_kwargs) > 0 else ''
+        hidden_dims_li = [str(x) for x in self.hidden_dims]
+        li = ['basic', rnn_classs_str] + hidden_dims_li + [
+            bi, 'do', to_fixed_digits(self.dropout_rate), rnn_kwargs_str]
+        return '_'.join(li)
 
 
 class AttentionRNN(SequenceEncoderBase):
@@ -215,7 +236,7 @@ class AttentionRNN(SequenceEncoderBase):
         rnn_kwargs_str = str(self.rnn_kwargs) if len(
             self.rnn_kwargs) > 0 else ''
         li = ['stacked', str(self.rnn_class), str(self.encoder_dims),
-              bi, 'do', str(round(self.dropout_rate, 4)), rnn_kwargs_str]
+              bi, 'do', to_fixed_digits(self.dropout_rate), rnn_kwargs_str]
 
         return '_'.join(li)
 
