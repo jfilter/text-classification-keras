@@ -65,7 +65,7 @@ class TokenModelFactory(object):
             embedding_layer = Embedding(len(self.token_index),
                                         self.embedding_dims,
                                         input_length=self.max_tokens,
-                                        mask_zero=True,
+                                        mask_zero=token_encoder_model.allows_dynamic_length(),
                                         trainable=trainable_embeddings)
         else:
             embedding_layer = Embedding(len(self.token_index),
@@ -73,7 +73,7 @@ class TokenModelFactory(object):
                                         weights=[build_embedding_weights(
                                             self.token_index, self.embeddings_index)],
                                         input_length=self.max_tokens,
-                                        mask_zero=True,
+                                        mask_zero=token_encoder_model.allows_dynamic_length(),
                                         trainable=trainable_embeddings)
 
         sequence_input = Input(shape=(self.max_tokens,), dtype='int32')
