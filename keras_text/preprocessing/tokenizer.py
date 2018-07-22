@@ -12,7 +12,7 @@ import spacy
 from keras.preprocessing.sequence import pad_sequences as keras_pad_sequences
 from keras.utils.generic_utils import Progbar
 
-from .. import io_utils
+from ..utils import io
 from . import utils
 
 logger = logging.getLogger(__name__)
@@ -268,7 +268,7 @@ class Tokenizer(object):
         Args:
             file_path: The file path to use.
         """
-        io_utils.dump(self, file_path)
+        io.dump(self, file_path)
 
     @staticmethod
     def load(file_path):
@@ -280,7 +280,7 @@ class Tokenizer(object):
         Returns:
             The `Dataset` instance.
         """
-        return io_utils.load(file_path)
+        return io.load(file_path)
 
     @property
     def has_vocab(self):
