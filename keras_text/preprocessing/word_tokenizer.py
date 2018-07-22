@@ -1,7 +1,7 @@
 import spacy
 
 from . import utils
-from ..libs import twokenize
+from ..libs import twokenize, fastTextTokenizer
 from .tokenizer import Tokenizer
 
 
@@ -126,5 +126,16 @@ class SimpleTokenizer(Tokenizer):
             if self.lower:
                 text = text.lower()
             tokens = text.split()
+            for t in tokens:
+                yield id, t
+
+
+class FastTextTokenizer(Tokenizer):
+    def __init__(self, lang='en'):
+        super(FastTextTokenizer, self).__init__(lang, lower=True)
+
+    def token_generator(self, texts):
+        for id, text in enumerate(texts):
+            tokens = fastTextTokenizer.tokenize(text)
             for t in tokens:
                 yield id, t
