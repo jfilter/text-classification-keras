@@ -81,7 +81,7 @@ def load_csv(data_path=None, text_col='text', class_col='class', limit=None):
 
     with open(data_path) as csvfile:
         reader = csv.DictReader(csvfile)
-        if not limit is None:
+        if limit is not None:
             reader = list(reader)[:limit]
         for row in reader:
             try:
