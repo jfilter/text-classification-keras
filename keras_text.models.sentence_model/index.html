@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Sentence Model Builder Factory - keras-text Documentation</title>
+  <title>Sentence Model Builder Factory - Documentation Text Classification Keras</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> keras-text Documentation</a>
+        <a href=".." class="icon icon-home"> Documentation Text Classification Keras</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -80,8 +80,6 @@
         
             <li><a class="toctree-l5" href="#sentencemodelfactory__init__">SentenceModelFactory.__init__</a></li>
         
-            <li><a class="toctree-l5" href="#sentencemodelfactorybuild_model">SentenceModelFactory.build_model</a></li>
-        
         </ul>
     
 
@@ -95,33 +93,65 @@
                 </li>
                 <li class="">
                     
-    <span class="caption-text">Data Processing</span>
+    <span class="caption-text">Preprocessing</span>
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.processing/">Tokenizing and padding</a>
+    <a class="" href="../keras_text.preprocessing.word_tokenizer/">Word Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.data/">Dataset management</a>
+    <a class="" href="../keras_text.preprocessing.sentence_tokenizer/">Sentence Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.tokenizer/">Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.char_tokenizer/">Char Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.utils/">Utils</a>
                 </li>
     </ul>
                 </li>
                 <li class="">
                     
-    <span class="caption-text">Utilities</span>
+    <a class="" href="../keras_text.embeddings/">Embeddings</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.experiment/">Experiment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.corpus/">Corpus</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.data/">Data</a>
+                </li>
+                <li class="">
+                    
+    <span class="caption-text">Utils</span>
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.generators/">Generators</a>
+    <a class="" href="../keras_text.utils.format/">Format</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.sampling/">Sampling</a>
+    <a class="" href="../keras_text.utils.generators/">Generators</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.utils/">Utils</a>
+    <a class="" href="../keras_text.utils.io/">IO</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.utils.sampling/">Sampling</a>
                 </li>
     </ul>
                 </li>
@@ -138,7 +168,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">keras-text Documentation</a>
+        <a href="..">Documentation Text Classification Keras</a>
       </nav>
 
       
@@ -161,7 +191,7 @@
     <li>Sentence Model Builder Factory</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="http://github.com/raghakot/keras-text/blob/master/docs/templates/keras_text.models.sentence_model.md"
+        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.models.sentence_model.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -171,11 +201,11 @@
           <div role="main">
             <div class="section">
               
-                <p><strong>Source:</strong> <a href="https://github.com/raghakot/keras-text/tree/master/keras_text/models/sentence_model.py#L0">keras_text/models/sentence_model.py#L0</a></p>
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/models/sentence_model.py#L0">keras_text/models/sentence_model.py#L0</a></p>
 <hr />
-<h2 id="sentencemodelfactory"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/models/sentence_model.py#L10">SentenceModelFactory</a></h2>
+<h2 id="sentencemodelfactory"><a href="https://github.com/jfilter/text-classification-keras/keras_text/models/sentence_model.py#L10">SentenceModelFactory</a></h2>
 <hr />
-<h3 id="sentencemodelfactory__init__"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/models/sentence_model.py#L11">SentenceModelFactory.<code>__init__</code></a></h3>
+<h3 id="sentencemodelfactory__init__"><a href="https://github.com/jfilter/text-classification-keras/keras_text/models/sentence_model.py#L11">SentenceModelFactory.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, num_classes, token_index, max_sents, max_tokens, embedding_type=&quot;glove.6B.100d&quot;, \
     embedding_dims=100)
 </code></pre>
@@ -186,36 +216,13 @@
 <ul>
 <li><strong>num_classes</strong>:  The number of output classes.</li>
 <li><strong>token_index</strong>:  The dictionary of token and its corresponding integer index value.</li>
-<li><strong>max_sents</strong>:  The max sentence length across all documents.</li>
-<li><strong>max_tokens</strong>:  The max number of tokens across all sentences.</li>
+<li><strong>max_sents</strong>:  The max number of sentences in a document.</li>
+<li><strong>max_tokens</strong>:  The max number of tokens in a sentence.</li>
 <li><strong>embedding_type</strong>:  The embedding type to use. Set to None to use random embeddings.
   (Default value: 'glove.6B.100d')</li>
 <li><strong>embedding_dims</strong>:  The number of embedding dims to use for representing a word. This argument will be ignored
   when <code>embedding_type</code> is set. (Default value: 100)</li>
 </ul>
-<hr />
-<h3 id="sentencemodelfactorybuild_model"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/models/sentence_model.py#L42">SentenceModelFactory.build_model</a></h3>
-<pre><code class="python">build_model(self, token_encoder_model, sentence_encoder_model, trainable_embeddings=True, \
-    output_activation=&quot;softmax&quot;)
-</code></pre>
-
-<p>Builds a model that first encodes all words within sentences using <code>token_encoder_model</code>, followed by
-<code>sentence_encoder_model</code>.</p>
-<p><em>Args:</em></p>
-<ul>
-<li><strong>token_encoder_model</strong>:  An instance of <code>SequenceEncoderBase</code> for encoding tokens within sentences. This model
-  will be applied across all sentences to create a sentence encoding.</li>
-<li><strong>sentence_encoder_model</strong>:  An instance of <code>SequenceEncoderBase</code> operating on sentence encoding generated by
-  <code>token_encoder_model</code>. This encoding is then fed into a final <code>Dense</code> layer for classification.</li>
-<li><strong>trainable_embeddings</strong>:  Whether or not to fine tune embeddings.</li>
-<li><strong>output_activation</strong>:  The output activation to use. (Default value: 'softmax')</li>
-<li><strong>Use</strong>: </li>
-<li><code>softmax</code> for binary or multi-class.</li>
-<li><code>sigmoid</code> for multi-label classification.</li>
-<li><code>linear</code> for regression output.</li>
-</ul>
-<p><em>Returns:</em></p>
-<p>The model output tensor.</p>
               
             </div>
           </div>
@@ -251,7 +258,7 @@
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="http://github.com/raghakot/keras-text/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="http://github.com/jfilter/text-classification-keras/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../keras_text.models.token_model/" style="color: #fcfcfc;">&laquo; Previous</a></span>

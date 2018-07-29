@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Generators - keras-text Documentation</title>
+  <title>Format - Documentation Text Classification Keras</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Generators";
-    var mkdocs_page_input_path = "keras_text.generators.md";
-    var mkdocs_page_url = "/keras_text.generators/";
+    var mkdocs_page_name = "Format";
+    var mkdocs_page_input_path = "keras_text.utils.format.md";
+    var mkdocs_page_url = "/keras_text.utils.format/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> keras-text Documentation</a>
+        <a href=".." class="icon icon-home"> Documentation Text Classification Keras</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,58 +81,71 @@
                 </li>
                 <li class="">
                     
-    <span class="caption-text">Data Processing</span>
+    <span class="caption-text">Preprocessing</span>
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.processing/">Tokenizing and padding</a>
+    <a class="" href="../keras_text.preprocessing.word_tokenizer/">Word Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.data/">Dataset management</a>
+    <a class="" href="../keras_text.preprocessing.sentence_tokenizer/">Sentence Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.tokenizer/">Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.char_tokenizer/">Char Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.utils/">Utils</a>
                 </li>
     </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.embeddings/">Embeddings</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.experiment/">Experiment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.corpus/">Corpus</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.data/">Data</a>
                 </li>
                 <li class=" current">
                     
-    <span class="caption-text">Utilities</span>
+    <span class="caption-text">Utils</span>
     <ul class="subnav">
                 <li class="toctree-l3 current">
                     
-    <a class="current" href="./">Generators</a>
+    <a class="current" href="./">Format</a>
     <ul class="subnav">
             
-    <li class="toctree-l4"><a href="#processingsequence">ProcessingSequence</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l5" href="#processingsequence__init__">ProcessingSequence.__init__</a></li>
-        
-            <li><a class="toctree-l5" href="#processingsequenceon_epoch_end">ProcessingSequence.on_epoch_end</a></li>
-        
-        </ul>
-    
-
-    <li class="toctree-l4"><a href="#balancedsequence">BalancedSequence</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l5" href="#balancedsequence__init__">BalancedSequence.__init__</a></li>
-        
-            <li><a class="toctree-l5" href="#balancedsequenceon_epoch_end">BalancedSequence.on_epoch_end</a></li>
-        
-        </ul>
+    <li class="toctree-l4"><a href="#to_fixed_digits">to_fixed_digits</a></li>
     
 
     </ul>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.sampling/">Sampling</a>
+    <a class="" href="../keras_text.utils.generators/">Generators</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.utils/">Utils</a>
+    <a class="" href="../keras_text.utils.io/">IO</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.utils.sampling/">Sampling</a>
                 </li>
     </ul>
                 </li>
@@ -149,7 +162,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">keras-text Documentation</a>
+        <a href="..">Documentation Text Classification Keras</a>
       </nav>
 
       
@@ -165,14 +178,14 @@
         
       
         
-          <li>Utilities &raquo;</li>
+          <li>Utils &raquo;</li>
         
       
     
-    <li>Generators</li>
+    <li>Format</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="http://github.com/raghakot/keras-text/blob/master/docs/templates/keras_text.generators.md"
+        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.utils.format.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -182,45 +195,10 @@
           <div role="main">
             <div class="section">
               
-                <p><strong>Source:</strong> <a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L0">keras_text/generators.py#L0</a></p>
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/utils/format.py#L0">keras_text/utils/format.py#L0</a></p>
 <hr />
-<h2 id="processingsequence"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L7">ProcessingSequence</a></h2>
-<hr />
-<h3 id="processingsequence__init__"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L8">ProcessingSequence.<code>__init__</code></a></h3>
-<pre><code class="python">__init__(self, X, y, batch_size, process_fn=None)
-</code></pre>
-
-<p>A <code>Sequence</code> implementation that can pre-process a mini-batch via <code>process_fn</code></p>
-<p><em>Args:</em></p>
-<ul>
-<li><strong>X</strong>:  The numpy array of inputs.</li>
-<li><strong>y</strong>:  The numpy array of targets.</li>
-<li><strong>batch_size</strong>:  The generator mini-batch size.</li>
-<li><strong>process_fn</strong>:  The preprocessing function to apply on <code>X</code></li>
-</ul>
-<hr />
-<h3 id="processingsequenceon_epoch_end"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L25">ProcessingSequence.on_epoch_end</a></h3>
-<pre><code class="python">on_epoch_end(self)
-</code></pre>
-
-<hr />
-<h2 id="balancedsequence"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L34">BalancedSequence</a></h2>
-<hr />
-<h3 id="balancedsequence__init__"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L35">BalancedSequence.<code>__init__</code></a></h3>
-<pre><code class="python">__init__(self, X, y, batch_size, process_fn=None)
-</code></pre>
-
-<p>A <code>Sequence</code> implementation that returns balanced <code>y</code> by undersampling majority class.</p>
-<p><em>Args:</em></p>
-<ul>
-<li><strong>X</strong>:  The numpy array of inputs.</li>
-<li><strong>y</strong>:  The numpy array of targets.</li>
-<li><strong>batch_size</strong>:  The generator mini-batch size.</li>
-<li><strong>process_fn</strong>:  The preprocessing function to apply on <code>X</code></li>
-</ul>
-<hr />
-<h3 id="balancedsequenceon_epoch_end"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/generators.py#L58">BalancedSequence.on_epoch_end</a></h3>
-<pre><code class="python">on_epoch_end(self)
+<h3 id="to_fixed_digits"><a href="https://github.com/jfilter/text-classification-keras/keras_text/utils/format.py#L1">to_fixed_digits</a></h3>
+<pre><code class="python">to_fixed_digits(number)
 </code></pre>
               
             </div>
@@ -229,10 +207,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../keras_text.sampling/" class="btn btn-neutral float-right" title="Sampling">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../keras_text.utils.generators/" class="btn btn-neutral float-right" title="Generators">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../keras_text.data/" class="btn btn-neutral" title="Dataset management"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../keras_text.data/" class="btn btn-neutral" title="Data"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -257,13 +235,13 @@
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="http://github.com/raghakot/keras-text/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="http://github.com/jfilter/text-classification-keras/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
         <span><a href="../keras_text.data/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../keras_text.sampling/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../keras_text.utils.generators/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

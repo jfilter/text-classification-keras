@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Sequence Model Builder Factory - Documentation Text Classification Keras</title>
+  <title>Char Tokenizer - Documentation Text Classification Keras</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Sequence Model Builder Factory";
-    var mkdocs_page_input_path = "keras_text.models.token_model.md";
-    var mkdocs_page_url = "/keras_text.models.token_model/";
+    var mkdocs_page_name = "Char Tokenizer";
+    var mkdocs_page_input_path = "keras_text.preprocessing.char_tokenizer.md";
+    var mkdocs_page_url = "/keras_text.preprocessing.char_tokenizer/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -57,7 +57,7 @@
 		
     <span class="caption-text">API Docs</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
     <span class="caption-text">Models</span>
     <ul class="subnav">
@@ -65,21 +65,9 @@
                     
     <a class="" href="../keras_text.models.sequence_encoders/">Sequence Processing Models</a>
                 </li>
-                <li class="toctree-l3 current">
+                <li class="toctree-l3">
                     
-    <a class="current" href="./">Sequence Model Builder Factory</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l4"><a href="#tokenmodelfactory">TokenModelFactory</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l5" href="#tokenmodelfactory__init__">TokenModelFactory.__init__</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../keras_text.models.token_model/">Sequence Model Builder Factory</a>
                 </li>
                 <li class="toctree-l3">
                     
@@ -91,7 +79,7 @@
                 </li>
     </ul>
                 </li>
-                <li class="">
+                <li class=" current">
                     
     <span class="caption-text">Preprocessing</span>
     <ul class="subnav">
@@ -107,9 +95,50 @@
                     
     <a class="" href="../keras_text.preprocessing.tokenizer/">Tokenizer</a>
                 </li>
-                <li class="toctree-l3">
+                <li class="toctree-l3 current">
                     
-    <a class="" href="../keras_text.preprocessing.char_tokenizer/">Char Tokenizer</a>
+    <a class="current" href="./">Char Tokenizer</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l4"><a href="#chartokenizer">CharTokenizer</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#chartokenizerhas_vocab">CharTokenizer.has_vocab</a></li>
+        
+            <li><a class="toctree-l5" href="#chartokenizernum_texts">CharTokenizer.num_texts</a></li>
+        
+            <li><a class="toctree-l5" href="#chartokenizernum_tokens">CharTokenizer.num_tokens</a></li>
+        
+            <li><a class="toctree-l5" href="#chartokenizertoken_counts">CharTokenizer.token_counts</a></li>
+        
+            <li><a class="toctree-l5" href="#chartokenizertoken_index">CharTokenizer.token_index</a></li>
+        
+            <li><a class="toctree-l5" href="#chartokenizer__init__">CharTokenizer.__init__</a></li>
+        
+        </ul>
+    
+
+    <li class="toctree-l4"><a href="#sentencechartokenizer">SentenceCharTokenizer</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#sentencechartokenizerhas_vocab">SentenceCharTokenizer.has_vocab</a></li>
+        
+            <li><a class="toctree-l5" href="#sentencechartokenizernum_texts">SentenceCharTokenizer.num_texts</a></li>
+        
+            <li><a class="toctree-l5" href="#sentencechartokenizernum_tokens">SentenceCharTokenizer.num_tokens</a></li>
+        
+            <li><a class="toctree-l5" href="#sentencechartokenizertoken_counts">SentenceCharTokenizer.token_counts</a></li>
+        
+            <li><a class="toctree-l5" href="#sentencechartokenizertoken_index">SentenceCharTokenizer.token_index</a></li>
+        
+            <li><a class="toctree-l5" href="#sentencechartokenizer__init__">SentenceCharTokenizer.__init__</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
                 <li class="toctree-l3">
                     
@@ -184,14 +213,14 @@
         
       
         
-          <li>Models &raquo;</li>
+          <li>Preprocessing &raquo;</li>
         
       
     
-    <li>Sequence Model Builder Factory</li>
+    <li>Char Tokenizer</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.models.token_model.md"
+        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.preprocessing.char_tokenizer.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -201,27 +230,56 @@
           <div role="main">
             <div class="section">
               
-                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/models/token_model.py#L0">keras_text/models/token_model.py#L0</a></p>
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/char_tokenizer.py#L0">keras_text/preprocessing/char_tokenizer.py#L0</a></p>
 <hr />
-<h2 id="tokenmodelfactory"><a href="https://github.com/jfilter/text-classification-keras/keras_text/models/token_model.py#L10">TokenModelFactory</a></h2>
+<h2 id="chartokenizer"><a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/char_tokenizer.py#L7">CharTokenizer</a></h2>
+<h4 id="chartokenizerhas_vocab">CharTokenizer.has_vocab</h4>
+<h4 id="chartokenizernum_texts">CharTokenizer.num_texts</h4>
+<p>The number of texts used to build the vocabulary.</p>
+<h4 id="chartokenizernum_tokens">CharTokenizer.num_tokens</h4>
+<p>Number of unique tokens for use in enccoding/decoding.
+This can change with calls to <code>apply_encoding_options</code>.</p>
+<h4 id="chartokenizertoken_counts">CharTokenizer.token_counts</h4>
+<p>Dictionary of token -&gt; count values for the text corpus used to <code>build_vocab</code>.</p>
+<h4 id="chartokenizertoken_index">CharTokenizer.token_index</h4>
+<p>Dictionary of token -&gt; idx mappings. This can change with calls to <code>apply_encoding_options</code>.</p>
 <hr />
-<h3 id="tokenmodelfactory__init__"><a href="https://github.com/jfilter/text-classification-keras/keras_text/models/token_model.py#L11">TokenModelFactory.<code>__init__</code></a></h3>
-<pre><code class="python">__init__(self, num_classes, token_index, max_tokens, embedding_type=&quot;glove.6B.100d&quot;, \
-    embedding_dims=100, embedding_path=None)
+<h3 id="chartokenizer__init__"><a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/char_tokenizer.py#L9">CharTokenizer.<code>__init__</code></a></h3>
+<pre><code class="python">__init__(self, lang=&quot;en&quot;, lower=True, charset=None)
 </code></pre>
 
-<p>Creates a <code>TokenModelFactory</code> instance for building various models that operate over
-(samples, max_tokens) input. The token can be character, word or any other elementary token.</p>
+<p>Encodes text into <code>(samples, characters)</code></p>
 <p><em>Args:</em></p>
 <ul>
-<li><strong>num_classes</strong>:  The number of output classes.</li>
-<li><strong>token_index</strong>:  The dictionary of token and its corresponding integer index value.</li>
-<li><strong>max_tokens</strong>:  The max number of tokens across all documents. This can be set to None for models that
-  allow different word lengths per mini-batch.</li>
-<li><strong>embedding_type</strong>:  The embedding type to use. Set to None to use random embeddings.
-  (Default value: 'glove.6B.100d')</li>
-<li><strong>embedding_dims</strong>:  The number of embedding dims to use for representing a word. This argument will be ignored
-  when <code>embedding_type</code> is set. (Default value: 100)</li>
+<li><strong>lang</strong>:  The spacy language to use. (Default value: 'en')</li>
+<li><strong>lower</strong>:  Lower cases the tokens if True. (Default value: True)</li>
+<li><strong>charset</strong>:  The character set to use. For example <code>charset = 'abc123'</code>. If None, all characters will be used.
+  (Default value: None)</li>
+</ul>
+<hr />
+<h2 id="sentencechartokenizer"><a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/char_tokenizer.py#L34">SentenceCharTokenizer</a></h2>
+<h4 id="sentencechartokenizerhas_vocab">SentenceCharTokenizer.has_vocab</h4>
+<h4 id="sentencechartokenizernum_texts">SentenceCharTokenizer.num_texts</h4>
+<p>The number of texts used to build the vocabulary.</p>
+<h4 id="sentencechartokenizernum_tokens">SentenceCharTokenizer.num_tokens</h4>
+<p>Number of unique tokens for use in enccoding/decoding.
+This can change with calls to <code>apply_encoding_options</code>.</p>
+<h4 id="sentencechartokenizertoken_counts">SentenceCharTokenizer.token_counts</h4>
+<p>Dictionary of token -&gt; count values for the text corpus used to <code>build_vocab</code>.</p>
+<h4 id="sentencechartokenizertoken_index">SentenceCharTokenizer.token_index</h4>
+<p>Dictionary of token -&gt; idx mappings. This can change with calls to <code>apply_encoding_options</code>.</p>
+<hr />
+<h3 id="sentencechartokenizer__init__"><a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/char_tokenizer.py#L36">SentenceCharTokenizer.<code>__init__</code></a></h3>
+<pre><code class="python">__init__(self, lang=&quot;en&quot;, lower=True, charset=None)
+</code></pre>
+
+<p>Encodes text into <code>(samples, sentences, characters)</code></p>
+<p><em>Args:</em></p>
+<ul>
+<li><strong>lang</strong>:  The spacy language to use. (Default value: 'en')</li>
+<li><strong>lower</strong>:  Lower cases the tokens if True. (Default value: True)</li>
+<li><strong>charset</strong>:  The character set to use. For example <code>charset = 'abc123'</code>. If None, all characters will be used.
+  (Default value: None)</li>
 </ul>
               
             </div>
@@ -230,10 +288,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../keras_text.models.sentence_model/" class="btn btn-neutral float-right" title="Sentence Model Builder Factory">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../keras_text.preprocessing.utils/" class="btn btn-neutral float-right" title="Utils">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../keras_text.models.sequence_encoders/" class="btn btn-neutral" title="Sequence Processing Models"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../keras_text.preprocessing.tokenizer/" class="btn btn-neutral" title="Tokenizer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -261,10 +319,10 @@
           <a href="http://github.com/jfilter/text-classification-keras/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../keras_text.models.sequence_encoders/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../keras_text.preprocessing.tokenizer/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../keras_text.models.sentence_model/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../keras_text.preprocessing.utils/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

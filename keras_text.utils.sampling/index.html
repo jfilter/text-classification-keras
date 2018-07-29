@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Utils - keras-text Documentation</title>
+  <title>Sampling - Documentation Text Classification Keras</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Utils";
-    var mkdocs_page_input_path = "keras_text.utils.md";
-    var mkdocs_page_url = "/keras_text.utils/";
+    var mkdocs_page_name = "Sampling";
+    var mkdocs_page_input_path = "keras_text.utils.sampling.md";
+    var mkdocs_page_url = "/keras_text.utils.sampling/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -36,7 +36,7 @@
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
       <div class="wy-side-nav-search">
-        <a href=".." class="icon icon-home"> keras-text Documentation</a>
+        <a href=".." class="icon icon-home"> Documentation Text Classification Keras</a>
         <div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,39 +81,71 @@
                 </li>
                 <li class="">
                     
-    <span class="caption-text">Data Processing</span>
+    <span class="caption-text">Preprocessing</span>
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.processing/">Tokenizing and padding</a>
+    <a class="" href="../keras_text.preprocessing.word_tokenizer/">Word Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.data/">Dataset management</a>
+    <a class="" href="../keras_text.preprocessing.sentence_tokenizer/">Sentence Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.tokenizer/">Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.char_tokenizer/">Char Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.preprocessing.utils/">Utils</a>
                 </li>
     </ul>
                 </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.embeddings/">Embeddings</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.experiment/">Experiment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.corpus/">Corpus</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../keras_text.data/">Data</a>
+                </li>
                 <li class=" current">
                     
-    <span class="caption-text">Utilities</span>
+    <span class="caption-text">Utils</span>
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.generators/">Generators</a>
+    <a class="" href="../keras_text.utils.format/">Format</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="../keras_text.sampling/">Sampling</a>
+    <a class="" href="../keras_text.utils.generators/">Generators</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../keras_text.utils.io/">IO</a>
                 </li>
                 <li class="toctree-l3 current">
                     
-    <a class="current" href="./">Utils</a>
+    <a class="current" href="./">Sampling</a>
     <ul class="subnav">
             
-    <li class="toctree-l4"><a href="#dump">dump</a></li>
+    <li class="toctree-l4"><a href="#equal_distribution_folds">equal_distribution_folds</a></li>
     
 
-    <li class="toctree-l4"><a href="#load">load</a></li>
+    <li class="toctree-l4"><a href="#multi_label_train_test_split">multi_label_train_test_split</a></li>
     
 
     </ul>
@@ -133,7 +165,7 @@
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="..">keras-text Documentation</a>
+        <a href="..">Documentation Text Classification Keras</a>
       </nav>
 
       
@@ -149,14 +181,14 @@
         
       
         
-          <li>Utilities &raquo;</li>
+          <li>Utils &raquo;</li>
         
       
     
-    <li>Utils</li>
+    <li>Sampling</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="http://github.com/raghakot/keras-text/blob/master/docs/templates/keras_text.utils.md"
+        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.utils.sampling.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -166,16 +198,33 @@
           <div role="main">
             <div class="section">
               
-                <p><strong>Source:</strong> <a href="https://github.com/raghakot/keras-text/tree/master/keras_text/utils.py#L0">keras_text/utils.py#L0</a></p>
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/utils/sampling.py#L0">keras_text/utils/sampling.py#L0</a></p>
 <hr />
-<h3 id="dump"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/utils.py#L12">dump</a></h3>
-<pre><code class="python">dump(obj, file_name)
+<h3 id="equal_distribution_folds"><a href="https://github.com/jfilter/text-classification-keras/keras_text/utils/sampling.py#L11">equal_distribution_folds</a></h3>
+<pre><code class="python">equal_distribution_folds(y, folds=2)
 </code></pre>
 
+<p>Creates <code>folds</code> number of indices that has roughly balanced multi-label distribution.</p>
+<p><em>Args:</em></p>
+<ul>
+<li><strong>y</strong>:  The multi-label outputs.</li>
+<li><strong>folds</strong>:  The number of folds to create.</li>
+</ul>
+<p><em>Returns:</em></p>
+<p><code>folds</code> number of indices that have roughly equal multi-label distributions.</p>
 <hr />
-<h3 id="load"><a href="https://github.com/raghakot/keras-text/tree/master/keras_text/utils.py#L26">load</a></h3>
-<pre><code class="python">load(file_name)
+<h3 id="multi_label_train_test_split"><a href="https://github.com/jfilter/text-classification-keras/keras_text/utils/sampling.py#L47">multi_label_train_test_split</a></h3>
+<pre><code class="python">multi_label_train_test_split(y, test_size=0.2)
 </code></pre>
+
+<p>Creates a test split with roughly the same multi-label distribution in <code>y</code>.</p>
+<p><em>Args:</em></p>
+<ul>
+<li><strong>y</strong>:  The multi-label outputs.</li>
+<li><strong>test_size</strong>:  The test size in [0, 1]</li>
+</ul>
+<p><em>Returns:</em></p>
+<p>The train and test indices.</p>
               
             </div>
           </div>
@@ -184,7 +233,7 @@
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="../keras_text.sampling/" class="btn btn-neutral" title="Sampling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../keras_text.utils.io/" class="btn btn-neutral" title="IO"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -209,10 +258,10 @@
   <div class="rst-versions" role="note" style="cursor: pointer">
     <span class="rst-current-version" data-toggle="rst-current-version">
       
-          <a href="http://github.com/raghakot/keras-text/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+          <a href="http://github.com/jfilter/text-classification-keras/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../keras_text.sampling/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../keras_text.utils.io/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
     </span>

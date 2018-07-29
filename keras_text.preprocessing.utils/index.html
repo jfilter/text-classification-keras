@@ -8,7 +8,7 @@
   
   
   <link rel="shortcut icon" href="../img/favicon.ico">
-  <title>Sequence Model Builder Factory - Documentation Text Classification Keras</title>
+  <title>Utils - Documentation Text Classification Keras</title>
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
 
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
@@ -18,9 +18,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Sequence Model Builder Factory";
-    var mkdocs_page_input_path = "keras_text.models.token_model.md";
-    var mkdocs_page_url = "/keras_text.models.token_model/";
+    var mkdocs_page_name = "Utils";
+    var mkdocs_page_input_path = "keras_text.preprocessing.utils.md";
+    var mkdocs_page_url = "/keras_text.preprocessing.utils/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -57,7 +57,7 @@
 		
     <span class="caption-text">API Docs</span>
     <ul class="subnav">
-                <li class=" current">
+                <li class="">
                     
     <span class="caption-text">Models</span>
     <ul class="subnav">
@@ -65,21 +65,9 @@
                     
     <a class="" href="../keras_text.models.sequence_encoders/">Sequence Processing Models</a>
                 </li>
-                <li class="toctree-l3 current">
+                <li class="toctree-l3">
                     
-    <a class="current" href="./">Sequence Model Builder Factory</a>
-    <ul class="subnav">
-            
-    <li class="toctree-l4"><a href="#tokenmodelfactory">TokenModelFactory</a></li>
-    
-        <ul>
-        
-            <li><a class="toctree-l5" href="#tokenmodelfactory__init__">TokenModelFactory.__init__</a></li>
-        
-        </ul>
-    
-
-    </ul>
+    <a class="" href="../keras_text.models.token_model/">Sequence Model Builder Factory</a>
                 </li>
                 <li class="toctree-l3">
                     
@@ -91,7 +79,7 @@
                 </li>
     </ul>
                 </li>
-                <li class="">
+                <li class=" current">
                     
     <span class="caption-text">Preprocessing</span>
     <ul class="subnav">
@@ -111,9 +99,21 @@
                     
     <a class="" href="../keras_text.preprocessing.char_tokenizer/">Char Tokenizer</a>
                 </li>
-                <li class="toctree-l3">
+                <li class="toctree-l3 current">
                     
-    <a class="" href="../keras_text.preprocessing.utils/">Utils</a>
+    <a class="current" href="./">Utils</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l4"><a href="#global-variables">Global Variables</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l5" href="#unicodify">unicodify</a></li>
+        
+        </ul>
+    
+
+    </ul>
                 </li>
     </ul>
                 </li>
@@ -184,14 +184,14 @@
         
       
         
-          <li>Models &raquo;</li>
+          <li>Preprocessing &raquo;</li>
         
       
     
-    <li>Sequence Model Builder Factory</li>
+    <li>Utils</li>
     <li class="wy-breadcrumbs-aside">
       
-        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.models.token_model.md"
+        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/keras_text.preprocessing.utils.md"
           class="icon icon-github"> Edit on GitHub</a>
       
     </li>
@@ -201,28 +201,23 @@
           <div role="main">
             <div class="section">
               
-                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/models/token_model.py#L0">keras_text/models/token_model.py#L0</a></p>
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/utils.py#L0">keras_text/preprocessing/utils.py#L0</a></p>
+<h2 id="global-variables"><strong>Global Variables</strong></h2>
+<ul>
+<li><strong>utils</strong></li>
+</ul>
 <hr />
-<h2 id="tokenmodelfactory"><a href="https://github.com/jfilter/text-classification-keras/keras_text/models/token_model.py#L10">TokenModelFactory</a></h2>
-<hr />
-<h3 id="tokenmodelfactory__init__"><a href="https://github.com/jfilter/text-classification-keras/keras_text/models/token_model.py#L11">TokenModelFactory.<code>__init__</code></a></h3>
-<pre><code class="python">__init__(self, num_classes, token_index, max_tokens, embedding_type=&quot;glove.6B.100d&quot;, \
-    embedding_dims=100, embedding_path=None)
+<h3 id="unicodify"><a href="https://github.com/jfilter/text-classification-keras/keras_text/preprocessing/utils.py#L178">unicodify</a></h3>
+<pre><code class="python">unicodify(texts)
 </code></pre>
 
-<p>Creates a <code>TokenModelFactory</code> instance for building various models that operate over
-(samples, max_tokens) input. The token can be character, word or any other elementary token.</p>
+<p>Encodes all text sequences as unicode. This is a python2 hassle.</p>
 <p><em>Args:</em></p>
 <ul>
-<li><strong>num_classes</strong>:  The number of output classes.</li>
-<li><strong>token_index</strong>:  The dictionary of token and its corresponding integer index value.</li>
-<li><strong>max_tokens</strong>:  The max number of tokens across all documents. This can be set to None for models that
-  allow different word lengths per mini-batch.</li>
-<li><strong>embedding_type</strong>:  The embedding type to use. Set to None to use random embeddings.
-  (Default value: 'glove.6B.100d')</li>
-<li><strong>embedding_dims</strong>:  The number of embedding dims to use for representing a word. This argument will be ignored
-  when <code>embedding_type</code> is set. (Default value: 100)</li>
+<li><strong>texts</strong>:  The sequence of texts.</li>
 </ul>
+<p><em>Returns:</em></p>
+<p>Unicode encoded sequences.</p>
               
             </div>
           </div>
@@ -230,10 +225,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../keras_text.models.sentence_model/" class="btn btn-neutral float-right" title="Sentence Model Builder Factory">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../keras_text.embeddings/" class="btn btn-neutral float-right" title="Embeddings">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../keras_text.models.sequence_encoders/" class="btn btn-neutral" title="Sequence Processing Models"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../keras_text.preprocessing.char_tokenizer/" class="btn btn-neutral" title="Char Tokenizer"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -261,10 +256,10 @@
           <a href="http://github.com/jfilter/text-classification-keras/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
       
       
-        <span><a href="../keras_text.models.sequence_encoders/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../keras_text.preprocessing.char_tokenizer/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../keras_text.models.sentence_model/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../keras_text.embeddings/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
