@@ -1,7 +1,7 @@
 import spacy
 
 from . import utils
-from ..libs import twokenize, fastTextTokenizer
+from ..libs import twokenize, fastTextWikiTokenizer
 from .tokenizer import Tokenizer
 
 
@@ -130,12 +130,12 @@ class SimpleTokenizer(Tokenizer):
                 yield id, t
 
 
-class FastTextTokenizer(Tokenizer):
+class FastTextWikiTokenizer(Tokenizer):
     def __init__(self, lang='en'):
-        super(FastTextTokenizer, self).__init__(lang, lower=True)
+        super(FastTextWikiTokenizer, self).__init__(lang, lower=True)
 
     def token_generator(self, texts):
         for id, text in enumerate(texts):
-            tokens = fastTextTokenizer.tokenize(text)
+            tokens = fastTextWikiTokenizer.tokenize(text)
             for t in tokens:
                 yield id, t

@@ -4,6 +4,7 @@
 # See https://github.com/facebookresearch/fastText/blob/master/get-wikimedia.sh
 #
 # From https://github.com/facebookresearch/fastText/issues/161:
+# See also: https://github.com/facebookresearch/fastText/issues/401
 #
 # We now have a script called 'get-wikimedia.sh', that you can use to download and
 # process a recent wikipedia dump of any language. This script applies the preprocessing
