@@ -13,19 +13,24 @@ logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
 
 # Add more types here as needed.
-# – fastText: https://github.com/facebookresearch/fastText/blob/master/pretrained-vectors.md
+# – fastText: https://fasttext.cc/docs/en/english-vectors.html
 # - glove: https://nlp.stanford.edu/projects/glove/
 
 _EMBEDDING_TYPES = {
-    # simple English
-    'fasttext.simple': {
-        'file': 'fasttext.simple.vec',
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.simple.vec'
+    # 1 million word vectors trained on Wikipedia 2017, UMBC webbase corpus and statmt.org news dataset (16B tokens).
+    'fasttext.wn.1M.300d': {
+        'file': 'fasttext.wn.1M.300d.vec',
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki-news-300d-1M.vec.zip'
     },
-    # English
-    'fasttext.en': {
-        'file': 'fasttext.en.vec',
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.en.vec'
+    # 1 million word vectors trained with subword infomation on Wikipedia 2017, UMBC webbase corpus and statmt.org news dataset (16B tokens).
+    'fasttext.wn.1M.300d.subword': {
+        'file': 'fasttext.wn.1M.300d.subword.vec',
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki-news-300d-1M-subword.vec.zip'
+    },
+    # 2 million word vectors trained on Common Crawl (600B tokens).
+    'fasttext.crawl.2M.300d.subword': {
+        'file': 'fasttext.wn.1M.300d.subword.vec',
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/crawl-300d-2M.vec.zip'
     },
     # 42 Billion tokens Common Crawl
     'glove.42B.300d': {
@@ -118,12 +123,13 @@ def build_embedding_weights(word_index, embeddings_index):
     return embedding_weights
 
 
-def build_fasttest_embedding_obj(embedding_type):
-    """All fasttext vectors
+def build_fasttext_wiki_embedding_obj(embedding_type):
+    """FastText pre-trained word vectors for 294 languages, with 300 dimensions, trained on Wikipedia. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. It's implemented as 'FasttextWikiTokenizer'. More information: https://fasttext.cc/docs/en/pretrained-vectors.html.
+
     Args:
-        embedding_type: A string in the format `fastext.$LANG_CODE`. e.g. `fasttext.de` or `fasttest.es`
+        embedding_type: A string in the format `fastext.wiki.$LANG_CODE`. e.g. `fasttext.wiki.de` or `fasttext.wiki.es`
     Returns:
-        name and url
+        Object with the URL and filename used later on for downloading the file.
     """
     lang = embedding_type.split('.')[1]
     return {
@@ -133,14 +139,31 @@ def build_fasttest_embedding_obj(embedding_type):
     }
 
 
+def build_fasttext_cc_embedding_obj(embedding_type):
+    """FastText pre-trained word vectors for 157 languages, with 300 dimensions, trained on Common Crawl and Wikipedia. Released in 2018, it succeesed the 2017 FastText Wikipedia embeddings. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. This information and more can be find on their Website: https://fasttext.cc/docs/en/crawl-vectors.html.
+
+    Args:
+        embedding_type: A string in the format `fastext.cc.$LANG_CODE`. e.g. `fasttext.cc.de` or `fasttext.cc.es`
+    Returns:
+        Object with the URL and filename used later on for downloading the file.
+    """
+    lang = embedding_type.split('.')[1]
+    return {
+        'file': 'cc.{}.300.vec'.format(lang),
+        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/word-vectors-v2/cc.{}.300.vec.gz'.format(lang),
+    }
+
+
 def get_embedding_type(embedding_type):
-    if embedding_type.startswith('fasttext.'):
-        return build_fasttest_embedding_obj(embedding_type)
+    if embedding_type.startswith('fasttext.wiki.'):
+        return build_fasttext_wiki_embedding_obj(embedding_type)
+    if embedding_type.startswith('fasttext.cc.'):
+        return build_fasttext_cc_embedding_obj(embedding_type)
 
     data_obj = _EMBEDDING_TYPES.get(embedding_type)
 
     if data_obj is None:
-        raise ValueError("Embedding name should be one of '{}'".format(
+        raise ValueError("Embedding type should be either `fasttext.wiki.$LANG_CODE`, `fasttext.cc.$LANG_CODE` or one of the English embeddings: '{}'".format(
             _EMBEDDING_TYPES.keys()))
 
     return data_obj
