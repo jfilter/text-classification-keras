@@ -171,11 +171,13 @@ class MarkdownAPIGenerator(object):
             elif indent > blockindent:
                 if _RE_ARGSTART.match(line):
                     # start of new argument
-                    out.append("\n" + " " * blockindent + " - " + _RE_ARGSTART.sub(r"**\1** (\2): \3", line))
+                    out.append("\n" + " " * blockindent + " - " +
+                               _RE_ARGSTART.sub(r"**\1** (\2): \3", line))
                     argindent = indent
                 elif _RE_EXCSTART.match(line):
                     # start of an exception-type block
-                    out.append("\n" + " " * blockindent + " - " + _RE_EXCSTART.sub(r"**\1**: \2", line))
+                    out.append("\n" + " " * blockindent + " - " +
+                               _RE_EXCSTART.sub(r"**\1**: \2", line))
                     argindent = indent
                 elif indent > argindent:
                     out.append("\n" + " " * (blockindent + 2) + line)
@@ -199,7 +201,8 @@ class MarkdownAPIGenerator(object):
             names = [func.__name__]
 
         funcname = ", ".join(names)
-        escfuncname = ", ".join(["`%s`" % funcname if funcname.startswith("_") else funcname for funcname in names])
+        escfuncname = ", ".join(["`%s`" % funcname if funcname.startswith(
+            "_") else funcname for funcname in names])
         header = "%s%s" % ("%s." % clsname if clsname else "", escfuncname)
 
         path = self.get_src_path(func)
@@ -304,18 +307,21 @@ class MarkdownAPIGenerator(object):
             if not name.startswith("_") and type(obj) == property:
                 comments = self.doc2md(obj) or inspect.getcomments(obj)
                 comments = "\n %s" % comments if comments else ""
-                variables.append("\n%s %s.%s%s\n" % (subsection, clsname, name, comments))
+                variables.append("\n%s %s.%s%s\n" %
+                                 (subsection, clsname, name, comments))
 
         handlers = []
         for name, obj in getmembers(cls, inspect.ismethoddescriptor):
             if not name.startswith("_") and hasattr(obj, "__module__") and obj.__module__ == modname:
-                handlers.append("\n%s %s.%s\n *Handler*" % (subsection, clsname, name))
+                handlers.append("\n%s %s.%s\n *Handler*" %
+                                (subsection, clsname, name))
 
         methods = []
         for name, obj in getmembers(cls, inspect.ismethod):
             if not name.startswith("_") and hasattr(obj,
                                                     "__module__") and obj.__module__ == modname and name not in handlers:
-                methods.append(self.func2md(obj, clsname=clsname, depth=depth + 1))
+                methods.append(self.func2md(
+                    obj, clsname=clsname, depth=depth + 1))
 
         string = CLASS_TEMPLATE.format(section=section,
                                        header=header,
@@ -357,12 +363,14 @@ class MarkdownAPIGenerator(object):
             found.update(names)
 
             # Include if within module or included modules within __init__.py and exclude from global variables
-            is_module_within_init = '__init__.py' in path and obj.__module__.startswith(modname)
+            is_module_within_init = '__init__.py' in path and obj.__module__.startswith(
+                modname)
             if is_module_within_init:
                 found.add(obj.__module__.replace(modname + '.', ''))
 
             if hasattr(obj, "__module__") and (obj.__module__ == modname or is_module_within_init):
-                names = list(filter(lambda name: not name.startswith("_"), names))
+                names = list(
+                    filter(lambda name: not name.startswith("_"), names))
                 if len(names) > 0:
                     functions.append(self.func2md(obj, names=names))
                     line_nos.append(self.get_line_no(obj) or 0)
