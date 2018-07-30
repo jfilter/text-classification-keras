@@ -131,7 +131,7 @@ def build_fasttext_wiki_embedding_obj(embedding_type):
     Returns:
         Object with the URL and filename used later on for downloading the file.
     """
-    lang = embedding_type.split('.')[1]
+    lang = embedding_type.split('.')[2]
     return {
         'file': 'wiki.{}.vec'.format(lang),
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.{}.vec'.format(lang),
@@ -147,7 +147,7 @@ def build_fasttext_cc_embedding_obj(embedding_type):
     Returns:
         Object with the URL and filename used later on for downloading the file.
     """
-    lang = embedding_type.split('.')[1]
+    lang = embedding_type.split('.')[2]
     return {
         'file': 'cc.{}.300.vec'.format(lang),
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/word-vectors-v2/cc.{}.300.vec.gz'.format(lang),
