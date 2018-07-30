@@ -3,11 +3,11 @@ import datetime
 import inspect
 import os
 import pathlib
-from shutil import copyfile, move
 from os import path
+from shutil import copyfile, move
 
-import keras
 import deep_plots
+import keras
 
 from .data import Dataset
 from .utils.format import to_fixed_digits
