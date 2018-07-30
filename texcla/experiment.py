@@ -8,6 +8,7 @@ from shutil import copyfile, move
 
 import deep_plots
 import keras
+from sklearn.model_selection import train_test_split
 
 from .data import Dataset
 from .utils.format import to_fixed_digits
@@ -49,7 +50,7 @@ def create_callbacks(exp_path, patience):
     return [checkpoint, early_stop, csv_logger]
 
 
-def train(fit_args, model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patience=10, base_dir='experiments'):
+def train(model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patience=10, base_dir='experiments', **fit_args):
     optimizer = keras.optimizers.adam(lr=lr)
     model.compile(optimizer=optimizer,
                   loss='categorical_crossentropy', metrics=['accuracy'])
@@ -96,19 +97,92 @@ def load_csv(data_path=None, text_col='text', class_col='class', limit=None):
     return X, y
 
 
-def setup_data(tokenizer, proc_data_path, max_len=400, load_csv_args={}):
-    X, y = load_csv(**load_csv_args)
-
-    # onyl build vocab on training data
-    if not tokenizer.has_vocab:
-        tokenizer.build_vocab(X)
-
+def process_save(X, y, tokenizer, proc_data_path, max_len=400, save_tokenizer=True):
+    """Process text and save as Dataset
+    """
     X_encoded = tokenizer.encode_texts(X)
     X_padded = tokenizer.pad_sequences(
         X_encoded, fixed_token_seq_length=max_len)
 
-    ds = Dataset(X_padded,
-                 y, tokenizer=tokenizer)
+    if save_tokenizer:
+        ds = Dataset(X_padded,
+                     y, tokenizer=tokenizer)
+    else:
+        ds = Dataset(X_padded, y)
 
     ds.save(proc_data_path)
+
+
+def setup_data(X, y, tokenizer, proc_data_path, **kwargs):
+    """Setup data
+
+        Args:
+            X: text data,
+            y: data labels,
+            tokenizer: A Tokenizer instance
+            proc_data_path: Path for the processed data
+    """
+    # only build vocabulary once (e.g. training data)
+    build_needed = not tokenizer.has_vobab
+    if build_needed:
+        tokenizer.build_vocab(X)
+
+    process_save(X, y, tokenizer, proc_data_path,
+                 save_tokenizer=build_needed, **kwargs)
     return tokenizer
+
+
+def split_data(X, y, ratio=(0.8, 0.1, 0.1)):
+    """Splits data into a training, validation, and test set.
+
+        Args:
+            X: text data
+            y: data labels
+            ratio: the ratio for splitting. Default: (0.8, 0.1, 0.1)
+
+        Returns:
+            split data: X_train, X_val, X_test, y_train, y_val, y_test
+    """
+    assert(sum(ratio) == 1 and len(ratio) == 3)
+    X_train, X_rest, y_train, y_rest = train_test_split(
+        X, y, train_size=ratio[0])
+    X_val, X_test, y_val, y_test = train_test_split(
+        X_rest, y_rest, train_size=ratio[1])
+    return X_train, X_val, X_test, y_train, y_val, y_test
+
+
+def setup_data_split(X, y, tokenizer, proc_data_dir, **kwargs):
+    """Setup data while splitting into a training, validation, and test set.
+
+        Args:
+            X: text data,
+            y: data labels,
+            tokenizer: A Tokenizer instance
+            proc_data_dir: Directory for the split and processed data
+    """
+    X_train, X_val, X_test, y_train, y_val, y_test = split_data(X, y)
+
+    # only build vocabulary on training data
+    tokenizer.build_vocab(X_train)
+
+    process_save(X_train, y_train, tokenizer, path.join(
+        proc_data_dir, 'train.bin'), **kwargs)
+    process_save(X_val, y_val, tokenizer, path.join(
+        proc_data_dir, 'val.bin'), save_tokenizer=False, **kwargs)
+    process_save(X_test, y_test, tokenizer, path.join(
+        proc_data_dir, 'test.bin'), save_tokenizer=False, **kwargs)
+
+
+def load_data_split(proc_data_dir):
+    """Loads a split dataset
+
+        Args:
+            proc_data_dir: Directory with the split and processed data
+
+        Returns:
+            (Training Data, Validation Data, Test Data)
+    """
+    ds_train = Dataset.load(path.join(proc_data_dir, 'train.bin'))
+    ds_val = Dataset.load(path.join(proc_data_dir, 'val.bin'))
+    ds_test = Dataset.load(path.join(proc_data_dir, 'test.bin'))
+    return ds_train, ds_val, ds_test
