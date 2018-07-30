@@ -15,7 +15,7 @@ classifiers = [
 
 version = '0.0.0'
 
-setup(name='tex_cla',
+setup(name='texcla',
       version=version,
       description='Text Classification Library for Keras',
       long_description=long_description,
