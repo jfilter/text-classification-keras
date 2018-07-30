@@ -17,6 +17,9 @@ _RE_BLOCKSTART = re.compile(r"(Args:|Arg:|Kwargs:|Returns:|Yields:|Kwargs:|Raise
                             re.IGNORECASE)
 _RE_ARGSTART = re.compile(r"(\w*?)\s*?\((.*?)\):(.*)", re.IGNORECASE)
 _RE_EXCSTART = re.compile(r"(\w*?):(.*)", re.IGNORECASE)
+_RE_URL = re.compile(
+    r"(https?:\/\/(.+?)(\/.*).*(\.html))", re.IGNORECASE)
+
 
 #
 # String templates
@@ -386,7 +389,10 @@ class MarkdownAPIGenerator(object):
             variables = new_list
 
         string = MODULE_TEMPLATE.format(path=path,
-                                        global_vars="\n".join(variables) if variables else "",
-                                        functions="\n".join(functions) if functions else "",
+                                        global_vars="\n".join(
+                                            variables) if variables else "",
+                                        functions="\n".join(
+                                            functions) if functions else "",
                                         classes="".join(classes) if classes else "")
+        string = _RE_URL.sub(r"<\1>", string)
         return string
