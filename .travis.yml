@@ -23,12 +23,10 @@ install:
   # install TensorFlow
   - pip install tensorflow
 
-  #- pip install theano
+  # install package locally
+  - pip install .[full]
 
-  # Install package and test requirements.
-  - pip install -e .[tests]
-
-  # for spacy
+  # download spacy model
   - "python -m spacy download en"
 
 script:
