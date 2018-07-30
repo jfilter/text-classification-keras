@@ -10,7 +10,7 @@ docs/sources/*
 .coverage
 .cache
 
-keras_text.egg-info
+texcla.egg-info
 dist/*
 build/*
 *.pyc

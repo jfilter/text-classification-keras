@@ -3,9 +3,9 @@ from __future__ import unicode_literals
 import keras
 import pytest
 
-from keras_text.data import Dataset
-from keras_text.preprocessing import SpacyTokenizer, SpacySentenceTokenizer, TwokenizeTokenizer, SimpleTokenizer
-from keras_text.preprocessing.utils import unicodify
+from texcla.data import Dataset
+from texcla.preprocessing import SpacyTokenizer, SpacySentenceTokenizer, TwokenizeTokenizer, SimpleTokenizer
+from texcla.preprocessing.utils import unicodify
 
 
 def test_token_preprocessing(tmpdir):

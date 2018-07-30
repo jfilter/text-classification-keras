@@ -1,5 +1,5 @@
 import pytest
-from keras_text.models import AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN
+from texcla.models import AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN
 
 
 def _test_build(token_encoder_model):

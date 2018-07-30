@@ -5,10 +5,10 @@ import keras
 import numpy as np
 import pytest
 
-from keras_text.corpus import imdb
-from keras_text.data import Dataset
-from keras_text.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, BasicRNN
-from keras_text.preprocessing import SpacyTokenizer
+from texcla.corpus import imdb
+from texcla.data import Dataset
+from texcla.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, BasicRNN
+from texcla.preprocessing import SpacyTokenizer
 
 max_len = 50
 

@@ -1,4 +1,4 @@
-from keras_text.embeddings import get_embeddings_index
+from texcla.embeddings import get_embeddings_index
 
 
 def test_build_index_glove():

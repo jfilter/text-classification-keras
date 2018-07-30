@@ -4,16 +4,11 @@ import shutil
 import subprocess
 import sys
 
-from md_autogen import MarkdownAPIGenerator
-from md_autogen import to_md_file
-
-from keras_text.models import token_model, sentence_model, sequence_encoders, layers
-
-from keras_text import data, corpus, embeddings, experiment
-
-from keras_text.utils import format, generators, io, sampling
-
-from keras_text.preprocessing import char_tokenizer, sentence_tokenizer, tokenizer, utils, word_tokenizer
+from texcla import corpus, data, embeddings, experiment
+from texcla.models import layers, sentence_model, sequence_encoders, token_model
+from texcla.preprocessing import char_tokenizer, sentence_tokenizer, tokenizer, utils, word_tokenizer
+from texcla.utils import format, generators, io, sampling
+from md_autogen import MarkdownAPIGenerator, to_md_file
 
 
 def generate_api_docs():
@@ -27,7 +22,7 @@ def generate_api_docs():
     ]
 
     md_gen = MarkdownAPIGenerator(
-        "keras_text", "https://github.com/jfilter/text-classification-keras")
+        "texcla", "https://github.com/jfilter/text-classification-keras")
     for m in modules:
         md_string = md_gen.module2md(m)
         to_md_file(md_string, m.__name__, "sources")
