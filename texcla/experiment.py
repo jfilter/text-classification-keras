@@ -123,7 +123,7 @@ def setup_data(X, y, tokenizer, proc_data_path, **kwargs):
             proc_data_path: Path for the processed data
     """
     # only build vocabulary once (e.g. training data)
-    build_needed = not tokenizer.has_vobab
+    build_needed = not tokenizer.has_vocab
     if build_needed:
         tokenizer.build_vocab(X)
 
