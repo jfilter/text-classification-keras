@@ -3,7 +3,7 @@ theme: readthedocs
 docs_dir: sources
 repo_url: http://github.com/jfilter/text-classification-keras
 edit_uri: blob/master/docs/templates
-site_description: 'Documentation Text Classification Keras - Text Classification Library with Keras'
+site_description: 'Documentation Text Classification Keras - Text Classification Library for Keras'
 
 extra_javascript:
   - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
