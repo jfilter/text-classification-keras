@@ -12,17 +12,14 @@ joblib = "*"
 jsonpickle = "*"
 scikit-learn = "*"
 numpy = "*"
-pytest = "*"
+deep-plots = "*"
 
 [dev-packages]
 pylint = "*"
 autopep8 = "*"
 pytest-pep8 = "*"
 rope = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.6"
-
-[packages.e1839a8]
-path = "."
-editable = true
