@@ -1,9 +1,9 @@
-site_name: keras-text Documentation
+site_name: Documentation Text Classification Keras
 theme: readthedocs
 docs_dir: sources
-repo_url: http://github.com/raghakot/keras-text
+repo_url: http://github.com/jfilter/text-classification-keras
 edit_uri: blob/master/docs/templates
-site_description: 'Documentation for keras-text - Text classification framework in keras.'
+site_description: 'Documentation Text Classification Keras - Text Classification Library with Keras'
 
 extra_javascript:
   - https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML
@@ -22,10 +22,19 @@ pages:
       - Sequence Model Builder Factory: keras_text.models.token_model.md
       - Sentence Model Builder Factory: keras_text.models.sentence_model.md
       - Custom Layers: keras_text.models.layers.md
-    - Data Processing:
-      - Tokenizing and padding: keras_text.processing.md
-      - Dataset management: keras_text.data.md
-    - Utilities:
-      - Generators: keras_text.generators.md
-      - Sampling: keras_text.sampling.md
-      - Utils: keras_text.utils.md
+    - Preprocessing:
+      - Word Tokenizer: keras_text.preprocessing.word_tokenizer.md
+      - Sentence Tokenizer: keras_text.preprocessing.sentence_tokenizer.md
+      - Tokenizer: keras_text.preprocessing.tokenizer.md
+      - Char Tokenizer: keras_text.preprocessing.char_tokenizer.md
+      - Utils: keras_text.preprocessing.utils.md
+    - Embeddings: keras_text.embeddings.md
+    - Experiment: keras_text.experiment.md
+    - Corpus: keras_text.corpus.md
+    - Data: keras_text.data.md
+    - Utils:
+        - Format: keras_text.utils.format.md
+        - Generators: keras_text.utils.generators.md
+        - IO: keras_text.utils.io.md
+        - Sampling: keras_text.utils.sampling.md
+
