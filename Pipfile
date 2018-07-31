@@ -18,7 +18,9 @@ deep-plots = "*"
 pylint = "*"
 autopep8 = "*"
 pytest-pep8 = "*"
-rope = "*"
+# cause for
+# `Could not find a version that matches pluggy<0.7,>=0.5,>=0.7`
+# rope = "*"
 pytest = "*"
 
 [requires]
