@@ -38,7 +38,8 @@ class Dataset(object):
             self.label_encoder = self.label_encoder.fit(self.y)
             if (len(self.labels) == 2):
                 # https://stackoverflow.com/questions/31947140/sklearn-labelbinarizer-returns-vector-when-there-are-2-classes
-                self.y = np.array([[1,0] if l==self.labels[0] else [0,1] for l in self.y])
+                self.y = np.array(
+                    [[1, 0] if l == self.labels[0] else [0, 1] for l in self.y])
             else:
                 self.y = self.label_encoder.transform(self.y)
 
