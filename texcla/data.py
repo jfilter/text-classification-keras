@@ -35,8 +35,13 @@ class Dataset(object):
             self.y = self.label_encoder.fit_transform(self.y).flatten()
         else:
             self.label_encoder = LabelBinarizer()
-            self.label_encoder.fit(self.y)
-            self.y = self.label_encoder.transform(self.y)
+            self.label_encoder = self.label_encoder.fit(self.y)
+            if (len(self.labels) == 2):
+                # https://stackoverflow.com/questions/31947140/sklearn-labelbinarizer-returns-vector-when-there-are-2-classes
+                self.y = np.array([[1,0] if l==self.labels[0] else [0,1] for l in self.y])
+            else:
+                self.y = self.label_encoder.transform(self.y)
+            print(self.y)
 
     def save(self, file_path):
         """Serializes this dataset to a file.
