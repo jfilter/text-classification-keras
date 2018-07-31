@@ -41,7 +41,6 @@ class Dataset(object):
                 self.y = np.array([[1,0] if l==self.labels[0] else [0,1] for l in self.y])
             else:
                 self.y = self.label_encoder.transform(self.y)
-            print(self.y)
 
     def save(self, file_path):
         """Serializes this dataset to a file.
