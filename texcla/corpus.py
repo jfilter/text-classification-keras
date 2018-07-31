@@ -2,7 +2,7 @@ import os
 import io
 
 import keras
-
+import sklearn
 
 def read_folder(directory):
     """read text files in directory and returns them as array
@@ -39,7 +39,7 @@ def read_pos_neg_data(path, folder, limit):
     return X, y
 
 
-def imdb(limit=None):
+def imdb(limit=None, shuffle=True):
     """Downloads (and caches) IMDB Moview Reviews. 25k training data, 25k test data
 
     Args:
@@ -58,4 +58,8 @@ def imdb(limit=None):
     X_train, y_train = read_pos_neg_data(path, 'train', limit)
     X_test, y_test = read_pos_neg_data(path, 'test', limit)
 
-    return X_train, y_train, X_test, y_test
+    if shuffle:
+        X_train, y_train = sklearn.utils.shuffle(X_train, y_train)
+        X_test, y_test = sklearn.utils.shuffle(X_test, y_test)
+
+    return X_train, X_test, y_train, y_test
