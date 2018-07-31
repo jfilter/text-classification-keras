@@ -1,79 +1,53 @@
-import os
 import sys
 
-import keras
-import numpy as np
-import pytest
+from texcla import corpus, data, experiment
+from texcla.models import AlexCNN, AttentionRNN, BasicRNN, StackedRNN, TokenModelFactory, YoonKimCNN
+from texcla.preprocessing import FastTextWikiTokenizer
 
-from texcla.corpus import imdb
-from texcla.data import Dataset
-from texcla.models import AlexCNN, AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN, BasicRNN
-from texcla.preprocessing import SpacyTokenizer
+# 1. `python imdb.py setup`: Setup and preprocess the data
+# 2. `python imdb.py train`: Load the setup data and train
 
-max_len = 50
+# truncate text input after 50 tokens (words)
+MAX_LEN = 50
 
-path = 'imdb_proc_data.bin'
+def setup():
+    # limit to 5k pos. and 5k neg. samples (each for train and test)
+    X_train, X_test, y_train, y_test = corpus.imdb(5000)
 
+    # use the special tokenizer used for constructing the embeddings
+    tokenizer = FastTextWikiTokenizer()
 
-def build_dataset():
-    X, y, _, _ = imdb(1000)
-
-    tokenizer = SpacyTokenizer()
-
-    tokenizer.build_vocab(X)
-
-    # only select top 5k tokens
-    tokenizer.apply_encoding_options(limit_top_tokens=5000)
-
-    X_encoded = tokenizer.encode_texts(X)
-    X_padded = tokenizer.pad_sequences(
-        X_encoded, fixed_token_seq_length=max_len)
-
-    y_cat = keras.utils.to_categorical(y, num_classes=2)
-
-    print(y_cat[:10])
-
-    ds = Dataset(X_padded, y_cat, tokenizer=tokenizer)
-    ds.update_test_indices(test_size=0.1)
-    ds.save(path)
+    # build vocabulary only on training data
+    tokenizer = experiment.setup_data(
+        X_train, y_train, tokenizer, 'imdb_train.bin', max_len=MAX_LEN)
+    experiment.setup_data(X_test, y_test, tokenizer,
+                          'imdb_test.bin', max_len=MAX_LEN)
 
 
 def train():
-    ds = Dataset.load(path)
-    X_train, _, y_train, _ = ds.train_val_split()
+    ds_train = data.Dataset.load('imdb_train.bin')
+    ds_val = data.Dataset.load('imdb_test.bin')
 
-    print(ds.tokenizer.decode_texts(X_train[:10]))
-
-    print(y_train[:10])
-
-    # RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.
+    # use the embedding trained on Simple English Wikipedia
     factory = TokenModelFactory(
-        2, ds.tokenizer.token_index, max_tokens=max_len, embedding_type='glove.6B.300d')
-    # 2, ds.tokenizer.token_index, max_tokens=max_len, embedding_type='fasttext.simple')
+        ds_train.num_classes, ds_train.tokenizer.token_index, max_tokens=MAX_LEN, embedding_type='fasttext.wiki.simple', embedding_dims=300)
 
     word_encoder_model = YoonKimCNN()
-    # word_encoder_model = AlexCNN(dropout_rate=[0, 0])
     # word_encoder_model = AttentionRNN()
     # word_encoder_model = StackedRNN()
-    word_encoder_model = BasicRNN()
+    # word_encoder_model = BasicRNN()
+
+    # freeze word embeddings
     model = factory.build_model(
         token_encoder_model=word_encoder_model, trainable_embeddings=False)
 
-    model.compile(optimizer='sgd',
-                  loss='categorical_crossentropy', metrics=['accuracy'])
-    model.summary()
-
-    model.fit(X_train, y_train, epochs=50, batch_size=32, validation_split=0.1)
-
-
-def main():
-    if len(sys.argv) != 2:
-        raise 'error'
-    if sys.argv[1] == 'build':
-        build_dataset()
-    if sys.argv[1] == 'train':
-        train()
-
+    # use experiment.train as wrapper for Keras.fit()
+    experiment.train(x=ds_train.X, y=ds_train.y, validation_data=(ds_val.X, ds_val.y), model=model,
+                     word_encoder_model=word_encoder_model)
 
 if __name__ == '__main__':
-    main()
+    assert(len(sys.argv) == 2)
+    if sys.argv[1] == 'setup':
+        setup()
+    if sys.argv[1] == 'train':
+        train()
