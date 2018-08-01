@@ -17,11 +17,13 @@ deep-plots = "*"
 [dev-packages]
 pylint = "*"
 autopep8 = "*"
-pytest-pep8 = "*"
-# cause for
-# `Could not find a version that matches pluggy<0.7,>=0.5,>=0.7`
-# rope = "*"
 pytest = "*"
+mkdocs = "*"
+python-markdown-math = "*"
 
 [requires]
 python_version = "3.6"
+
+[packages.text-classification-keras]
+editable = true
+path = "."
