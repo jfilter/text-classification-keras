@@ -4,6 +4,7 @@ import io
 import keras
 import sklearn
 
+
 def read_folder(directory):
     """read text files in directory and returns them as array
 
