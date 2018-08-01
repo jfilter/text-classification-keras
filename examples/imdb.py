@@ -10,6 +10,7 @@ from texcla.preprocessing import FastTextWikiTokenizer
 # truncate text input after 50 tokens (words)
 MAX_LEN = 50
 
+
 def setup():
     # limit to 5k pos. and 5k neg. samples (each for train and test)
     X_train, X_test, y_train, y_test = corpus.imdb(5000)
@@ -44,6 +45,7 @@ def train():
     # use experiment.train as wrapper for Keras.fit()
     experiment.train(x=ds_train.X, y=ds_train.y, validation_data=(ds_val.X, ds_val.y), model=model,
                      word_encoder_model=word_encoder_model)
+
 
 if __name__ == '__main__':
     assert(len(sys.argv) == 2)
