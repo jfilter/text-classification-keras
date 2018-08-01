@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Embeddings - Documentation Text Classification Keras</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../css/extras.css" rel="stylesheet">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Embeddings";
+    var mkdocs_page_input_path = "texcla.embeddings.md";
+    var mkdocs_page_url = "/texcla.embeddings/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Documentation Text Classification Keras</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <span class="caption-text">API Docs</span>
+    <ul class="subnav">
+                <li class="">
+                    
+    <span class="caption-text">Models</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.models.sequence_encoders/">Sequence Processing Models</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.models.token_model/">Sequence Model Builder Factory</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.models.sentence_model/">Sentence Model Builder Factory</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.models.layers/">Custom Layers</a>
+                </li>
+    </ul>
+                </li>
+                <li class="">
+                    
+    <span class="caption-text">Preprocessing</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.preprocessing.word_tokenizer/">Word Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.preprocessing.sentence_tokenizer/">Sentence Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.preprocessing.tokenizer/">Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.preprocessing.char_tokenizer/">Char Tokenizer</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.preprocessing.utils/">Utils</a>
+                </li>
+    </ul>
+                </li>
+                <li class=" current">
+                    
+    <a class="current" href="./">Embeddings</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l3"><a href="#build_embedding_weights">build_embedding_weights</a></li>
+    
+
+    <li class="toctree-l3"><a href="#build_fasttext_wiki_embedding_obj">build_fasttext_wiki_embedding_obj</a></li>
+    
+
+    <li class="toctree-l3"><a href="#build_fasttext_cc_embedding_obj">build_fasttext_cc_embedding_obj</a></li>
+    
+
+    <li class="toctree-l3"><a href="#get_embedding_type">get_embedding_type</a></li>
+    
+
+    <li class="toctree-l3"><a href="#get_embeddings_index">get_embeddings_index</a></li>
+    
+
+    </ul>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../texcla.experiment/">Experiment</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../texcla.corpus/">Corpus</a>
+                </li>
+                <li class="">
+                    
+    <a class="" href="../texcla.data/">Data</a>
+                </li>
+                <li class="">
+                    
+    <span class="caption-text">Utils</span>
+    <ul class="subnav">
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.utils.format/">Format</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.utils.generators/">Generators</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.utils.io/">IO</a>
+                </li>
+                <li class="toctree-l3">
+                    
+    <a class="" href="../texcla.utils.sampling/">Sampling</a>
+                </li>
+    </ul>
+                </li>
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Documentation Text Classification Keras</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>API Docs &raquo;</li>
+        
+      
+    
+    <li>Embeddings</li>
+    <li class="wy-breadcrumbs-aside">
+      
+        <a href="http://github.com/jfilter/text-classification-keras/blob/master/docs/templates/texcla.embeddings.md"
+          class="icon icon-github"> Edit on GitHub</a>
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/texcla/embeddings.py#L0">texcla/embeddings.py#L0</a></p>
+<hr />
+<h3 id="build_embedding_weights"><a href="https://github.com/jfilter/text-classification-keras/texcla/embeddings.py#L108">build_embedding_weights</a></h3>
+<pre><code class="python">build_embedding_weights(word_index, embeddings_index)
+</code></pre>
+
+<p>Builds an embedding matrix for all words in vocab using embeddings_index</p>
+<hr />
+<h3 id="build_fasttext_wiki_embedding_obj"><a href="https://github.com/jfilter/text-classification-keras/texcla/embeddings.py#L126">build_fasttext_wiki_embedding_obj</a></h3>
+<pre><code class="python">build_fasttext_wiki_embedding_obj(embedding_type)
+</code></pre>
+
+<p>FastText pre-trained word vectors for 294 languages, with 300 dimensions, trained on Wikipedia. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. It's implemented as 'FasttextWikiTokenizer'. More information: <a href="https://fasttext.cc/docs/en/pretrained-vectors.html">https://fasttext.cc/docs/en/pretrained-vectors.html</a>.</p>
+<p><em>Args:</em></p>
+<ul>
+<li><strong>embedding_type</strong>:  A string in the format <code>fastext.wiki.$LANG_CODE</code>. e.g. <code>fasttext.wiki.de</code> or <code>fasttext.wiki.es</code>
+<em>Returns:</em></li>
+</ul>
+<p>Object with the URL and filename used later on for downloading the file.</p>
+<hr />
+<h3 id="build_fasttext_cc_embedding_obj"><a href="https://github.com/jfilter/text-classification-keras/texcla/embeddings.py#L142">build_fasttext_cc_embedding_obj</a></h3>
+<pre><code class="python">build_fasttext_cc_embedding_obj(embedding_type)
+</code></pre>
+
+<p>FastText pre-trained word vectors for 157 languages, with 300 dimensions, trained on Common Crawl and Wikipedia. Released in 2018, it succeesed the 2017 FastText Wikipedia embeddings. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. This information and more can be find on their Website: <a href="https://fasttext.cc/docs/en/crawl-vectors.html">https://fasttext.cc/docs/en/crawl-vectors.html</a>.</p>
+<p><em>Args:</em></p>
+<ul>
+<li><strong>embedding_type</strong>:  A string in the format <code>fastext.cc.$LANG_CODE</code>. e.g. <code>fasttext.cc.de</code> or <code>fasttext.cc.es</code>
+<em>Returns:</em></li>
+</ul>
+<p>Object with the URL and filename used later on for downloading the file.</p>
+<hr />
+<h3 id="get_embedding_type"><a href="https://github.com/jfilter/text-classification-keras/texcla/embeddings.py#L157">get_embedding_type</a></h3>
+<pre><code class="python">get_embedding_type(embedding_type)
+</code></pre>
+
+<hr />
+<h3 id="get_embeddings_index"><a href="https://github.com/jfilter/text-classification-keras/texcla/embeddings.py#L172">get_embeddings_index</a></h3>
+<pre><code class="python">get_embeddings_index(embedding_type=&quot;glove.42B.300d&quot;, embedding_path=None, \
+    embedding_dims=None)
+</code></pre>
+
+<p>Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.</p>
+<p><em>Args:</em></p>
+<ul>
+<li><strong>embedding_type</strong>:  The embedding type to load.</li>
+<li><strong>embedding_path</strong>:  Path to a local embedding to use instead of the embedding type. Ignores <code>embedding_type</code> if specified.</li>
+</ul>
+<p><em>Returns:</em></p>
+<p>The embeddings indexed by word.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../texcla.experiment/" class="btn btn-neutral float-right" title="Experiment">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../texcla.preprocessing.utils/" class="btn btn-neutral" title="Utils"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+          <a href="http://github.com/jfilter/text-classification-keras/" class="fa fa-github" style="float: left; color: #fcfcfc"> GitHub</a>
+      
+      
+        <span><a href="../texcla.preprocessing.utils/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../texcla.experiment/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="../search/require.js"></script>
+      <script src="../search/search.js"></script>
+
+</body>
+</html>

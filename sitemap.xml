@@ -2,92 +2,92 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.models.sequence_encoders/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.models.sequence_encoders/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.models.token_model/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.models.token_model/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.models.sentence_model/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.models.sentence_model/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.models.layers/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.models.layers/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.preprocessing.word_tokenizer/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.preprocessing.word_tokenizer/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.preprocessing.sentence_tokenizer/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.preprocessing.sentence_tokenizer/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.preprocessing.tokenizer/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.preprocessing.tokenizer/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.preprocessing.char_tokenizer/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.preprocessing.char_tokenizer/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.preprocessing.utils/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.preprocessing.utils/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.embeddings/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.embeddings/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.experiment/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.experiment/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.corpus/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.corpus/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.data/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.data/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.utils.format/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.utils.format/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.utils.generators/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.utils.generators/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.utils.io/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.utils.io/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>/keras_text.utils.sampling/</loc>
-     <lastmod>2018-07-30</lastmod>
+     <loc>/texcla.utils.sampling/</loc>
+     <lastmod>2018-08-01</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>

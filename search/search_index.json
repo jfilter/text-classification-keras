@@ -2,12 +2,12 @@
     "docs": [
         {
             "location": "/",
-            "text": "Text Classification Keras \n\n\nA one-stop text classification library implementing various state of the art models with a clean and extendable interface to implement custom architectures.\n\n\nThis is a fork of \nkeras-text\n and still WIP.\n\n\nQuick start\n\n\nCreate a tokenizer to build your vocabulary\n\n\n\n\nTo represent you dataset as \n(docs, words)\n use \nWordTokenizer\n\n\nTo represent you dataset as \n(docs, sentences, words)\n use \nSentenceWordTokenizer\n\n\nTo create arbitrary hierarchies, extend \nTokenizer\n and implement the \ntoken_generator\n method.\n\n\n\n\nfrom keras_text.processing import WordTokenizer\n\n\ntokenizer = WordTokenizer()\ntokenizer.build_vocab(texts)\n\n\n\n\nWant to tokenize with character tokens to leverage character models? Use \nCharTokenizer\n.\n\n\nBuild a dataset\n\n\nA dataset encapsulates tokenizer, X, y and the test set. This allows you to focus your efforts on\ntrying various architectures/hyperparameters without having to worry about inconsistent evaluation. A dataset can be\nsaved and loaded from the disk.\n\n\nfrom keras_text.data import Dataset\n\n\nds = Dataset(X, y, tokenizer=tokenizer)\nds.update_test_indices(test_size=0.1)\nds.save('dataset')\n\n\n\n\nThe \nupdate_test_indices\n method automatically stratifies multi-class or multi-label data correctly.\n\n\nBuild text classification models\n\n\nSee tests/ folder for usage.\n\n\nWord based models\n\n\nWhen dataset represented as \n(docs, words)\n word based models can be created using \nTokenModelFactory\n.\n\n\nfrom keras_text.models import TokenModelFactory\nfrom keras_text.models import YoonKimCNN, AttentionRNN, StackedRNN\n\n\n# RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.\nfactory = TokenModelFactory(1, tokenizer.token_index, max_tokens=100, embedding_type='glove.6B.100d')\nword_encoder_model = YoonKimCNN()\nmodel = factory.build_model(token_encoder_model=word_encoder_model)\nmodel.compile(optimizer='adam', loss='categorical_crossentropy')\nmodel.summary()\n\n\n\n\nCurrently supported models include:\n\n\n\n\nYoon Kim CNN\n\n\nStacked RNNs\n\n\nAttention (with/without context) based RNN encoders.\n\n\n\n\nTokenModelFactory.build_model\n uses the provided word encoder which is then classified via \nDense\n block.\n\n\nSentence based models\n\n\nWhen dataset represented as \n(docs, sentences, words)\n sentence based models can be created using \nSentenceModelFactory\n.\n\n\nfrom keras_text.models import SentenceModelFactory\nfrom keras_text.models import YoonKimCNN, AttentionRNN, StackedRNN, AveragingEncoder\n\n\n# Pad max sentences per doc to 500 and max words per sentence to 200.\n# Can also use `max_sents=None` to allow variable sized max_sents per mini-batch.\nfactory = SentenceModelFactory(10, tokenizer.token_index, max_sents=500, max_tokens=200, embedding_type='glove.6B.100d')\nword_encoder_model = AttentionRNN()\nsentence_encoder_model = AttentionRNN()\n\n# Allows you to compose arbitrary word encoders followed by sentence encoder.\nmodel = factory.build_model(word_encoder_model, sentence_encoder_model)\nmodel.compile(optimizer='adam', loss='categorical_crossentropy')\nmodel.summary()\n\n\n\n\nCurrently supported models include:\n\n\n\n\nYoon Kim CNN\n\n\nStacked RNNs\n\n\nAttention (with/without context) based RNN encoders.\n\n\n\n\nSentenceModelFactory.build_model\n created a tiered model where words within a sentence is first encoded using\n\nword_encoder_model\n. All such encodings per sentence is then encoded using \nsentence_encoder_model\n.\n\n\n\n\nHierarchical attention networks\n\n    (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.\n\n\nFor smaller document a reasonable way to encode sentences is to average words within it. This can be done by using\n    \ntoken_encoder_model=AveragingEncoder()\n\n\nMix and match encoders as you see fit for your problem.\n\n\n\n\nResources\n\n\nTODO: Update documentation and add notebook examples.\n\n\nStay tuned for better documentation and examples.\nUntil then, the best resource is to refer to the \nAPI docs\n\n\nInstallation\n\n\n\n\n\n\nInstall \nKeras\n with Tensorflow as backend (Theano and CNTK are not fully supported for now). Note that this library requires Keras > 2.0\n\n\n\n\n\n\nInstall keras-text\n\n\n\n\n\n\npip install git+https://github.com/jfilter/text-classification-keras#egg=keras_text\n\n\n\n\n\n\nDownload target spacy model\n\n\n\n\npython -m spacy download en\n\n\n\n\nkeras-text uses the excellent spacy library for tokenization. See instructions on how to\n\ndownload model\n for target language.\n\n\nCitation\n\n\nPlease cite keras-text in your publications if it helped your research. Here is an example BibTeX entry:\n\n\n@misc{raghakotkerastext\n  title={Text-Classification-Keras},\n  author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},\n  year={2018},\n  publisher={GitHub},\n  howpublished={\\url{https://github.com/jfilter/text-classification-keras}},\n}\n\n\n\n\nLicense\n\n\nMIT.",
+            "text": "Text Classification Keras \n \n \n \n\n\nA high-level text classification library implementing various well-established models. With a clean and extendable interface to implement custom architectures.\n\n\nQuick start\n\n\nInstall\n\n\npip install text-classification-keras[full]==0.1.0\n\n\n\n\nThe \n[full]\n will additionally install \nTensorFlow\n, \nSpacy\n, and \nDeep Plots\n.\n\n\nUsage\n\n\nfrom texcla import experiment, data\nfrom texcla.models import TokenModelFactory, YoonKimCNN\nfrom texcla.preprocessing import FastTextWikiTokenizer\n\n# input text\nX = ['some random text', 'another random text', 'peter', ...]\n\n# input labels\ny = ['a', 'b', 'a', ...]\n\n# use the special tokenizer used for constructing the embeddings\ntokenizer = FastTextWikiTokenizer()\n\n# preprocess data (once)\nexperiment.setup_data(X, y, tokenizer, 'data.bin', max_len=100)\n\n# load data\nds = data.Dataset.load('data.bin')\n\n# construct base\nfactory = TokenModelFactory(\n    ds.num_classes, ds.tokenizer.token_index, max_tokens=100,\n    embedding_type='fasttext.wiki.simple', embedding_dims=300)\n\n# choose a model\nword_encoder_model = YoonKimCNN()\n\n# build a model\nmodel = factory.build_model(\n    token_encoder_model=word_encoder_model, trainable_embeddings=False)\n\n# use experiment.train as wrapper for Keras.fit()\nexperiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,\n    word_encoder_model=word_encoder_model)\n\n\n\n\nCheck out more \nexamples\n.\n\n\nAPI Documenation\n\n\nhttps://github.io/jfilter/text-classification-keras/\n\n\nAdvanced\n\n\nEmbeddings\n\n\nChoose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set \nembedding_type=None\n to use a randomly initialized word embedding.\n\n\nfactory = TokenModelFactory(embedding_type='fasttext.wiki.simple', embedding_dims=300)\n\n\n\n\nFastText\n\n\nSeveral pre-trained FastText embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.\n\n\n\n\nEnglish Vectors\n: e.g. \nfasttext.wn.1M.300d\n, \ncheck out all avaiable embeddings\n\n\nMultilang Vectors\n: in the format \nfasttext.cc.LANG_CODE\n e.g. \nfasttext.cc.en\n\n\nWikipedia Vectors\n: in the format \nfasttext.wiki.LANG_CODE\n e.g. \nfasttext.wiki.en\n\n\n\n\nGloVe\n\n\nPredecessor to FastText. The dimension varies.\n\n\n\n\nGloVe\n: e.g. \nglove.6B.50d\n, \ncheck out all avaiable embeddings\n\n\n\n\nTokenzation\n\n\n\n\nTo work on token (or word) level, use a TokenTokenizer such e.g. \nTwokenizeTokenizer\n or \nSpacyTokenizer\n.\n\n\nTo work on token and sentence level, use \nSpacySentenceTokenizer\n.\n\n\nTo create an custom Tokenizer, extend \nTokenizer\n and implement the \ntoken_generator\n method.\n\n\n\n\nSpacy\n\n\nYou may use Spacy for the tokenization. See instructions on how to\n\ndownload model\n for your target language.\n\n\npython -m spacy download en\n\n\n\n\nModels\n\n\nToken-based Models (Words)\n\n\nWhen working on token level, use \nTokenModelFactory\n.\n\n\nfrom keras_text.models import TokenModelFactory, YoonKimCNN\n\nfactory = TokenModelFactory(tokenizer.num_classes, tokenizer.token_index,\n    max_tokens=100, embedding_type='glove.6B.100d')\nword_encoder_model = YoonKimCNN()\nmodel = factory.build_model(token_encoder_model=word_encoder_model)\n\n\n\n\nCurrently supported models include:\n\n\n\n\nYoon Kim CNN\n\n\nStacked RNNs\n\n\nAttention (with/without context) based RNN encoders\n\n\n\n\nTokenModelFactory.build_model\n uses the provided word encoder which is then classified via a \nDense\n layer.\n\n\nSentence-basded Models\n\n\nWhen working on token level, use \nTokenModelFactory\n.\n\n\n# Pad max sentences per doc to 500 and max words per sentence to 200.\n# Can also use `max_sents=None` to allow variable sized max_sents per mini-batch.\n\nfactory = SentenceModelFactory(10, tokenizer.token_index, max_sents=500,\n    max_tokens=200, embedding_type='glove.6B.100d')\nword_encoder_model = AttentionRNN()\nsentence_encoder_model = AttentionRNN()\n\n# Allows you to compose arbitrary word encoders followed by sentence encoder.\nmodel = factory.build_model(word_encoder_model, sentence_encoder_model)\n\n\n\n\n\n\nHierarchical attention networks\n\n    (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.\n\n\nFor smaller document a reasonable way to encode sentences is to average words within it. This can be done by using\n    \ntoken_encoder_model=AveragingEncoder()\n\n\nMix and match encoders as you see fit for your problem.\n\n\n\n\nSentenceModelFactory.build_model\n created a tiered model where words within a sentence is first encoded using\n\nword_encoder_model\n. All such encodings per sentence is then encoded using \nsentence_encoder_model\n.\n\n\nContributing\n\n\nIf you have a \nquestion\n, found a \nbug\n or want to propose a new \nfeature\n, have a look at the \nissues page\n.\n\n\nPull requests\n are especially welcomed when they fix bugs or improve the code quality.\n\n\nAcknowledgements\n\n\nBuilt upon the work by Raghavendra Kotikalapudi: \nkeras-text\n.\n\n\nCitation\n\n\nIf you find Text Classification Keras useful for an academic publication, then please use the following BibTeX to cite it:\n\n\n@misc{raghakotfiltertexclakeras\n    title={Text Classification Keras},\n    author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},\n    year={2018},\n    publisher={GitHub},\n    howpublished={\\url{https://github.com/jfilter/text-classification-keras}},\n}\n\n\n\n\nLicense\n\n\nMIT.",
             "title": "Home"
         },
         {
             "location": "/#text-classification-keras",
-            "text": "A one-stop text classification library implementing various state of the art models with a clean and extendable interface to implement custom architectures.  This is a fork of  keras-text  and still WIP.",
+            "text": "A high-level text classification library implementing various well-established models. With a clean and extendable interface to implement custom architectures.",
             "title": "Text Classification Keras"
         },
         {
@@ -16,43 +16,78 @@
             "title": "Quick start"
         },
         {
-            "location": "/#create-a-tokenizer-to-build-your-vocabulary",
-            "text": "To represent you dataset as  (docs, words)  use  WordTokenizer  To represent you dataset as  (docs, sentences, words)  use  SentenceWordTokenizer  To create arbitrary hierarchies, extend  Tokenizer  and implement the  token_generator  method.   from keras_text.processing import WordTokenizer\n\n\ntokenizer = WordTokenizer()\ntokenizer.build_vocab(texts)  Want to tokenize with character tokens to leverage character models? Use  CharTokenizer .",
-            "title": "Create a tokenizer to build your vocabulary"
+            "location": "/#install",
+            "text": "pip install text-classification-keras[full]==0.1.0  The  [full]  will additionally install  TensorFlow ,  Spacy , and  Deep Plots .",
+            "title": "Install"
         },
         {
-            "location": "/#build-a-dataset",
-            "text": "A dataset encapsulates tokenizer, X, y and the test set. This allows you to focus your efforts on\ntrying various architectures/hyperparameters without having to worry about inconsistent evaluation. A dataset can be\nsaved and loaded from the disk.  from keras_text.data import Dataset\n\n\nds = Dataset(X, y, tokenizer=tokenizer)\nds.update_test_indices(test_size=0.1)\nds.save('dataset')  The  update_test_indices  method automatically stratifies multi-class or multi-label data correctly.",
-            "title": "Build a dataset"
+            "location": "/#usage",
+            "text": "from texcla import experiment, data\nfrom texcla.models import TokenModelFactory, YoonKimCNN\nfrom texcla.preprocessing import FastTextWikiTokenizer\n\n# input text\nX = ['some random text', 'another random text', 'peter', ...]\n\n# input labels\ny = ['a', 'b', 'a', ...]\n\n# use the special tokenizer used for constructing the embeddings\ntokenizer = FastTextWikiTokenizer()\n\n# preprocess data (once)\nexperiment.setup_data(X, y, tokenizer, 'data.bin', max_len=100)\n\n# load data\nds = data.Dataset.load('data.bin')\n\n# construct base\nfactory = TokenModelFactory(\n    ds.num_classes, ds.tokenizer.token_index, max_tokens=100,\n    embedding_type='fasttext.wiki.simple', embedding_dims=300)\n\n# choose a model\nword_encoder_model = YoonKimCNN()\n\n# build a model\nmodel = factory.build_model(\n    token_encoder_model=word_encoder_model, trainable_embeddings=False)\n\n# use experiment.train as wrapper for Keras.fit()\nexperiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,\n    word_encoder_model=word_encoder_model)  Check out more  examples .",
+            "title": "Usage"
         },
         {
-            "location": "/#build-text-classification-models",
-            "text": "See tests/ folder for usage.",
-            "title": "Build text classification models"
+            "location": "/#api-documenation",
+            "text": "https://github.io/jfilter/text-classification-keras/",
+            "title": "API Documenation"
         },
         {
-            "location": "/#word-based-models",
-            "text": "When dataset represented as  (docs, words)  word based models can be created using  TokenModelFactory .  from keras_text.models import TokenModelFactory\nfrom keras_text.models import YoonKimCNN, AttentionRNN, StackedRNN\n\n\n# RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.\nfactory = TokenModelFactory(1, tokenizer.token_index, max_tokens=100, embedding_type='glove.6B.100d')\nword_encoder_model = YoonKimCNN()\nmodel = factory.build_model(token_encoder_model=word_encoder_model)\nmodel.compile(optimizer='adam', loss='categorical_crossentropy')\nmodel.summary()  Currently supported models include:   Yoon Kim CNN  Stacked RNNs  Attention (with/without context) based RNN encoders.   TokenModelFactory.build_model  uses the provided word encoder which is then classified via  Dense  block.",
-            "title": "Word based models"
+            "location": "/#advanced",
+            "text": "",
+            "title": "Advanced"
         },
         {
-            "location": "/#sentence-based-models",
-            "text": "When dataset represented as  (docs, sentences, words)  sentence based models can be created using  SentenceModelFactory .  from keras_text.models import SentenceModelFactory\nfrom keras_text.models import YoonKimCNN, AttentionRNN, StackedRNN, AveragingEncoder\n\n\n# Pad max sentences per doc to 500 and max words per sentence to 200.\n# Can also use `max_sents=None` to allow variable sized max_sents per mini-batch.\nfactory = SentenceModelFactory(10, tokenizer.token_index, max_sents=500, max_tokens=200, embedding_type='glove.6B.100d')\nword_encoder_model = AttentionRNN()\nsentence_encoder_model = AttentionRNN()\n\n# Allows you to compose arbitrary word encoders followed by sentence encoder.\nmodel = factory.build_model(word_encoder_model, sentence_encoder_model)\nmodel.compile(optimizer='adam', loss='categorical_crossentropy')\nmodel.summary()  Currently supported models include:   Yoon Kim CNN  Stacked RNNs  Attention (with/without context) based RNN encoders.   SentenceModelFactory.build_model  created a tiered model where words within a sentence is first encoded using word_encoder_model . All such encodings per sentence is then encoded using  sentence_encoder_model .   Hierarchical attention networks \n    (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.  For smaller document a reasonable way to encode sentences is to average words within it. This can be done by using\n     token_encoder_model=AveragingEncoder()  Mix and match encoders as you see fit for your problem.",
-            "title": "Sentence based models"
+            "location": "/#embeddings",
+            "text": "Choose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set  embedding_type=None  to use a randomly initialized word embedding.  factory = TokenModelFactory(embedding_type='fasttext.wiki.simple', embedding_dims=300)",
+            "title": "Embeddings"
         },
         {
-            "location": "/#resources",
-            "text": "TODO: Update documentation and add notebook examples.  Stay tuned for better documentation and examples.\nUntil then, the best resource is to refer to the  API docs",
-            "title": "Resources"
+            "location": "/#fasttext",
+            "text": "Several pre-trained FastText embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.   English Vectors : e.g.  fasttext.wn.1M.300d ,  check out all avaiable embeddings  Multilang Vectors : in the format  fasttext.cc.LANG_CODE  e.g.  fasttext.cc.en  Wikipedia Vectors : in the format  fasttext.wiki.LANG_CODE  e.g.  fasttext.wiki.en",
+            "title": "FastText"
         },
         {
-            "location": "/#installation",
-            "text": "Install  Keras  with Tensorflow as backend (Theano and CNTK are not fully supported for now). Note that this library requires Keras > 2.0    Install keras-text    pip install git+https://github.com/jfilter/text-classification-keras#egg=keras_text   Download target spacy model   python -m spacy download en  keras-text uses the excellent spacy library for tokenization. See instructions on how to download model  for target language.",
-            "title": "Installation"
+            "location": "/#glove",
+            "text": "Predecessor to FastText. The dimension varies.   GloVe : e.g.  glove.6B.50d ,  check out all avaiable embeddings",
+            "title": "GloVe"
+        },
+        {
+            "location": "/#tokenzation",
+            "text": "To work on token (or word) level, use a TokenTokenizer such e.g.  TwokenizeTokenizer  or  SpacyTokenizer .  To work on token and sentence level, use  SpacySentenceTokenizer .  To create an custom Tokenizer, extend  Tokenizer  and implement the  token_generator  method.",
+            "title": "Tokenzation"
+        },
+        {
+            "location": "/#spacy",
+            "text": "You may use Spacy for the tokenization. See instructions on how to download model  for your target language.  python -m spacy download en",
+            "title": "Spacy"
+        },
+        {
+            "location": "/#models",
+            "text": "",
+            "title": "Models"
+        },
+        {
+            "location": "/#token-based-models-words",
+            "text": "When working on token level, use  TokenModelFactory .  from keras_text.models import TokenModelFactory, YoonKimCNN\n\nfactory = TokenModelFactory(tokenizer.num_classes, tokenizer.token_index,\n    max_tokens=100, embedding_type='glove.6B.100d')\nword_encoder_model = YoonKimCNN()\nmodel = factory.build_model(token_encoder_model=word_encoder_model)  Currently supported models include:   Yoon Kim CNN  Stacked RNNs  Attention (with/without context) based RNN encoders   TokenModelFactory.build_model  uses the provided word encoder which is then classified via a  Dense  layer.",
+            "title": "Token-based Models (Words)"
+        },
+        {
+            "location": "/#sentence-basded-models",
+            "text": "When working on token level, use  TokenModelFactory .  # Pad max sentences per doc to 500 and max words per sentence to 200.\n# Can also use `max_sents=None` to allow variable sized max_sents per mini-batch.\n\nfactory = SentenceModelFactory(10, tokenizer.token_index, max_sents=500,\n    max_tokens=200, embedding_type='glove.6B.100d')\nword_encoder_model = AttentionRNN()\nsentence_encoder_model = AttentionRNN()\n\n# Allows you to compose arbitrary word encoders followed by sentence encoder.\nmodel = factory.build_model(word_encoder_model, sentence_encoder_model)   Hierarchical attention networks \n    (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.  For smaller document a reasonable way to encode sentences is to average words within it. This can be done by using\n     token_encoder_model=AveragingEncoder()  Mix and match encoders as you see fit for your problem.   SentenceModelFactory.build_model  created a tiered model where words within a sentence is first encoded using word_encoder_model . All such encodings per sentence is then encoded using  sentence_encoder_model .",
+            "title": "Sentence-basded Models"
+        },
+        {
+            "location": "/#contributing",
+            "text": "If you have a  question , found a  bug  or want to propose a new  feature , have a look at the  issues page .  Pull requests  are especially welcomed when they fix bugs or improve the code quality.",
+            "title": "Contributing"
+        },
+        {
+            "location": "/#acknowledgements",
+            "text": "Built upon the work by Raghavendra Kotikalapudi:  keras-text .",
+            "title": "Acknowledgements"
         },
         {
             "location": "/#citation",
-            "text": "Please cite keras-text in your publications if it helped your research. Here is an example BibTeX entry:  @misc{raghakotkerastext\n  title={Text-Classification-Keras},\n  author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},\n  year={2018},\n  publisher={GitHub},\n  howpublished={\\url{https://github.com/jfilter/text-classification-keras}},\n}",
+            "text": "If you find Text Classification Keras useful for an academic publication, then please use the following BibTeX to cite it:  @misc{raghakotfiltertexclakeras\n    title={Text Classification Keras},\n    author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},\n    year={2018},\n    publisher={GitHub},\n    howpublished={\\url{https://github.com/jfilter/text-classification-keras}},\n}",
             "title": "Citation"
         },
         {
@@ -61,752 +96,772 @@
             "title": "License"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/",
-            "text": "Source:\n \nkeras_text/models/sequence_encoders.py#L0\n\n\n\n\nSequenceEncoderBase\n\n\n\n\nSequenceEncoderBase.\n__init__\n\n\n__init__(self, dropout_rate=0.5)\n\n\n\n\nCreates a new instance of sequence encoder.\n\n\nArgs:\n\n\n\n\ndropout_rate\n:  The final encoded output dropout.\n\n\n\n\n\n\nYoonKimCNN\n\n\n\n\nYoonKimCNN.\n__init__\n\n\n__init__(self, num_filters=64, filter_sizes=[3, 4, 5], dropout_rate=0.5, **conv_kwargs)\n\n\n\n\nYoon Kim's shallow cnn model: https://arxiv.org/pdf/1408.5882.pdf\n\n\nArgs:\n\n\n\n\nnum_filters\n:  The number of filters to use per \nfilter_size\n. (Default value = 64)\n\n\nfilter_sizes\n:  The filter sizes for each convolutional layer. (Default value = [3, 4, 5])\n**cnn_kwargs: Additional args for building the \nConv1D\n layer.\n\n\n\n\n\n\nAlexCNN\n\n\n\n\nAlexCNN.\n__init__\n\n\n__init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20, \\\n    **conv_kwargs)\n\n\n\n\nAlexander Rakhlin's CNN model: https://github.com/alexander-rakhlin/CNN-for-Sentence-Classification-in-Keras/\n\n\nArgs:\n\n\n\n\nnum_filters\n:  The number of filters to use per \nfilter_size\n. (Default value = 64)\n\n\nfilter_sizes\n:  The filter sizes for each convolutional layer. (Default value = [3, 4, 5])\n\n\ndropout_rate\n:  Array for one dropout layer after the embedding and one before the final dense layer (Default value = [0.5, 0.8])\n\n\n\n\n\n\nStackedRNN\n\n\n\n\nStackedRNN.\n__init__\n\n\n__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, hidden_dims=[50, 50], \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)\n\n\n\n\nCreates a stacked RNN.\n\n\nArgs:\n\n\n\n\nrnn_class\n:  The type of RNN to use. (Default Value = LSTM)\n\n\nencoder_dims\n:  The number of hidden units of RNN. (Default Value: 50)\n\n\nbidirectional\n:  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.\n\n\n\n\n\n\nBasicRNN\n\n\n\n\nBasicRNN.\n__init__\n\n\n__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, hidden_dims=50, \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)\n\n\n\n\nCreates a stacked RNN.\n\n\nArgs:\n\n\n\n\nrnn_class\n:  The type of RNN to use. (Default Value = LSTM)\n\n\nencoder_dims\n:  The number of hidden units of RNN. (Default Value: 50)\n\n\nbidirectional\n:  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.\n\n\n\n\n\n\nAttentionRNN\n\n\n\n\nAttentionRNN.\n__init__\n\n\n__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, encoder_dims=50, \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)\n\n\n\n\nCreates an RNN model with attention. The attention mechanism is implemented as described\nin https://www.cs.cmu.edu/~hovy/papers/16HLT-hierarchical-attention-networks.pdf, but without\nsentence level attention.\n\n\nArgs:\n\n\n\n\nrnn_class\n:  The type of RNN to use. (Default Value = LSTM)\n\n\nencoder_dims\n:  The number of hidden units of RNN. (Default Value: 50)\n\n\nbidirectional\n:  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.\n\n\n\n\n\n\nAveragingEncoder\n\n\n\n\nAveragingEncoder.\n__init__\n\n\n__init__(self, dropout_rate=0)\n\n\n\n\nAn encoder that averages sequence inputs.",
+            "location": "/texcla.models.sequence_encoders/",
+            "text": "Source:\n \ntexcla/models/sequence_encoders.py#L0\n\n\n\n\nSequenceEncoderBase\n\n\n\n\nSequenceEncoderBase.\n__init__\n\n\n__init__(self, dropout_rate=0.5)\n\n\n\n\nCreates a new instance of sequence encoder.\n\n\nArgs:\n\n\n\n\ndropout_rate\n:  The final encoded output dropout.\n\n\n\n\n\n\nYoonKimCNN\n\n\n\n\nYoonKimCNN.\n__init__\n\n\n__init__(self, num_filters=64, filter_sizes=[3, 4, 5], dropout_rate=0.5, **conv_kwargs)\n\n\n\n\nYoon Kim's shallow cnn model: https://arxiv.org/pdf/1408.5882.pdf\n\n\nArgs:\n\n\n\n\nnum_filters\n:  The number of filters to use per \nfilter_size\n. (Default value = 64)\n\n\nfilter_sizes\n:  The filter sizes for each convolutional layer. (Default value = [3, 4, 5])\n**cnn_kwargs: Additional args for building the \nConv1D\n layer.\n\n\n\n\n\n\nAlexCNN\n\n\n\n\nAlexCNN.\n__init__\n\n\n__init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20, \\\n    **conv_kwargs)\n\n\n\n\nAlexander Rakhlin's CNN model: https://github.com/alexander-rakhlin/CNN-for-Sentence-Classification-in-Keras/\n\n\nArgs:\n\n\n\n\nnum_filters\n:  The number of filters to use per \nfilter_size\n. (Default value = 64)\n\n\nfilter_sizes\n:  The filter sizes for each convolutional layer. (Default value = [3, 4, 5])\n\n\ndropout_rate\n:  Array for one dropout layer after the embedding and one before the final dense layer (Default value = [0.5, 0.8])\n\n\n\n\n\n\nStackedRNN\n\n\n\n\nStackedRNN.\n__init__\n\n\n__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, hidden_dims=[50, 50], \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)\n\n\n\n\nCreates a stacked RNN.\n\n\nArgs:\n\n\n\n\nrnn_class\n:  The type of RNN to use. (Default Value = LSTM)\n\n\nencoder_dims\n:  The number of hidden units of RNN. (Default Value: 50)\n\n\nbidirectional\n:  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.\n\n\n\n\n\n\nBasicRNN\n\n\n\n\nBasicRNN.\n__init__\n\n\n__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, hidden_dims=50, \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)\n\n\n\n\nCreates a stacked RNN.\n\n\nArgs:\n\n\n\n\nrnn_class\n:  The type of RNN to use. (Default Value = LSTM)\n\n\nencoder_dims\n:  The number of hidden units of RNN. (Default Value: 50)\n\n\nbidirectional\n:  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.\n\n\n\n\n\n\nAttentionRNN\n\n\n\n\nAttentionRNN.\n__init__\n\n\n__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, encoder_dims=50, \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)\n\n\n\n\nCreates an RNN model with attention. The attention mechanism is implemented as described\nin https://www.cs.cmu.edu/~hovy/papers/16HLT-hierarchical-attention-networks.pdf, but without\nsentence level attention.\n\n\nArgs:\n\n\n\n\nrnn_class\n:  The type of RNN to use. (Default Value = LSTM)\n\n\nencoder_dims\n:  The number of hidden units of RNN. (Default Value: 50)\n\n\nbidirectional\n:  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.\n\n\n\n\n\n\nAveragingEncoder\n\n\n\n\nAveragingEncoder.\n__init__\n\n\n__init__(self, dropout_rate=0)\n\n\n\n\nAn encoder that averages sequence inputs.",
             "title": "Sequence Processing Models"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#sequenceencoderbase",
+            "location": "/texcla.models.sequence_encoders/#sequenceencoderbase",
             "text": "",
             "title": "SequenceEncoderBase"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#sequenceencoderbase__init__",
+            "location": "/texcla.models.sequence_encoders/#sequenceencoderbase__init__",
             "text": "__init__(self, dropout_rate=0.5)  Creates a new instance of sequence encoder.  Args:   dropout_rate :  The final encoded output dropout.",
             "title": "SequenceEncoderBase.__init__"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#yoonkimcnn",
+            "location": "/texcla.models.sequence_encoders/#yoonkimcnn",
             "text": "",
             "title": "YoonKimCNN"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#yoonkimcnn__init__",
+            "location": "/texcla.models.sequence_encoders/#yoonkimcnn__init__",
             "text": "__init__(self, num_filters=64, filter_sizes=[3, 4, 5], dropout_rate=0.5, **conv_kwargs)  Yoon Kim's shallow cnn model: https://arxiv.org/pdf/1408.5882.pdf  Args:   num_filters :  The number of filters to use per  filter_size . (Default value = 64)  filter_sizes :  The filter sizes for each convolutional layer. (Default value = [3, 4, 5])\n**cnn_kwargs: Additional args for building the  Conv1D  layer.",
             "title": "YoonKimCNN.__init__"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#alexcnn",
+            "location": "/texcla.models.sequence_encoders/#alexcnn",
             "text": "",
             "title": "AlexCNN"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#alexcnn__init__",
+            "location": "/texcla.models.sequence_encoders/#alexcnn__init__",
             "text": "__init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20, \\\n    **conv_kwargs)  Alexander Rakhlin's CNN model: https://github.com/alexander-rakhlin/CNN-for-Sentence-Classification-in-Keras/  Args:   num_filters :  The number of filters to use per  filter_size . (Default value = 64)  filter_sizes :  The filter sizes for each convolutional layer. (Default value = [3, 4, 5])  dropout_rate :  Array for one dropout layer after the embedding and one before the final dense layer (Default value = [0.5, 0.8])",
             "title": "AlexCNN.__init__"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#stackedrnn",
+            "location": "/texcla.models.sequence_encoders/#stackedrnn",
             "text": "",
             "title": "StackedRNN"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#stackedrnn__init__",
+            "location": "/texcla.models.sequence_encoders/#stackedrnn__init__",
             "text": "__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, hidden_dims=[50, 50], \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)  Creates a stacked RNN.  Args:   rnn_class :  The type of RNN to use. (Default Value = LSTM)  encoder_dims :  The number of hidden units of RNN. (Default Value: 50)  bidirectional :  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.",
             "title": "StackedRNN.__init__"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#basicrnn",
+            "location": "/texcla.models.sequence_encoders/#basicrnn",
             "text": "",
             "title": "BasicRNN"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#basicrnn__init__",
+            "location": "/texcla.models.sequence_encoders/#basicrnn__init__",
             "text": "__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, hidden_dims=50, \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)  Creates a stacked RNN.  Args:   rnn_class :  The type of RNN to use. (Default Value = LSTM)  encoder_dims :  The number of hidden units of RNN. (Default Value: 50)  bidirectional :  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.",
             "title": "BasicRNN.__init__"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#attentionrnn",
+            "location": "/texcla.models.sequence_encoders/#attentionrnn",
             "text": "",
             "title": "AttentionRNN"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#attentionrnn__init__",
+            "location": "/texcla.models.sequence_encoders/#attentionrnn__init__",
             "text": "__init__(self, rnn_class=<class 'keras.layers.recurrent.LSTM'>, encoder_dims=50, \\\n    bidirectional=True, dropout_rate=0.5, **rnn_kwargs)  Creates an RNN model with attention. The attention mechanism is implemented as described\nin https://www.cs.cmu.edu/~hovy/papers/16HLT-hierarchical-attention-networks.pdf, but without\nsentence level attention.  Args:   rnn_class :  The type of RNN to use. (Default Value = LSTM)  encoder_dims :  The number of hidden units of RNN. (Default Value: 50)  bidirectional :  Whether to use bidirectional encoding. (Default Value = True)\n**rnn_kwargs: Additional args for building the RNN.",
             "title": "AttentionRNN.__init__"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#averagingencoder",
+            "location": "/texcla.models.sequence_encoders/#averagingencoder",
             "text": "",
             "title": "AveragingEncoder"
         },
         {
-            "location": "/keras_text.models.sequence_encoders/#averagingencoder__init__",
+            "location": "/texcla.models.sequence_encoders/#averagingencoder__init__",
             "text": "__init__(self, dropout_rate=0)  An encoder that averages sequence inputs.",
             "title": "AveragingEncoder.__init__"
         },
         {
-            "location": "/keras_text.models.token_model/",
-            "text": "Source:\n \nkeras_text/models/token_model.py#L0\n\n\n\n\nTokenModelFactory\n\n\n\n\nTokenModelFactory.\n__init__\n\n\n__init__(self, num_classes, token_index, max_tokens, embedding_type=\"glove.6B.100d\", \\\n    embedding_dims=100, embedding_path=None)\n\n\n\n\nCreates a \nTokenModelFactory\n instance for building various models that operate over\n(samples, max_tokens) input. The token can be character, word or any other elementary token.\n\n\nArgs:\n\n\n\n\nnum_classes\n:  The number of output classes.\n\n\ntoken_index\n:  The dictionary of token and its corresponding integer index value.\n\n\nmax_tokens\n:  The max number of tokens across all documents. This can be set to None for models that\n  allow different word lengths per mini-batch.\n\n\nembedding_type\n:  The embedding type to use. Set to None to use random embeddings.\n  (Default value: 'glove.6B.100d')\n\n\nembedding_dims\n:  The number of embedding dims to use for representing a word. This argument will be ignored\n  when \nembedding_type\n is set. (Default value: 100)",
+            "location": "/texcla.models.token_model/",
+            "text": "Source:\n \ntexcla/models/token_model.py#L0\n\n\n\n\nTokenModelFactory\n\n\n\n\nTokenModelFactory.\n__init__\n\n\n__init__(self, num_classes, token_index, max_tokens, embedding_type=\"glove.6B.100d\", \\\n    embedding_dims=100, embedding_path=None)\n\n\n\n\nCreates a \nTokenModelFactory\n instance for building various models that operate over\n(samples, max_tokens) input. The token can be character, word or any other elementary token.\n\n\nArgs:\n\n\n\n\nnum_classes\n:  The number of output classes.\n\n\ntoken_index\n:  The dictionary of token and its corresponding integer index value.\n\n\nmax_tokens\n:  The max number of tokens across all documents. This can be set to None for models that\n  allow different word lengths per mini-batch.\n\n\nembedding_type\n:  The embedding type to use. Set to None to use random embeddings.\n  (Default value: 'glove.6B.100d')\n\n\nembedding_dims\n:  The number of embedding dims to use for representing a word. This argument will be ignored\n  when \nembedding_type\n is set. (Default value: 100)",
             "title": "Sequence Model Builder Factory"
         },
         {
-            "location": "/keras_text.models.token_model/#tokenmodelfactory",
+            "location": "/texcla.models.token_model/#tokenmodelfactory",
             "text": "",
             "title": "TokenModelFactory"
         },
         {
-            "location": "/keras_text.models.token_model/#tokenmodelfactory__init__",
+            "location": "/texcla.models.token_model/#tokenmodelfactory__init__",
             "text": "__init__(self, num_classes, token_index, max_tokens, embedding_type=\"glove.6B.100d\", \\\n    embedding_dims=100, embedding_path=None)  Creates a  TokenModelFactory  instance for building various models that operate over\n(samples, max_tokens) input. The token can be character, word or any other elementary token.  Args:   num_classes :  The number of output classes.  token_index :  The dictionary of token and its corresponding integer index value.  max_tokens :  The max number of tokens across all documents. This can be set to None for models that\n  allow different word lengths per mini-batch.  embedding_type :  The embedding type to use. Set to None to use random embeddings.\n  (Default value: 'glove.6B.100d')  embedding_dims :  The number of embedding dims to use for representing a word. This argument will be ignored\n  when  embedding_type  is set. (Default value: 100)",
             "title": "TokenModelFactory.__init__"
         },
         {
-            "location": "/keras_text.models.sentence_model/",
-            "text": "Source:\n \nkeras_text/models/sentence_model.py#L0\n\n\n\n\nSentenceModelFactory\n\n\n\n\nSentenceModelFactory.\n__init__\n\n\n__init__(self, num_classes, token_index, max_sents, max_tokens, embedding_type=\"glove.6B.100d\", \\\n    embedding_dims=100)\n\n\n\n\nCreates a \nSentenceModelFactory\n instance for building various models that operate over\n(samples, max_sentences, max_tokens) input.\n\n\nArgs:\n\n\n\n\nnum_classes\n:  The number of output classes.\n\n\ntoken_index\n:  The dictionary of token and its corresponding integer index value.\n\n\nmax_sents\n:  The max number of sentences in a document.\n\n\nmax_tokens\n:  The max number of tokens in a sentence.\n\n\nembedding_type\n:  The embedding type to use. Set to None to use random embeddings.\n  (Default value: 'glove.6B.100d')\n\n\nembedding_dims\n:  The number of embedding dims to use for representing a word. This argument will be ignored\n  when \nembedding_type\n is set. (Default value: 100)",
+            "location": "/texcla.models.sentence_model/",
+            "text": "Source:\n \ntexcla/models/sentence_model.py#L0\n\n\n\n\nSentenceModelFactory\n\n\n\n\nSentenceModelFactory.\n__init__\n\n\n__init__(self, num_classes, token_index, max_sents, max_tokens, embedding_type=\"glove.6B.100d\", \\\n    embedding_dims=100)\n\n\n\n\nCreates a \nSentenceModelFactory\n instance for building various models that operate over\n(samples, max_sentences, max_tokens) input.\n\n\nArgs:\n\n\n\n\nnum_classes\n:  The number of output classes.\n\n\ntoken_index\n:  The dictionary of token and its corresponding integer index value.\n\n\nmax_sents\n:  The max number of sentences in a document.\n\n\nmax_tokens\n:  The max number of tokens in a sentence.\n\n\nembedding_type\n:  The embedding type to use. Set to None to use random embeddings.\n  (Default value: 'glove.6B.100d')\n\n\nembedding_dims\n:  The number of embedding dims to use for representing a word. This argument will be ignored\n  when \nembedding_type\n is set. (Default value: 100)",
             "title": "Sentence Model Builder Factory"
         },
         {
-            "location": "/keras_text.models.sentence_model/#sentencemodelfactory",
+            "location": "/texcla.models.sentence_model/#sentencemodelfactory",
             "text": "",
             "title": "SentenceModelFactory"
         },
         {
-            "location": "/keras_text.models.sentence_model/#sentencemodelfactory__init__",
+            "location": "/texcla.models.sentence_model/#sentencemodelfactory__init__",
             "text": "__init__(self, num_classes, token_index, max_sents, max_tokens, embedding_type=\"glove.6B.100d\", \\\n    embedding_dims=100)  Creates a  SentenceModelFactory  instance for building various models that operate over\n(samples, max_sentences, max_tokens) input.  Args:   num_classes :  The number of output classes.  token_index :  The dictionary of token and its corresponding integer index value.  max_sents :  The max number of sentences in a document.  max_tokens :  The max number of tokens in a sentence.  embedding_type :  The embedding type to use. Set to None to use random embeddings.\n  (Default value: 'glove.6B.100d')  embedding_dims :  The number of embedding dims to use for representing a word. This argument will be ignored\n  when  embedding_type  is set. (Default value: 100)",
             "title": "SentenceModelFactory.__init__"
         },
         {
-            "location": "/keras_text.models.layers/",
-            "text": "Source:\n \nkeras_text/models/layers.py#L0\n\n\n\n\nAttentionLayer\n\n\nAttention layer that computes a learned attention over input sequence.\n\n\nFor details, see papers:\n- https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf\n- http://colinraffel.com/publications/iclr2016feed.pdf (fig 1)\n\n\nInput:\n - \nx\n:  Input tensor of shape \n(..., time_steps, features)\n where \nfeatures\n must be static (known).\n\n\nOutput:\n2D tensor of shape \n(..., features)\n. i.e., \ntime_steps\n axis is attended over and reduced.\n\n\nAttentionLayer.built\n\n\nAttentionLayer.input\n\n\nRetrieves the input tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nInput tensor or list of input tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.input_mask\n\n\nRetrieves the input mask tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nInput mask tensor (potentially None) or list of input\n  mask tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.input_shape\n\n\nRetrieves the input shape tuple(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nInput shape tuple\n  (or list of input shape tuples, one tuple per input tensor).\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.losses\n\n\nAttentionLayer.non_trainable_weights\n\n\nAttentionLayer.output\n\n\nRetrieves the output tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nOutput tensor or list of output tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.output_mask\n\n\nRetrieves the output mask tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nOutput mask tensor (potentially None) or list of output\n  mask tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.output_shape\n\n\nRetrieves the output shape tuple(s) of a layer.\n\n\nOnly applicable if the layer has one inbound node,\nor if all inbound nodes have the same output shape.\n\n\nReturns\n\n\nOutput shape tuple\n  (or list of input shape tuples, one tuple per output tensor).\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.trainable_weights\n\n\nAttentionLayer.updates\n\n\nAttentionLayer.weights\n\n\n\n\nAttentionLayer.\n__init__\n\n\n__init__(self, kernel_initializer=\"he_normal\", kernel_regularizer=None, kernel_constraint=None, \\\n    use_bias=True, bias_initializer=\"zeros\", bias_regularizer=None, bias_constraint=None, \\\n    use_context=True, context_initializer=\"he_normal\", context_regularizer=None, \\\n    context_constraint=None, attention_dims=None, **kwargs)\n\n\n\n\nArgs:\n\n\n\n\nattention_dims\n:  The dimensionality of the inner attention calculating neural network.\n  For input \n(32, 10, 300)\n, with \nattention_dims\n of 100, the output is \n(32, 10, 100)\n.\n  i.e., the attended words are 100 dimensional. This is then collapsed via summation to\n  \n(32, 10, 1)\n to indicate the attention weights for 10 words.\n  If set to None, \nfeatures\n dims are used as \nattention_dims\n. (Default value: None)",
+            "location": "/texcla.models.layers/",
+            "text": "Source:\n \ntexcla/models/layers.py#L0\n\n\n\n\nAttentionLayer\n\n\nAttention layer that computes a learned attention over input sequence.\n\n\nFor details, see papers:\n- https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf\n- http://colinraffel.com/publications/iclr2016feed.pdf (fig 1)\n\n\nInput:\n - \nx\n:  Input tensor of shape \n(..., time_steps, features)\n where \nfeatures\n must be static (known).\n\n\nOutput:\n2D tensor of shape \n(..., features)\n. i.e., \ntime_steps\n axis is attended over and reduced.\n\n\nAttentionLayer.built\n\n\nAttentionLayer.input\n\n\nRetrieves the input tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nInput tensor or list of input tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.input_mask\n\n\nRetrieves the input mask tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nInput mask tensor (potentially None) or list of input\n  mask tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.input_shape\n\n\nRetrieves the input shape tuple(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nInput shape tuple\n  (or list of input shape tuples, one tuple per input tensor).\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.losses\n\n\nAttentionLayer.non_trainable_weights\n\n\nAttentionLayer.output\n\n\nRetrieves the output tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nOutput tensor or list of output tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.output_mask\n\n\nRetrieves the output mask tensor(s) of a layer.\n\n\nOnly applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.\n\n\nReturns\n\n\nOutput mask tensor (potentially None) or list of output\n  mask tensors.\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.output_shape\n\n\nRetrieves the output shape tuple(s) of a layer.\n\n\nOnly applicable if the layer has one inbound node,\nor if all inbound nodes have the same output shape.\n\n\nReturns\n\n\nOutput shape tuple\n  (or list of input shape tuples, one tuple per output tensor).\n\n\nRaises\n\n\n\n\nAttributeError\n:  if the layer is connected to\nmore than one incoming layers.\n\n\n\n\nAttentionLayer.trainable_weights\n\n\nAttentionLayer.updates\n\n\nAttentionLayer.weights\n\n\n\n\nAttentionLayer.\n__init__\n\n\n__init__(self, kernel_initializer=\"he_normal\", kernel_regularizer=None, kernel_constraint=None, \\\n    use_bias=True, bias_initializer=\"zeros\", bias_regularizer=None, bias_constraint=None, \\\n    use_context=True, context_initializer=\"he_normal\", context_regularizer=None, \\\n    context_constraint=None, attention_dims=None, **kwargs)\n\n\n\n\nArgs:\n\n\n\n\nattention_dims\n:  The dimensionality of the inner attention calculating neural network.\n  For input \n(32, 10, 300)\n, with \nattention_dims\n of 100, the output is \n(32, 10, 100)\n.\n  i.e., the attended words are 100 dimensional. This is then collapsed via summation to\n  \n(32, 10, 1)\n to indicate the attention weights for 10 words.\n  If set to None, \nfeatures\n dims are used as \nattention_dims\n. (Default value: None)",
             "title": "Custom Layers"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayer",
+            "location": "/texcla.models.layers/#attentionlayer",
             "text": "Attention layer that computes a learned attention over input sequence.  For details, see papers:\n- https://www.cs.cmu.edu/~diyiy/docs/naacl16.pdf\n- http://colinraffel.com/publications/iclr2016feed.pdf (fig 1)  Input:\n -  x :  Input tensor of shape  (..., time_steps, features)  where  features  must be static (known).  Output:\n2D tensor of shape  (..., features) . i.e.,  time_steps  axis is attended over and reduced.",
             "title": "AttentionLayer"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerbuilt",
+            "location": "/texcla.models.layers/#attentionlayerbuilt",
             "text": "",
             "title": "AttentionLayer.built"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerinput",
+            "location": "/texcla.models.layers/#attentionlayerinput",
             "text": "Retrieves the input tensor(s) of a layer.  Only applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.",
             "title": "AttentionLayer.input"
         },
         {
-            "location": "/keras_text.models.layers/#returns",
+            "location": "/texcla.models.layers/#returns",
             "text": "Input tensor or list of input tensors.",
             "title": "Returns"
         },
         {
-            "location": "/keras_text.models.layers/#raises",
+            "location": "/texcla.models.layers/#raises",
             "text": "AttributeError :  if the layer is connected to\nmore than one incoming layers.",
             "title": "Raises"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerinput_mask",
+            "location": "/texcla.models.layers/#attentionlayerinput_mask",
             "text": "Retrieves the input mask tensor(s) of a layer.  Only applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.",
             "title": "AttentionLayer.input_mask"
         },
         {
-            "location": "/keras_text.models.layers/#returns_1",
+            "location": "/texcla.models.layers/#returns_1",
             "text": "Input mask tensor (potentially None) or list of input\n  mask tensors.",
             "title": "Returns"
         },
         {
-            "location": "/keras_text.models.layers/#raises_1",
+            "location": "/texcla.models.layers/#raises_1",
             "text": "AttributeError :  if the layer is connected to\nmore than one incoming layers.",
             "title": "Raises"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerinput_shape",
+            "location": "/texcla.models.layers/#attentionlayerinput_shape",
             "text": "Retrieves the input shape tuple(s) of a layer.  Only applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.",
             "title": "AttentionLayer.input_shape"
         },
         {
-            "location": "/keras_text.models.layers/#returns_2",
+            "location": "/texcla.models.layers/#returns_2",
             "text": "Input shape tuple\n  (or list of input shape tuples, one tuple per input tensor).",
             "title": "Returns"
         },
         {
-            "location": "/keras_text.models.layers/#raises_2",
+            "location": "/texcla.models.layers/#raises_2",
             "text": "AttributeError :  if the layer is connected to\nmore than one incoming layers.",
             "title": "Raises"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerlosses",
+            "location": "/texcla.models.layers/#attentionlayerlosses",
             "text": "",
             "title": "AttentionLayer.losses"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayernon_trainable_weights",
+            "location": "/texcla.models.layers/#attentionlayernon_trainable_weights",
             "text": "",
             "title": "AttentionLayer.non_trainable_weights"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayeroutput",
+            "location": "/texcla.models.layers/#attentionlayeroutput",
             "text": "Retrieves the output tensor(s) of a layer.  Only applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.",
             "title": "AttentionLayer.output"
         },
         {
-            "location": "/keras_text.models.layers/#returns_3",
+            "location": "/texcla.models.layers/#returns_3",
             "text": "Output tensor or list of output tensors.",
             "title": "Returns"
         },
         {
-            "location": "/keras_text.models.layers/#raises_3",
+            "location": "/texcla.models.layers/#raises_3",
             "text": "AttributeError :  if the layer is connected to\nmore than one incoming layers.",
             "title": "Raises"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayeroutput_mask",
+            "location": "/texcla.models.layers/#attentionlayeroutput_mask",
             "text": "Retrieves the output mask tensor(s) of a layer.  Only applicable if the layer has exactly one inbound node,\ni.e. if it is connected to one incoming layer.",
             "title": "AttentionLayer.output_mask"
         },
         {
-            "location": "/keras_text.models.layers/#returns_4",
+            "location": "/texcla.models.layers/#returns_4",
             "text": "Output mask tensor (potentially None) or list of output\n  mask tensors.",
             "title": "Returns"
         },
         {
-            "location": "/keras_text.models.layers/#raises_4",
+            "location": "/texcla.models.layers/#raises_4",
             "text": "AttributeError :  if the layer is connected to\nmore than one incoming layers.",
             "title": "Raises"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayeroutput_shape",
+            "location": "/texcla.models.layers/#attentionlayeroutput_shape",
             "text": "Retrieves the output shape tuple(s) of a layer.  Only applicable if the layer has one inbound node,\nor if all inbound nodes have the same output shape.",
             "title": "AttentionLayer.output_shape"
         },
         {
-            "location": "/keras_text.models.layers/#returns_5",
+            "location": "/texcla.models.layers/#returns_5",
             "text": "Output shape tuple\n  (or list of input shape tuples, one tuple per output tensor).",
             "title": "Returns"
         },
         {
-            "location": "/keras_text.models.layers/#raises_5",
+            "location": "/texcla.models.layers/#raises_5",
             "text": "AttributeError :  if the layer is connected to\nmore than one incoming layers.",
             "title": "Raises"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayertrainable_weights",
+            "location": "/texcla.models.layers/#attentionlayertrainable_weights",
             "text": "",
             "title": "AttentionLayer.trainable_weights"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerupdates",
+            "location": "/texcla.models.layers/#attentionlayerupdates",
             "text": "",
             "title": "AttentionLayer.updates"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayerweights",
+            "location": "/texcla.models.layers/#attentionlayerweights",
             "text": "",
             "title": "AttentionLayer.weights"
         },
         {
-            "location": "/keras_text.models.layers/#attentionlayer__init__",
+            "location": "/texcla.models.layers/#attentionlayer__init__",
             "text": "__init__(self, kernel_initializer=\"he_normal\", kernel_regularizer=None, kernel_constraint=None, \\\n    use_bias=True, bias_initializer=\"zeros\", bias_regularizer=None, bias_constraint=None, \\\n    use_context=True, context_initializer=\"he_normal\", context_regularizer=None, \\\n    context_constraint=None, attention_dims=None, **kwargs)  Args:   attention_dims :  The dimensionality of the inner attention calculating neural network.\n  For input  (32, 10, 300) , with  attention_dims  of 100, the output is  (32, 10, 100) .\n  i.e., the attended words are 100 dimensional. This is then collapsed via summation to\n   (32, 10, 1)  to indicate the attention weights for 10 words.\n  If set to None,  features  dims are used as  attention_dims . (Default value: None)",
             "title": "AttentionLayer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/",
-            "text": "Source:\n \nkeras_text/preprocessing/word_tokenizer.py#L0\n\n\n\n\nSpacyTokenizer\n\n\nSpacyTokenizer.has_vocab\n\n\nSpacyTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSpacyTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSpacyTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSpacyTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSpacyTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, lemmatize=False, remove_punct=True, remove_digits=True, \\\n    remove_stop_words=False, exclude_oov=False, exclude_pos_tags=None, \\\n    exclude_entities=['PERSON'])\n\n\n\n\nEncodes text into \n(samples, words)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nlemmatize\n:  Lemmatizes words when set to True. This also makes the word lower case\n  irrespective if the \nlower\n setting. (Default value: False)\n\n\nremove_punct\n:  Removes punct words if True. (Default value: True)\n\n\nremove_digits\n:  Removes digit words if True. (Default value: True)\n\n\nremove_stop_words\n:  Removes stop words if True. (Default value: False)\n\n\nexclude_oov\n:  Exclude words that are out of spacy embedding's vocabulary.\n  By default, GloVe 1 million, 300 dim are used. You can override spacy vocabulary with a custom\n  embedding to change this. (Default value: False)\n\n\nexclude_pos_tags\n:  A list of parts of speech tags to exclude. Can be any of spacy.parts_of_speech.IDS\n  (Default value: None)\n\n\nexclude_entities\n:  A list of entity types to be excluded.\n  Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types\n  (Default value: ['PERSON'])\n\n\n\n\n\n\nTwokenizeTokenizer\n\n\nTwokenizeTokenizer.has_vocab\n\n\nTwokenizeTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nTwokenizeTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nTwokenizeTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nTwokenizeTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nTwokenizeTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True)\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.\n\n\n\n\n\n\nSimpleTokenizer\n\n\nSimpleTokenizer.has_vocab\n\n\nSimpleTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSimpleTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSimpleTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSimpleTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSimpleTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True)\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.\n\n\n\n\n\n\nFastTextWikiTokenizer\n\n\nFastTextWikiTokenizer.has_vocab\n\n\nFastTextWikiTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nFastTextWikiTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nFastTextWikiTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nFastTextWikiTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nFastTextWikiTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\")\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.",
+            "location": "/texcla.preprocessing.word_tokenizer/",
+            "text": "Source:\n \ntexcla/preprocessing/word_tokenizer.py#L0\n\n\n\n\nSpacyTokenizer\n\n\nSpacyTokenizer.has_vocab\n\n\nSpacyTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSpacyTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSpacyTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSpacyTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSpacyTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, lemmatize=False, remove_punct=True, remove_digits=True, \\\n    remove_stop_words=False, exclude_oov=False, exclude_pos_tags=None, \\\n    exclude_entities=['PERSON'])\n\n\n\n\nEncodes text into \n(samples, words)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nlemmatize\n:  Lemmatizes words when set to True. This also makes the word lower case\n  irrespective if the \nlower\n setting. (Default value: False)\n\n\nremove_punct\n:  Removes punct words if True. (Default value: True)\n\n\nremove_digits\n:  Removes digit words if True. (Default value: True)\n\n\nremove_stop_words\n:  Removes stop words if True. (Default value: False)\n\n\nexclude_oov\n:  Exclude words that are out of spacy embedding's vocabulary.\n  By default, GloVe 1 million, 300 dim are used. You can override spacy vocabulary with a custom\n  embedding to change this. (Default value: False)\n\n\nexclude_pos_tags\n:  A list of parts of speech tags to exclude. Can be any of spacy.parts_of_speech.IDS\n  (Default value: None)\n\n\nexclude_entities\n:  A list of entity types to be excluded.\n  Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types\n  (Default value: ['PERSON'])\n\n\n\n\n\n\nTwokenizeTokenizer\n\n\nTwokenizeTokenizer.has_vocab\n\n\nTwokenizeTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nTwokenizeTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nTwokenizeTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nTwokenizeTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nTwokenizeTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True)\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.\n\n\n\n\n\n\nSimpleTokenizer\n\n\nSimpleTokenizer.has_vocab\n\n\nSimpleTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSimpleTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSimpleTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSimpleTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSimpleTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True)\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.\n\n\n\n\n\n\nFastTextWikiTokenizer\n\n\nFastTextWikiTokenizer.has_vocab\n\n\nFastTextWikiTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nFastTextWikiTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nFastTextWikiTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nFastTextWikiTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nFastTextWikiTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\")\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.",
             "title": "Word Tokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizer",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizer",
             "text": "",
             "title": "SpacyTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizerhas_vocab",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizerhas_vocab",
             "text": "",
             "title": "SpacyTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizernum_texts",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "SpacyTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizernum_tokens",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "SpacyTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizertoken_counts",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "SpacyTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizertoken_index",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "SpacyTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#spacytokenizer__init__",
+            "location": "/texcla.preprocessing.word_tokenizer/#spacytokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True, lemmatize=False, remove_punct=True, remove_digits=True, \\\n    remove_stop_words=False, exclude_oov=False, exclude_pos_tags=None, \\\n    exclude_entities=['PERSON'])  Encodes text into  (samples, words)  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  lemmatize :  Lemmatizes words when set to True. This also makes the word lower case\n  irrespective if the  lower  setting. (Default value: False)  remove_punct :  Removes punct words if True. (Default value: True)  remove_digits :  Removes digit words if True. (Default value: True)  remove_stop_words :  Removes stop words if True. (Default value: False)  exclude_oov :  Exclude words that are out of spacy embedding's vocabulary.\n  By default, GloVe 1 million, 300 dim are used. You can override spacy vocabulary with a custom\n  embedding to change this. (Default value: False)  exclude_pos_tags :  A list of parts of speech tags to exclude. Can be any of spacy.parts_of_speech.IDS\n  (Default value: None)  exclude_entities :  A list of entity types to be excluded.\n  Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types\n  (Default value: ['PERSON'])",
             "title": "SpacyTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizer",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizer",
             "text": "",
             "title": "TwokenizeTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizerhas_vocab",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizerhas_vocab",
             "text": "",
             "title": "TwokenizeTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizernum_texts",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "TwokenizeTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizernum_tokens",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "TwokenizeTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizertoken_counts",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "TwokenizeTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizertoken_index",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "TwokenizeTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#twokenizetokenizer__init__",
+            "location": "/texcla.preprocessing.word_tokenizer/#twokenizetokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True)  Encodes text into  (samples, aux_indices..., token)  where each token is mapped to a unique index starting\nfrom  i .  i  is the number of special tokens.  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  special_token :  The tokens that are reserved. Default: [' ', ' '],   for unknown words and   for padding token.",
             "title": "TwokenizeTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizer",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizer",
             "text": "",
             "title": "SimpleTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizerhas_vocab",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizerhas_vocab",
             "text": "",
             "title": "SimpleTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizernum_texts",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "SimpleTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizernum_tokens",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "SimpleTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizertoken_counts",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "SimpleTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizertoken_index",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "SimpleTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#simpletokenizer__init__",
+            "location": "/texcla.preprocessing.word_tokenizer/#simpletokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True)  Encodes text into  (samples, aux_indices..., token)  where each token is mapped to a unique index starting\nfrom  i .  i  is the number of special tokens.  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  special_token :  The tokens that are reserved. Default: [' ', ' '],   for unknown words and   for padding token.",
             "title": "SimpleTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizer",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizer",
             "text": "",
             "title": "FastTextWikiTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizerhas_vocab",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizerhas_vocab",
             "text": "",
             "title": "FastTextWikiTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizernum_texts",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "FastTextWikiTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizernum_tokens",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "FastTextWikiTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizertoken_counts",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "FastTextWikiTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizertoken_index",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "FastTextWikiTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.word_tokenizer/#fasttextwikitokenizer__init__",
+            "location": "/texcla.preprocessing.word_tokenizer/#fasttextwikitokenizer__init__",
             "text": "__init__(self, lang=\"en\")  Encodes text into  (samples, aux_indices..., token)  where each token is mapped to a unique index starting\nfrom  i .  i  is the number of special tokens.  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  special_token :  The tokens that are reserved. Default: [' ', ' '],   for unknown words and   for padding token.",
             "title": "FastTextWikiTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/",
-            "text": "Source:\n \nkeras_text/preprocessing/sentence_tokenizer.py#L0\n\n\n\n\nSpacySentenceTokenizer\n\n\nSpacySentenceTokenizer.has_vocab\n\n\nSpacySentenceTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSpacySentenceTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSpacySentenceTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSpacySentenceTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSpacySentenceTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, lemmatize=False, remove_punct=True, remove_digits=True, \\\n    remove_stop_words=False, exclude_oov=False, exclude_pos_tags=None, \\\n    exclude_entities=['PERSON'])\n\n\n\n\nEncodes text into \n(samples, sentences, words)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nlemmatize\n:  Lemmatizes words when set to True. This also makes the word lower case\n  irrespective if the \nlower\n setting. (Default value: False)\n\n\nremove_punct\n:  Removes punct words if True. (Default value: True)\n\n\nremove_digits\n:  Removes digit words if True. (Default value: True)\n\n\nremove_stop_words\n:  Removes stop words if True. (Default value: False)\n\n\nexclude_oov\n:  Exclude words that are out of spacy embedding's vocabulary.\n  By default, GloVe 1 million, 300 dim are used. You can override spacy vocabulary with a custom\n  embedding to change this. (Default value: False)\n\n\nexclude_pos_tags\n:  A list of parts of speech tags to exclude. Can be any of spacy.parts_of_speech.IDS\n  (Default value: None)\n\n\nexclude_entities\n:  A list of entity types to be excluded.\n  Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types\n  (Default value: ['PERSON'])",
+            "location": "/texcla.preprocessing.sentence_tokenizer/",
+            "text": "Source:\n \ntexcla/preprocessing/sentence_tokenizer.py#L0\n\n\n\n\nSpacySentenceTokenizer\n\n\nSpacySentenceTokenizer.has_vocab\n\n\nSpacySentenceTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSpacySentenceTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSpacySentenceTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSpacySentenceTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSpacySentenceTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, lemmatize=False, remove_punct=True, remove_digits=True, \\\n    remove_stop_words=False, exclude_oov=False, exclude_pos_tags=None, \\\n    exclude_entities=['PERSON'])\n\n\n\n\nEncodes text into \n(samples, sentences, words)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nlemmatize\n:  Lemmatizes words when set to True. This also makes the word lower case\n  irrespective if the \nlower\n setting. (Default value: False)\n\n\nremove_punct\n:  Removes punct words if True. (Default value: True)\n\n\nremove_digits\n:  Removes digit words if True. (Default value: True)\n\n\nremove_stop_words\n:  Removes stop words if True. (Default value: False)\n\n\nexclude_oov\n:  Exclude words that are out of spacy embedding's vocabulary.\n  By default, GloVe 1 million, 300 dim are used. You can override spacy vocabulary with a custom\n  embedding to change this. (Default value: False)\n\n\nexclude_pos_tags\n:  A list of parts of speech tags to exclude. Can be any of spacy.parts_of_speech.IDS\n  (Default value: None)\n\n\nexclude_entities\n:  A list of entity types to be excluded.\n  Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types\n  (Default value: ['PERSON'])",
             "title": "Sentence Tokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizer",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizer",
             "text": "",
             "title": "SpacySentenceTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizerhas_vocab",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizerhas_vocab",
             "text": "",
             "title": "SpacySentenceTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizernum_texts",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "SpacySentenceTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizernum_tokens",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "SpacySentenceTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizertoken_counts",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "SpacySentenceTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizertoken_index",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "SpacySentenceTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.sentence_tokenizer/#spacysentencetokenizer__init__",
+            "location": "/texcla.preprocessing.sentence_tokenizer/#spacysentencetokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True, lemmatize=False, remove_punct=True, remove_digits=True, \\\n    remove_stop_words=False, exclude_oov=False, exclude_pos_tags=None, \\\n    exclude_entities=['PERSON'])  Encodes text into  (samples, sentences, words)  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  lemmatize :  Lemmatizes words when set to True. This also makes the word lower case\n  irrespective if the  lower  setting. (Default value: False)  remove_punct :  Removes punct words if True. (Default value: True)  remove_digits :  Removes digit words if True. (Default value: True)  remove_stop_words :  Removes stop words if True. (Default value: False)  exclude_oov :  Exclude words that are out of spacy embedding's vocabulary.\n  By default, GloVe 1 million, 300 dim are used. You can override spacy vocabulary with a custom\n  embedding to change this. (Default value: False)  exclude_pos_tags :  A list of parts of speech tags to exclude. Can be any of spacy.parts_of_speech.IDS\n  (Default value: None)  exclude_entities :  A list of entity types to be excluded.\n  Supported entity types can be found here: https://spacy.io/docs/usage/entity-recognition#entity-types\n  (Default value: ['PERSON'])",
             "title": "SpacySentenceTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/",
-            "text": "Source:\n \nkeras_text/preprocessing/tokenizer.py#L0\n\n\n\n\nTokenizer\n\n\nTokenizer.has_vocab\n\n\nTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, special_token=['<PAD>', '<UNK>'])\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.",
+            "location": "/texcla.preprocessing.tokenizer/",
+            "text": "Source:\n \ntexcla/preprocessing/tokenizer.py#L0\n\n\n\n\nTokenizer\n\n\nTokenizer.has_vocab\n\n\nTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, special_token=['<PAD>', '<UNK>'])\n\n\n\n\nEncodes text into \n(samples, aux_indices..., token)\n where each token is mapped to a unique index starting\nfrom \ni\n. \ni\n is the number of special tokens.\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\nspecial_token\n:  The tokens that are reserved. Default: ['\n', '\n'], \n for unknown words and \n for padding token.",
             "title": "Tokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizer",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizer",
             "text": "",
             "title": "Tokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizerhas_vocab",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizerhas_vocab",
             "text": "",
             "title": "Tokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizernum_texts",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "Tokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizernum_tokens",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "Tokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizertoken_counts",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "Tokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizertoken_index",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "Tokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.tokenizer/#tokenizer__init__",
+            "location": "/texcla.preprocessing.tokenizer/#tokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True, special_token=['<PAD>', '<UNK>'])  Encodes text into  (samples, aux_indices..., token)  where each token is mapped to a unique index starting\nfrom  i .  i  is the number of special tokens.  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  special_token :  The tokens that are reserved. Default: [' ', ' '],   for unknown words and   for padding token.",
             "title": "Tokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/",
-            "text": "Source:\n \nkeras_text/preprocessing/char_tokenizer.py#L0\n\n\n\n\nCharTokenizer\n\n\nCharTokenizer.has_vocab\n\n\nCharTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nCharTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nCharTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nCharTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nCharTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, charset=None)\n\n\n\n\nEncodes text into \n(samples, characters)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\ncharset\n:  The character set to use. For example \ncharset = 'abc123'\n. If None, all characters will be used.\n  (Default value: None)\n\n\n\n\n\n\nSentenceCharTokenizer\n\n\nSentenceCharTokenizer.has_vocab\n\n\nSentenceCharTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSentenceCharTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSentenceCharTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSentenceCharTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSentenceCharTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, charset=None)\n\n\n\n\nEncodes text into \n(samples, sentences, characters)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\ncharset\n:  The character set to use. For example \ncharset = 'abc123'\n. If None, all characters will be used.\n  (Default value: None)",
+            "location": "/texcla.preprocessing.char_tokenizer/",
+            "text": "Source:\n \ntexcla/preprocessing/char_tokenizer.py#L0\n\n\n\n\nCharTokenizer\n\n\nCharTokenizer.has_vocab\n\n\nCharTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nCharTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nCharTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nCharTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nCharTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, charset=None)\n\n\n\n\nEncodes text into \n(samples, characters)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\ncharset\n:  The character set to use. For example \ncharset = 'abc123'\n. If None, all characters will be used.\n  (Default value: None)\n\n\n\n\n\n\nSentenceCharTokenizer\n\n\nSentenceCharTokenizer.has_vocab\n\n\nSentenceCharTokenizer.num_texts\n\n\nThe number of texts used to build the vocabulary.\n\n\nSentenceCharTokenizer.num_tokens\n\n\nNumber of unique tokens for use in enccoding/decoding.\nThis can change with calls to \napply_encoding_options\n.\n\n\nSentenceCharTokenizer.token_counts\n\n\nDictionary of token -> count values for the text corpus used to \nbuild_vocab\n.\n\n\nSentenceCharTokenizer.token_index\n\n\nDictionary of token -> idx mappings. This can change with calls to \napply_encoding_options\n.\n\n\n\n\nSentenceCharTokenizer.\n__init__\n\n\n__init__(self, lang=\"en\", lower=True, charset=None)\n\n\n\n\nEncodes text into \n(samples, sentences, characters)\n\n\nArgs:\n\n\n\n\nlang\n:  The spacy language to use. (Default value: 'en')\n\n\nlower\n:  Lower cases the tokens if True. (Default value: True)\n\n\ncharset\n:  The character set to use. For example \ncharset = 'abc123'\n. If None, all characters will be used.\n  (Default value: None)",
             "title": "Char Tokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizer",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizer",
             "text": "",
             "title": "CharTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizerhas_vocab",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizerhas_vocab",
             "text": "",
             "title": "CharTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizernum_texts",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "CharTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizernum_tokens",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "CharTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizertoken_counts",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "CharTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizertoken_index",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "CharTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#chartokenizer__init__",
+            "location": "/texcla.preprocessing.char_tokenizer/#chartokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True, charset=None)  Encodes text into  (samples, characters)  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  charset :  The character set to use. For example  charset = 'abc123' . If None, all characters will be used.\n  (Default value: None)",
             "title": "CharTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizer",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizer",
             "text": "",
             "title": "SentenceCharTokenizer"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizerhas_vocab",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizerhas_vocab",
             "text": "",
             "title": "SentenceCharTokenizer.has_vocab"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizernum_texts",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizernum_texts",
             "text": "The number of texts used to build the vocabulary.",
             "title": "SentenceCharTokenizer.num_texts"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizernum_tokens",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizernum_tokens",
             "text": "Number of unique tokens for use in enccoding/decoding.\nThis can change with calls to  apply_encoding_options .",
             "title": "SentenceCharTokenizer.num_tokens"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizertoken_counts",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizertoken_counts",
             "text": "Dictionary of token -> count values for the text corpus used to  build_vocab .",
             "title": "SentenceCharTokenizer.token_counts"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizertoken_index",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizertoken_index",
             "text": "Dictionary of token -> idx mappings. This can change with calls to  apply_encoding_options .",
             "title": "SentenceCharTokenizer.token_index"
         },
         {
-            "location": "/keras_text.preprocessing.char_tokenizer/#sentencechartokenizer__init__",
+            "location": "/texcla.preprocessing.char_tokenizer/#sentencechartokenizer__init__",
             "text": "__init__(self, lang=\"en\", lower=True, charset=None)  Encodes text into  (samples, sentences, characters)  Args:   lang :  The spacy language to use. (Default value: 'en')  lower :  Lower cases the tokens if True. (Default value: True)  charset :  The character set to use. For example  charset = 'abc123' . If None, all characters will be used.\n  (Default value: None)",
             "title": "SentenceCharTokenizer.__init__"
         },
         {
-            "location": "/keras_text.preprocessing.utils/",
-            "text": "Source:\n \nkeras_text/preprocessing/utils.py#L0\n\n\nGlobal Variables\n\n\n\n\nutils\n\n\n\n\n\n\nunicodify\n\n\nunicodify(texts)\n\n\n\n\nEncodes all text sequences as unicode. This is a python2 hassle.\n\n\nArgs:\n\n\n\n\ntexts\n:  The sequence of texts.\n\n\n\n\nReturns:\n\n\nUnicode encoded sequences.",
+            "location": "/texcla.preprocessing.utils/",
+            "text": "Source:\n \ntexcla/preprocessing/utils.py#L0\n\n\nGlobal Variables\n\n\n\n\nutils\n\n\n\n\n\n\nunicodify\n\n\nunicodify(texts)\n\n\n\n\nEncodes all text sequences as unicode. This is a python2 hassle.\n\n\nArgs:\n\n\n\n\ntexts\n:  The sequence of texts.\n\n\n\n\nReturns:\n\n\nUnicode encoded sequences.",
             "title": "Utils"
         },
         {
-            "location": "/keras_text.preprocessing.utils/#global-variables",
+            "location": "/texcla.preprocessing.utils/#global-variables",
             "text": "utils",
             "title": "Global Variables"
         },
         {
-            "location": "/keras_text.preprocessing.utils/#unicodify",
+            "location": "/texcla.preprocessing.utils/#unicodify",
             "text": "unicodify(texts)  Encodes all text sequences as unicode. This is a python2 hassle.  Args:   texts :  The sequence of texts.   Returns:  Unicode encoded sequences.",
             "title": "unicodify"
         },
         {
-            "location": "/keras_text.embeddings/",
-            "text": "Source:\n \nkeras_text/embeddings.py#L0\n\n\n\n\nbuild_embedding_weights\n\n\nbuild_embedding_weights(word_index, embeddings_index)\n\n\n\n\nBuilds an embedding matrix for all words in vocab using embeddings_index\n\n\n\n\nbuild_fasttext_wiki_embedding_obj\n\n\nbuild_fasttext_wiki_embedding_obj(embedding_type)\n\n\n\n\nFastText pre-trained word vectors for 294 languages, with 300 dimensions, trained on Wikipedia. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. It's implemented as 'FasttextWikiTokenizer'. More information: \nhttps://fasttext.cc/docs/en/pretrained-vectors.html\n.\n\n\nArgs:\n\n\n\n\nembedding_type\n:  A string in the format \nfastext.wiki.$LANG_CODE\n. e.g. \nfasttext.wiki.de\n or \nfasttext.wiki.es\n\n\nReturns:\n\n\n\n\nObject with the URL and filename used later on for downloading the file.\n\n\n\n\nbuild_fasttext_cc_embedding_obj\n\n\nbuild_fasttext_cc_embedding_obj(embedding_type)\n\n\n\n\nFastText pre-trained word vectors for 157 languages, with 300 dimensions, trained on Common Crawl and Wikipedia. Released in 2018, it succeesed the 2017 FastText Wikipedia embeddings. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. This information and more can be find on their Website: \nhttps://fasttext.cc/docs/en/crawl-vectors.html\n.\n\n\nArgs:\n\n\n\n\nembedding_type\n:  A string in the format \nfastext.cc.$LANG_CODE\n. e.g. \nfasttext.cc.de\n or \nfasttext.cc.es\n\n\nReturns:\n\n\n\n\nObject with the URL and filename used later on for downloading the file.\n\n\n\n\nget_embedding_type\n\n\nget_embedding_type(embedding_type)\n\n\n\n\n\n\nget_embeddings_index\n\n\nget_embeddings_index(embedding_type=\"glove.42B.300d\", embedding_path=None, \\\n    embedding_dims=None)\n\n\n\n\nRetrieves embeddings index from embedding name or path. Will automatically download and cache as needed.\n\n\nArgs:\n\n\n\n\nembedding_type\n:  The embedding type to load.\n\n\nembedding_path\n:  Path to a local embedding to use instead of the embedding type. Ignores \nembedding_type\n if specified.\n\n\n\n\nReturns:\n\n\nThe embeddings indexed by word.",
+            "location": "/texcla.embeddings/",
+            "text": "Source:\n \ntexcla/embeddings.py#L0\n\n\n\n\nbuild_embedding_weights\n\n\nbuild_embedding_weights(word_index, embeddings_index)\n\n\n\n\nBuilds an embedding matrix for all words in vocab using embeddings_index\n\n\n\n\nbuild_fasttext_wiki_embedding_obj\n\n\nbuild_fasttext_wiki_embedding_obj(embedding_type)\n\n\n\n\nFastText pre-trained word vectors for 294 languages, with 300 dimensions, trained on Wikipedia. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. It's implemented as 'FasttextWikiTokenizer'. More information: \nhttps://fasttext.cc/docs/en/pretrained-vectors.html\n.\n\n\nArgs:\n\n\n\n\nembedding_type\n:  A string in the format \nfastext.wiki.$LANG_CODE\n. e.g. \nfasttext.wiki.de\n or \nfasttext.wiki.es\n\n\nReturns:\n\n\n\n\nObject with the URL and filename used later on for downloading the file.\n\n\n\n\nbuild_fasttext_cc_embedding_obj\n\n\nbuild_fasttext_cc_embedding_obj(embedding_type)\n\n\n\n\nFastText pre-trained word vectors for 157 languages, with 300 dimensions, trained on Common Crawl and Wikipedia. Released in 2018, it succeesed the 2017 FastText Wikipedia embeddings. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. This information and more can be find on their Website: \nhttps://fasttext.cc/docs/en/crawl-vectors.html\n.\n\n\nArgs:\n\n\n\n\nembedding_type\n:  A string in the format \nfastext.cc.$LANG_CODE\n. e.g. \nfasttext.cc.de\n or \nfasttext.cc.es\n\n\nReturns:\n\n\n\n\nObject with the URL and filename used later on for downloading the file.\n\n\n\n\nget_embedding_type\n\n\nget_embedding_type(embedding_type)\n\n\n\n\n\n\nget_embeddings_index\n\n\nget_embeddings_index(embedding_type=\"glove.42B.300d\", embedding_path=None, \\\n    embedding_dims=None)\n\n\n\n\nRetrieves embeddings index from embedding name or path. Will automatically download and cache as needed.\n\n\nArgs:\n\n\n\n\nembedding_type\n:  The embedding type to load.\n\n\nembedding_path\n:  Path to a local embedding to use instead of the embedding type. Ignores \nembedding_type\n if specified.\n\n\n\n\nReturns:\n\n\nThe embeddings indexed by word.",
             "title": "Embeddings"
         },
         {
-            "location": "/keras_text.embeddings/#build_embedding_weights",
+            "location": "/texcla.embeddings/#build_embedding_weights",
             "text": "build_embedding_weights(word_index, embeddings_index)  Builds an embedding matrix for all words in vocab using embeddings_index",
             "title": "build_embedding_weights"
         },
         {
-            "location": "/keras_text.embeddings/#build_fasttext_wiki_embedding_obj",
+            "location": "/texcla.embeddings/#build_fasttext_wiki_embedding_obj",
             "text": "build_fasttext_wiki_embedding_obj(embedding_type)  FastText pre-trained word vectors for 294 languages, with 300 dimensions, trained on Wikipedia. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. It's implemented as 'FasttextWikiTokenizer'. More information:  https://fasttext.cc/docs/en/pretrained-vectors.html .  Args:   embedding_type :  A string in the format  fastext.wiki.$LANG_CODE . e.g.  fasttext.wiki.de  or  fasttext.wiki.es  Returns:   Object with the URL and filename used later on for downloading the file.",
             "title": "build_fasttext_wiki_embedding_obj"
         },
         {
-            "location": "/keras_text.embeddings/#build_fasttext_cc_embedding_obj",
+            "location": "/texcla.embeddings/#build_fasttext_cc_embedding_obj",
             "text": "build_fasttext_cc_embedding_obj(embedding_type)  FastText pre-trained word vectors for 157 languages, with 300 dimensions, trained on Common Crawl and Wikipedia. Released in 2018, it succeesed the 2017 FastText Wikipedia embeddings. It's recommended to use the same tokenizer for your data that was used to construct the embeddings. This information and more can be find on their Website:  https://fasttext.cc/docs/en/crawl-vectors.html .  Args:   embedding_type :  A string in the format  fastext.cc.$LANG_CODE . e.g.  fasttext.cc.de  or  fasttext.cc.es  Returns:   Object with the URL and filename used later on for downloading the file.",
             "title": "build_fasttext_cc_embedding_obj"
         },
         {
-            "location": "/keras_text.embeddings/#get_embedding_type",
+            "location": "/texcla.embeddings/#get_embedding_type",
             "text": "get_embedding_type(embedding_type)",
             "title": "get_embedding_type"
         },
         {
-            "location": "/keras_text.embeddings/#get_embeddings_index",
+            "location": "/texcla.embeddings/#get_embeddings_index",
             "text": "get_embeddings_index(embedding_type=\"glove.42B.300d\", embedding_path=None, \\\n    embedding_dims=None)  Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.  Args:   embedding_type :  The embedding type to load.  embedding_path :  Path to a local embedding to use instead of the embedding type. Ignores  embedding_type  if specified.   Returns:  The embeddings indexed by word.",
             "title": "get_embeddings_index"
         },
         {
-            "location": "/keras_text.experiment/",
-            "text": "Source:\n \nkeras_text/experiment.py#L0\n\n\n\n\ncreate_experiment_folder\n\n\ncreate_experiment_folder(base_dir, model, lr, batch_size)\n\n\n\n\n\n\ncopy_called_file\n\n\ncopy_called_file(exp_path)\n\n\n\n\n\n\ncreate_callbacks\n\n\ncreate_callbacks(exp_path, patience)\n\n\n\n\n\n\ntrain\n\n\ntrain(fit_args, model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patience=10, \\\n    base_dir=\"experiments\")\n\n\n\n\n\n\nload_csv\n\n\nload_csv(data_path=None, text_col=\"text\", class_col=\"class\", limit=None)\n\n\n\n\n\n\nsetup_data\n\n\nsetup_data(tokenizer, proc_data_path, max_len=400, load_csv_args={})",
+            "location": "/texcla.experiment/",
+            "text": "Source:\n \ntexcla/experiment.py#L0\n\n\n\n\ncreate_experiment_folder\n\n\ncreate_experiment_folder(base_dir, model, lr, batch_size)\n\n\n\n\n\n\ncopy_called_file\n\n\ncopy_called_file(exp_path)\n\n\n\n\n\n\ncreate_callbacks\n\n\ncreate_callbacks(exp_path, patience)\n\n\n\n\n\n\ntrain\n\n\ntrain(model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patience=10, \\\n    base_dir=\"experiments\", **fit_args)\n\n\n\n\n\n\nload_csv\n\n\nload_csv(data_path=None, text_col=\"text\", class_col=\"class\", limit=None)\n\n\n\n\n\n\nprocess_save\n\n\nprocess_save(X, y, tokenizer, proc_data_path, max_len=400, save_tokenizer=True)\n\n\n\n\nProcess text and save as Dataset\n\n\n\n\nsetup_data\n\n\nsetup_data(X, y, tokenizer, proc_data_path, **kwargs)\n\n\n\n\nSetup data\n\n\nArgs:\n\n\n\n\nX\n:  text data,\n\n\ny\n:  data labels,\n\n\ntokenizer\n:  A Tokenizer instance\n\n\nproc_data_path\n:  Path for the processed data\n\n\n\n\n\n\nsplit_data\n\n\nsplit_data(X, y, ratio=(0.8, 0.1, 0.1))\n\n\n\n\nSplits data into a training, validation, and test set.\n\n\nArgs:\n\n\n\n\nX\n:  text data\n\n\ny\n:  data labels\n\n\nratio\n:  the ratio for splitting. Default: (0.8, 0.1, 0.1)\n\n\n\n\nReturns:\n\n\nsplit data: X_train, X_val, X_test, y_train, y_val, y_test\n\n\n\n\nsetup_data_split\n\n\nsetup_data_split(X, y, tokenizer, proc_data_dir, **kwargs)\n\n\n\n\nSetup data while splitting into a training, validation, and test set.\n\n\nArgs:\n\n\n\n\nX\n:  text data,\n\n\ny\n:  data labels,\n\n\ntokenizer\n:  A Tokenizer instance\n\n\nproc_data_dir\n:  Directory for the split and processed data\n\n\n\n\n\n\nload_data_split\n\n\nload_data_split(proc_data_dir)\n\n\n\n\nLoads a split dataset\n\n\nArgs:\n\n\n\n\nproc_data_dir\n:  Directory with the split and processed data\n\n\n\n\nReturns:\n\n\n(Training Data, Validation Data, Test Data)",
             "title": "Experiment"
         },
         {
-            "location": "/keras_text.experiment/#create_experiment_folder",
+            "location": "/texcla.experiment/#create_experiment_folder",
             "text": "create_experiment_folder(base_dir, model, lr, batch_size)",
             "title": "create_experiment_folder"
         },
         {
-            "location": "/keras_text.experiment/#copy_called_file",
+            "location": "/texcla.experiment/#copy_called_file",
             "text": "copy_called_file(exp_path)",
             "title": "copy_called_file"
         },
         {
-            "location": "/keras_text.experiment/#create_callbacks",
+            "location": "/texcla.experiment/#create_callbacks",
             "text": "create_callbacks(exp_path, patience)",
             "title": "create_callbacks"
         },
         {
-            "location": "/keras_text.experiment/#train",
-            "text": "train(fit_args, model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patience=10, \\\n    base_dir=\"experiments\")",
+            "location": "/texcla.experiment/#train",
+            "text": "train(model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patience=10, \\\n    base_dir=\"experiments\", **fit_args)",
             "title": "train"
         },
         {
-            "location": "/keras_text.experiment/#load_csv",
+            "location": "/texcla.experiment/#load_csv",
             "text": "load_csv(data_path=None, text_col=\"text\", class_col=\"class\", limit=None)",
             "title": "load_csv"
         },
         {
-            "location": "/keras_text.experiment/#setup_data",
-            "text": "setup_data(tokenizer, proc_data_path, max_len=400, load_csv_args={})",
+            "location": "/texcla.experiment/#process_save",
+            "text": "process_save(X, y, tokenizer, proc_data_path, max_len=400, save_tokenizer=True)  Process text and save as Dataset",
+            "title": "process_save"
+        },
+        {
+            "location": "/texcla.experiment/#setup_data",
+            "text": "setup_data(X, y, tokenizer, proc_data_path, **kwargs)  Setup data  Args:   X :  text data,  y :  data labels,  tokenizer :  A Tokenizer instance  proc_data_path :  Path for the processed data",
             "title": "setup_data"
         },
         {
-            "location": "/keras_text.corpus/",
-            "text": "Source:\n \nkeras_text/corpus.py#L0\n\n\n\n\nread_folder\n\n\nread_folder(directory)\n\n\n\n\nread text files in directory and returns them as array\n\n\nArgs:\n\n\n\n\ndirectory\n:  where the text files are\n\n\n\n\nReturns:\n\n\nArray of text\n\n\n\n\nread_pos_neg_data\n\n\nread_pos_neg_data(path, folder, limit)\n\n\n\n\nreturns array with positive and negative examples\n\n\n\n\nimdb\n\n\nimdb(limit=None)\n\n\n\n\nDownloads (and caches) IMDB Moview Reviews. 25k training data, 25k test data\n\n\nArgs:\n\n\n\n\nlimit\n:  get only first N items for each class\n\n\n\n\nReturns:\n\n\n[X_train, y_train, X_test, y_test]",
+            "location": "/texcla.experiment/#split_data",
+            "text": "split_data(X, y, ratio=(0.8, 0.1, 0.1))  Splits data into a training, validation, and test set.  Args:   X :  text data  y :  data labels  ratio :  the ratio for splitting. Default: (0.8, 0.1, 0.1)   Returns:  split data: X_train, X_val, X_test, y_train, y_val, y_test",
+            "title": "split_data"
+        },
+        {
+            "location": "/texcla.experiment/#setup_data_split",
+            "text": "setup_data_split(X, y, tokenizer, proc_data_dir, **kwargs)  Setup data while splitting into a training, validation, and test set.  Args:   X :  text data,  y :  data labels,  tokenizer :  A Tokenizer instance  proc_data_dir :  Directory for the split and processed data",
+            "title": "setup_data_split"
+        },
+        {
+            "location": "/texcla.experiment/#load_data_split",
+            "text": "load_data_split(proc_data_dir)  Loads a split dataset  Args:   proc_data_dir :  Directory with the split and processed data   Returns:  (Training Data, Validation Data, Test Data)",
+            "title": "load_data_split"
+        },
+        {
+            "location": "/texcla.corpus/",
+            "text": "Source:\n \ntexcla/corpus.py#L0\n\n\n\n\nread_folder\n\n\nread_folder(directory)\n\n\n\n\nread text files in directory and returns them as array\n\n\nArgs:\n\n\n\n\ndirectory\n:  where the text files are\n\n\n\n\nReturns:\n\n\nArray of text\n\n\n\n\nread_pos_neg_data\n\n\nread_pos_neg_data(path, folder, limit)\n\n\n\n\nreturns array with positive and negative examples\n\n\n\n\nimdb\n\n\nimdb(limit=None, shuffle=True)\n\n\n\n\nDownloads (and caches) IMDB Moview Reviews. 25k training data, 25k test data\n\n\nArgs:\n\n\n\n\nlimit\n:  get only first N items for each class\n\n\n\n\nReturns:\n\n\n[X_train, y_train, X_test, y_test]",
             "title": "Corpus"
         },
         {
-            "location": "/keras_text.corpus/#read_folder",
+            "location": "/texcla.corpus/#read_folder",
             "text": "read_folder(directory)  read text files in directory and returns them as array  Args:   directory :  where the text files are   Returns:  Array of text",
             "title": "read_folder"
         },
         {
-            "location": "/keras_text.corpus/#read_pos_neg_data",
+            "location": "/texcla.corpus/#read_pos_neg_data",
             "text": "read_pos_neg_data(path, folder, limit)  returns array with positive and negative examples",
             "title": "read_pos_neg_data"
         },
         {
-            "location": "/keras_text.corpus/#imdb",
-            "text": "imdb(limit=None)  Downloads (and caches) IMDB Moview Reviews. 25k training data, 25k test data  Args:   limit :  get only first N items for each class   Returns:  [X_train, y_train, X_test, y_test]",
+            "location": "/texcla.corpus/#imdb",
+            "text": "imdb(limit=None, shuffle=True)  Downloads (and caches) IMDB Moview Reviews. 25k training data, 25k test data  Args:   limit :  get only first N items for each class   Returns:  [X_train, y_train, X_test, y_test]",
             "title": "imdb"
         },
         {
-            "location": "/keras_text.data/",
-            "text": "Source:\n \nkeras_text/data.py#L0\n\n\n\n\nDataset\n\n\nDataset.labels\n\n\nDataset.num_classes\n\n\n\n\nDataset.\n__init__\n\n\n__init__(self, X, y, tokenizer=None)\n\n\n\n\nEncapsulates all pieces of data to run an experiment. This is basically a bag of items that makes it\neasy to serialize and deserialize everything as a unit.\n\n\nArgs:\n\n\n\n\nX\n:  The raw model inputs. This can be set to None if you dont want\n  to serialize this value when you save the dataset.\n\n\ny\n:  The raw output labels.\n\n\ntokenizer\n:  The optional test indices to use. Ideally, this should be generated one time and reused\n  across experiments to make results comparable. \ngenerate_test_indices\n can be used generate first\n  time indices.\n**kwargs: Additional key value items to store.",
+            "location": "/texcla.data/",
+            "text": "Source:\n \ntexcla/data.py#L0\n\n\n\n\nDataset\n\n\nDataset.labels\n\n\nDataset.num_classes\n\n\n\n\nDataset.\n__init__\n\n\n__init__(self, X, y, tokenizer=None)\n\n\n\n\nEncapsulates all pieces of data to run an experiment. This is basically a bag of items that makes it\neasy to serialize and deserialize everything as a unit.\n\n\nArgs:\n\n\n\n\nX\n:  The raw model inputs. This can be set to None if you dont want\n  to serialize this value when you save the dataset.\n\n\ny\n:  The raw output labels.\n\n\ntokenizer\n:  The optional test indices to use. Ideally, this should be generated one time and reused\n  across experiments to make results comparable. \ngenerate_test_indices\n can be used generate first\n  time indices.\n**kwargs: Additional key value items to store.",
             "title": "Data"
         },
         {
-            "location": "/keras_text.data/#dataset",
+            "location": "/texcla.data/#dataset",
             "text": "",
             "title": "Dataset"
         },
         {
-            "location": "/keras_text.data/#datasetlabels",
+            "location": "/texcla.data/#datasetlabels",
             "text": "",
             "title": "Dataset.labels"
         },
         {
-            "location": "/keras_text.data/#datasetnum_classes",
+            "location": "/texcla.data/#datasetnum_classes",
             "text": "",
             "title": "Dataset.num_classes"
         },
         {
-            "location": "/keras_text.data/#dataset__init__",
+            "location": "/texcla.data/#dataset__init__",
             "text": "__init__(self, X, y, tokenizer=None)  Encapsulates all pieces of data to run an experiment. This is basically a bag of items that makes it\neasy to serialize and deserialize everything as a unit.  Args:   X :  The raw model inputs. This can be set to None if you dont want\n  to serialize this value when you save the dataset.  y :  The raw output labels.  tokenizer :  The optional test indices to use. Ideally, this should be generated one time and reused\n  across experiments to make results comparable.  generate_test_indices  can be used generate first\n  time indices.\n**kwargs: Additional key value items to store.",
             "title": "Dataset.__init__"
         },
         {
-            "location": "/keras_text.utils.format/",
-            "text": "Source:\n \nkeras_text/utils/format.py#L0\n\n\n\n\nto_fixed_digits\n\n\nto_fixed_digits(number)",
+            "location": "/texcla.utils.format/",
+            "text": "Source:\n \ntexcla/utils/format.py#L0\n\n\n\n\nto_fixed_digits\n\n\nto_fixed_digits(number)",
             "title": "Format"
         },
         {
-            "location": "/keras_text.utils.format/#to_fixed_digits",
+            "location": "/texcla.utils.format/#to_fixed_digits",
             "text": "to_fixed_digits(number)",
             "title": "to_fixed_digits"
         },
         {
-            "location": "/keras_text.utils.generators/",
-            "text": "Source:\n \nkeras_text/utils/generators.py#L0\n\n\n\n\nProcessingSequence\n\n\nBase object for fitting to a sequence of data, such as a dataset.\n\n\nEvery \nSequence\n must implement the \n__getitem__\n and the \n__len__\n methods.\nIf you want to modify your dataset between epochs you may implement \non_epoch_end\n.\nThe method \n__getitem__\n should return a complete batch.\n\n\nNotes\n\n\nSequence\n are a safer way to do multiprocessing. This structure guarantees that the network will only train once\non each sample per epoch which is not the case with generators.\n\n\nExamples\n\n\n  from skimage.io import imread\n  from skimage.transform import resize\n  import numpy as np\n\n  # Here, `x_set` is list of path to the images\n  # and `y_set` are the associated classes.\n\n  class CIFAR10Sequence(Sequence):\n\n  def __init__(self, x_set, y_set, batch_size):\n  self.x, self.y = x_set, y_set\n  self.batch_size = batch_size\n\n  def __len__(self):\n  return int(np.ceil(len(self.x) / float(self.batch_size)))\n\n  def __getitem__(self, idx):\n  batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]\n  batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]\n\n  return np.array([\n  resize(imread(file_name), (200, 200))\n  for file_name in batch_x]), np.array(batch_y)\n\n\n\n\n\n\nProcessingSequence.\n__init__\n\n\n__init__(self, X, y, batch_size, process_fn=None)\n\n\n\n\nA \nSequence\n implementation that can pre-process a mini-batch via \nprocess_fn\n\n\nArgs:\n\n\n\n\nX\n:  The numpy array of inputs.\n\n\ny\n:  The numpy array of targets.\n\n\nbatch_size\n:  The generator mini-batch size.\n\n\nprocess_fn\n:  The preprocessing function to apply on \nX\n\n\n\n\n\n\nBalancedSequence\n\n\nBase object for fitting to a sequence of data, such as a dataset.\n\n\nEvery \nSequence\n must implement the \n__getitem__\n and the \n__len__\n methods.\nIf you want to modify your dataset between epochs you may implement \non_epoch_end\n.\nThe method \n__getitem__\n should return a complete batch.\n\n\nNotes\n\n\nSequence\n are a safer way to do multiprocessing. This structure guarantees that the network will only train once\non each sample per epoch which is not the case with generators.\n\n\nExamples\n\n\n  from skimage.io import imread\n  from skimage.transform import resize\n  import numpy as np\n\n  # Here, `x_set` is list of path to the images\n  # and `y_set` are the associated classes.\n\n  class CIFAR10Sequence(Sequence):\n\n  def __init__(self, x_set, y_set, batch_size):\n  self.x, self.y = x_set, y_set\n  self.batch_size = batch_size\n\n  def __len__(self):\n  return int(np.ceil(len(self.x) / float(self.batch_size)))\n\n  def __getitem__(self, idx):\n  batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]\n  batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]\n\n  return np.array([\n  resize(imread(file_name), (200, 200))\n  for file_name in batch_x]), np.array(batch_y)\n\n\n\n\n\n\nBalancedSequence.\n__init__\n\n\n__init__(self, X, y, batch_size, process_fn=None)\n\n\n\n\nA \nSequence\n implementation that returns balanced \ny\n by undersampling majority class.\n\n\nArgs:\n\n\n\n\nX\n:  The numpy array of inputs.\n\n\ny\n:  The numpy array of targets.\n\n\nbatch_size\n:  The generator mini-batch size.\n\n\nprocess_fn\n:  The preprocessing function to apply on \nX",
+            "location": "/texcla.utils.generators/",
+            "text": "Source:\n \ntexcla/utils/generators.py#L0\n\n\n\n\nProcessingSequence\n\n\nBase object for fitting to a sequence of data, such as a dataset.\n\n\nEvery \nSequence\n must implement the \n__getitem__\n and the \n__len__\n methods.\nIf you want to modify your dataset between epochs you may implement \non_epoch_end\n.\nThe method \n__getitem__\n should return a complete batch.\n\n\nNotes\n\n\nSequence\n are a safer way to do multiprocessing. This structure guarantees that the network will only train once\non each sample per epoch which is not the case with generators.\n\n\nExamples\n\n\n  from skimage.io import imread\n  from skimage.transform import resize\n  import numpy as np\n\n  # Here, `x_set` is list of path to the images\n  # and `y_set` are the associated classes.\n\n  class CIFAR10Sequence(Sequence):\n\n  def __init__(self, x_set, y_set, batch_size):\n  self.x, self.y = x_set, y_set\n  self.batch_size = batch_size\n\n  def __len__(self):\n  return int(np.ceil(len(self.x) / float(self.batch_size)))\n\n  def __getitem__(self, idx):\n  batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]\n  batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]\n\n  return np.array([\n  resize(imread(file_name), (200, 200))\n  for file_name in batch_x]), np.array(batch_y)\n\n\n\n\n\n\nProcessingSequence.\n__init__\n\n\n__init__(self, X, y, batch_size, process_fn=None)\n\n\n\n\nA \nSequence\n implementation that can pre-process a mini-batch via \nprocess_fn\n\n\nArgs:\n\n\n\n\nX\n:  The numpy array of inputs.\n\n\ny\n:  The numpy array of targets.\n\n\nbatch_size\n:  The generator mini-batch size.\n\n\nprocess_fn\n:  The preprocessing function to apply on \nX\n\n\n\n\n\n\nBalancedSequence\n\n\nBase object for fitting to a sequence of data, such as a dataset.\n\n\nEvery \nSequence\n must implement the \n__getitem__\n and the \n__len__\n methods.\nIf you want to modify your dataset between epochs you may implement \non_epoch_end\n.\nThe method \n__getitem__\n should return a complete batch.\n\n\nNotes\n\n\nSequence\n are a safer way to do multiprocessing. This structure guarantees that the network will only train once\non each sample per epoch which is not the case with generators.\n\n\nExamples\n\n\n  from skimage.io import imread\n  from skimage.transform import resize\n  import numpy as np\n\n  # Here, `x_set` is list of path to the images\n  # and `y_set` are the associated classes.\n\n  class CIFAR10Sequence(Sequence):\n\n  def __init__(self, x_set, y_set, batch_size):\n  self.x, self.y = x_set, y_set\n  self.batch_size = batch_size\n\n  def __len__(self):\n  return int(np.ceil(len(self.x) / float(self.batch_size)))\n\n  def __getitem__(self, idx):\n  batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]\n  batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]\n\n  return np.array([\n  resize(imread(file_name), (200, 200))\n  for file_name in batch_x]), np.array(batch_y)\n\n\n\n\n\n\nBalancedSequence.\n__init__\n\n\n__init__(self, X, y, batch_size, process_fn=None)\n\n\n\n\nA \nSequence\n implementation that returns balanced \ny\n by undersampling majority class.\n\n\nArgs:\n\n\n\n\nX\n:  The numpy array of inputs.\n\n\ny\n:  The numpy array of targets.\n\n\nbatch_size\n:  The generator mini-batch size.\n\n\nprocess_fn\n:  The preprocessing function to apply on \nX",
             "title": "Generators"
         },
         {
-            "location": "/keras_text.utils.generators/#processingsequence",
+            "location": "/texcla.utils.generators/#processingsequence",
             "text": "Base object for fitting to a sequence of data, such as a dataset.  Every  Sequence  must implement the  __getitem__  and the  __len__  methods.\nIf you want to modify your dataset between epochs you may implement  on_epoch_end .\nThe method  __getitem__  should return a complete batch.",
             "title": "ProcessingSequence"
         },
         {
-            "location": "/keras_text.utils.generators/#notes",
+            "location": "/texcla.utils.generators/#notes",
             "text": "Sequence  are a safer way to do multiprocessing. This structure guarantees that the network will only train once\non each sample per epoch which is not the case with generators.",
             "title": "Notes"
         },
         {
-            "location": "/keras_text.utils.generators/#examples",
+            "location": "/texcla.utils.generators/#examples",
             "text": "from skimage.io import imread\n  from skimage.transform import resize\n  import numpy as np\n\n  # Here, `x_set` is list of path to the images\n  # and `y_set` are the associated classes.\n\n  class CIFAR10Sequence(Sequence):\n\n  def __init__(self, x_set, y_set, batch_size):\n  self.x, self.y = x_set, y_set\n  self.batch_size = batch_size\n\n  def __len__(self):\n  return int(np.ceil(len(self.x) / float(self.batch_size)))\n\n  def __getitem__(self, idx):\n  batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]\n  batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]\n\n  return np.array([\n  resize(imread(file_name), (200, 200))\n  for file_name in batch_x]), np.array(batch_y)",
             "title": "Examples"
         },
         {
-            "location": "/keras_text.utils.generators/#processingsequence__init__",
+            "location": "/texcla.utils.generators/#processingsequence__init__",
             "text": "__init__(self, X, y, batch_size, process_fn=None)  A  Sequence  implementation that can pre-process a mini-batch via  process_fn  Args:   X :  The numpy array of inputs.  y :  The numpy array of targets.  batch_size :  The generator mini-batch size.  process_fn :  The preprocessing function to apply on  X",
             "title": "ProcessingSequence.__init__"
         },
         {
-            "location": "/keras_text.utils.generators/#balancedsequence",
+            "location": "/texcla.utils.generators/#balancedsequence",
             "text": "Base object for fitting to a sequence of data, such as a dataset.  Every  Sequence  must implement the  __getitem__  and the  __len__  methods.\nIf you want to modify your dataset between epochs you may implement  on_epoch_end .\nThe method  __getitem__  should return a complete batch.",
             "title": "BalancedSequence"
         },
         {
-            "location": "/keras_text.utils.generators/#notes_1",
+            "location": "/texcla.utils.generators/#notes_1",
             "text": "Sequence  are a safer way to do multiprocessing. This structure guarantees that the network will only train once\non each sample per epoch which is not the case with generators.",
             "title": "Notes"
         },
         {
-            "location": "/keras_text.utils.generators/#examples_1",
+            "location": "/texcla.utils.generators/#examples_1",
             "text": "from skimage.io import imread\n  from skimage.transform import resize\n  import numpy as np\n\n  # Here, `x_set` is list of path to the images\n  # and `y_set` are the associated classes.\n\n  class CIFAR10Sequence(Sequence):\n\n  def __init__(self, x_set, y_set, batch_size):\n  self.x, self.y = x_set, y_set\n  self.batch_size = batch_size\n\n  def __len__(self):\n  return int(np.ceil(len(self.x) / float(self.batch_size)))\n\n  def __getitem__(self, idx):\n  batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]\n  batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]\n\n  return np.array([\n  resize(imread(file_name), (200, 200))\n  for file_name in batch_x]), np.array(batch_y)",
             "title": "Examples"
         },
         {
-            "location": "/keras_text.utils.generators/#balancedsequence__init__",
+            "location": "/texcla.utils.generators/#balancedsequence__init__",
             "text": "__init__(self, X, y, batch_size, process_fn=None)  A  Sequence  implementation that returns balanced  y  by undersampling majority class.  Args:   X :  The numpy array of inputs.  y :  The numpy array of targets.  batch_size :  The generator mini-batch size.  process_fn :  The preprocessing function to apply on  X",
             "title": "BalancedSequence.__init__"
         },
         {
-            "location": "/keras_text.utils.io/",
-            "text": "Source:\n \nkeras_text/utils/io.py#L0\n\n\n\n\ndump\n\n\ndump(obj, file_name)\n\n\n\n\n\n\nload\n\n\nload(file_name)",
+            "location": "/texcla.utils.io/",
+            "text": "Source:\n \ntexcla/utils/io.py#L0\n\n\n\n\ndump\n\n\ndump(obj, file_name)\n\n\n\n\n\n\nload\n\n\nload(file_name)",
             "title": "IO"
         },
         {
-            "location": "/keras_text.utils.io/#dump",
+            "location": "/texcla.utils.io/#dump",
             "text": "dump(obj, file_name)",
             "title": "dump"
         },
         {
-            "location": "/keras_text.utils.io/#load",
+            "location": "/texcla.utils.io/#load",
             "text": "load(file_name)",
             "title": "load"
         },
         {
-            "location": "/keras_text.utils.sampling/",
-            "text": "Source:\n \nkeras_text/utils/sampling.py#L0\n\n\n\n\nequal_distribution_folds\n\n\nequal_distribution_folds(y, folds=2)\n\n\n\n\nCreates \nfolds\n number of indices that has roughly balanced multi-label distribution.\n\n\nArgs:\n\n\n\n\ny\n:  The multi-label outputs.\n\n\nfolds\n:  The number of folds to create.\n\n\n\n\nReturns:\n\n\nfolds\n number of indices that have roughly equal multi-label distributions.\n\n\n\n\nmulti_label_train_test_split\n\n\nmulti_label_train_test_split(y, test_size=0.2)\n\n\n\n\nCreates a test split with roughly the same multi-label distribution in \ny\n.\n\n\nArgs:\n\n\n\n\ny\n:  The multi-label outputs.\n\n\ntest_size\n:  The test size in [0, 1]\n\n\n\n\nReturns:\n\n\nThe train and test indices.",
+            "location": "/texcla.utils.sampling/",
+            "text": "Source:\n \ntexcla/utils/sampling.py#L0\n\n\n\n\nequal_distribution_folds\n\n\nequal_distribution_folds(y, folds=2)\n\n\n\n\nCreates \nfolds\n number of indices that has roughly balanced multi-label distribution.\n\n\nArgs:\n\n\n\n\ny\n:  The multi-label outputs.\n\n\nfolds\n:  The number of folds to create.\n\n\n\n\nReturns:\n\n\nfolds\n number of indices that have roughly equal multi-label distributions.\n\n\n\n\nmulti_label_train_test_split\n\n\nmulti_label_train_test_split(y, test_size=0.2)\n\n\n\n\nCreates a test split with roughly the same multi-label distribution in \ny\n.\n\n\nArgs:\n\n\n\n\ny\n:  The multi-label outputs.\n\n\ntest_size\n:  The test size in [0, 1]\n\n\n\n\nReturns:\n\n\nThe train and test indices.",
             "title": "Sampling"
         },
         {
-            "location": "/keras_text.utils.sampling/#equal_distribution_folds",
+            "location": "/texcla.utils.sampling/#equal_distribution_folds",
             "text": "equal_distribution_folds(y, folds=2)  Creates  folds  number of indices that has roughly balanced multi-label distribution.  Args:   y :  The multi-label outputs.  folds :  The number of folds to create.   Returns:  folds  number of indices that have roughly equal multi-label distributions.",
             "title": "equal_distribution_folds"
         },
         {
-            "location": "/keras_text.utils.sampling/#multi_label_train_test_split",
+            "location": "/texcla.utils.sampling/#multi_label_train_test_split",
             "text": "multi_label_train_test_split(y, test_size=0.2)  Creates a test split with roughly the same multi-label distribution in  y .  Args:   y :  The multi-label outputs.  test_size :  The test size in [0, 1]   Returns:  The train and test indices.",
             "title": "multi_label_train_test_split"
         }

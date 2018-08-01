@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Documentation Text Classification Keras - Text Classification Library with Keras">
+  <meta name="description" content="Documentation Text Classification Keras - Text Classification Library for Keras">
   
   <link rel="shortcut icon" href="./img/favicon.ico">
   <title>Home - Documentation Text Classification Keras</title>
@@ -59,9 +59,13 @@
         
             <li><a class="toctree-l3" href="#quick-start">Quick start</a></li>
         
-            <li><a class="toctree-l3" href="#resources">Resources</a></li>
+            <li><a class="toctree-l3" href="#api-documenation">API Documenation</a></li>
         
-            <li><a class="toctree-l3" href="#installation">Installation</a></li>
+            <li><a class="toctree-l3" href="#advanced">Advanced</a></li>
+        
+            <li><a class="toctree-l3" href="#contributing">Contributing</a></li>
+        
+            <li><a class="toctree-l3" href="#acknowledgements">Acknowledgements</a></li>
         
             <li><a class="toctree-l3" href="#citation">Citation</a></li>
         
@@ -83,19 +87,19 @@
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.models.sequence_encoders/">Sequence Processing Models</a>
+    <a class="" href="texcla.models.sequence_encoders/">Sequence Processing Models</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.models.token_model/">Sequence Model Builder Factory</a>
+    <a class="" href="texcla.models.token_model/">Sequence Model Builder Factory</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.models.sentence_model/">Sentence Model Builder Factory</a>
+    <a class="" href="texcla.models.sentence_model/">Sentence Model Builder Factory</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.models.layers/">Custom Layers</a>
+    <a class="" href="texcla.models.layers/">Custom Layers</a>
                 </li>
     </ul>
                 </li>
@@ -105,41 +109,41 @@
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.preprocessing.word_tokenizer/">Word Tokenizer</a>
+    <a class="" href="texcla.preprocessing.word_tokenizer/">Word Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.preprocessing.sentence_tokenizer/">Sentence Tokenizer</a>
+    <a class="" href="texcla.preprocessing.sentence_tokenizer/">Sentence Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.preprocessing.tokenizer/">Tokenizer</a>
+    <a class="" href="texcla.preprocessing.tokenizer/">Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.preprocessing.char_tokenizer/">Char Tokenizer</a>
+    <a class="" href="texcla.preprocessing.char_tokenizer/">Char Tokenizer</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.preprocessing.utils/">Utils</a>
+    <a class="" href="texcla.preprocessing.utils/">Utils</a>
                 </li>
     </ul>
                 </li>
                 <li class="">
                     
-    <a class="" href="keras_text.embeddings/">Embeddings</a>
+    <a class="" href="texcla.embeddings/">Embeddings</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="keras_text.experiment/">Experiment</a>
+    <a class="" href="texcla.experiment/">Experiment</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="keras_text.corpus/">Corpus</a>
+    <a class="" href="texcla.corpus/">Corpus</a>
                 </li>
                 <li class="">
                     
-    <a class="" href="keras_text.data/">Data</a>
+    <a class="" href="texcla.data/">Data</a>
                 </li>
                 <li class="">
                     
@@ -147,19 +151,19 @@
     <ul class="subnav">
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.utils.format/">Format</a>
+    <a class="" href="texcla.utils.format/">Format</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.utils.generators/">Generators</a>
+    <a class="" href="texcla.utils.generators/">Generators</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.utils.io/">IO</a>
+    <a class="" href="texcla.utils.io/">IO</a>
                 </li>
                 <li class="toctree-l3">
                     
-    <a class="" href="keras_text.utils.sampling/">Sampling</a>
+    <a class="" href="texcla.utils.sampling/">Sampling</a>
                 </li>
     </ul>
                 </li>
@@ -201,86 +205,116 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="text-classification-keras">Text Classification Keras <a href="https://travis-ci.com/jfilter/text-classification-keras"><img alt="Build Status" src="https://travis-ci.com/jfilter/text-classification-keras.svg?branch=master" /></a></h1>
-<p>A one-stop text classification library implementing various state of the art models with a clean and extendable interface to implement custom architectures.</p>
-<p>This is a fork of <a href="https://github.com/raghakot/keras-text">keras-text</a> and still WIP.</p>
+                <h1 id="text-classification-keras">Text Classification Keras <a href="https://travis-ci.com/jfilter/text-classification-keras"><img alt="Build Status" src="https://travis-ci.com/jfilter/text-classification-keras.svg?branch=master" /></a> <a href="https://pypi.org/project/text-classification-keras/"><img alt="PyPI" src="https://img.shields.io/pypi/v/text-classification-keras.svg" /></a> <a href="https://pypi.org/project/text-classification-keras/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/text-classification-keras.svg" /></a> <a href="https://gitter.im/text-classification-keras/Lobby"><img alt="Gitter" src="https://img.shields.io/gitter/room/text-classification-keras/Lobby.svg" /></a></h1>
+<p>A high-level text classification library implementing various well-established models. With a clean and extendable interface to implement custom architectures.</p>
 <h2 id="quick-start">Quick start</h2>
-<h3 id="create-a-tokenizer-to-build-your-vocabulary">Create a tokenizer to build your vocabulary</h3>
+<h3 id="install">Install</h3>
+<pre><code class="bash">pip install text-classification-keras[full]==0.1.0
+</code></pre>
+
+<p>The <code>[full]</code> will additionally install <a href="https://github.com/tensorflow/tensorflow">TensorFlow</a>, <a href="https://github.com/explosion/spaCy">Spacy</a>, and <a href="https://github.com/jfilter/text-classification-keras">Deep Plots</a>.</p>
+<h3 id="usage">Usage</h3>
+<pre><code class="python">from texcla import experiment, data
+from texcla.models import TokenModelFactory, YoonKimCNN
+from texcla.preprocessing import FastTextWikiTokenizer
+
+# input text
+X = ['some random text', 'another random text', 'peter', ...]
+
+# input labels
+y = ['a', 'b', 'a', ...]
+
+# use the special tokenizer used for constructing the embeddings
+tokenizer = FastTextWikiTokenizer()
+
+# preprocess data (once)
+experiment.setup_data(X, y, tokenizer, 'data.bin', max_len=100)
+
+# load data
+ds = data.Dataset.load('data.bin')
+
+# construct base
+factory = TokenModelFactory(
+    ds.num_classes, ds.tokenizer.token_index, max_tokens=100,
+    embedding_type='fasttext.wiki.simple', embedding_dims=300)
+
+# choose a model
+word_encoder_model = YoonKimCNN()
+
+# build a model
+model = factory.build_model(
+    token_encoder_model=word_encoder_model, trainable_embeddings=False)
+
+# use experiment.train as wrapper for Keras.fit()
+experiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,
+    word_encoder_model=word_encoder_model)
+</code></pre>
+
+<p>Check out more <a href="./examples">examples</a>.</p>
+<h2 id="api-documenation">API Documenation</h2>
+<p><a href="https://github.io/jfilter/text-classification-keras/">https://github.io/jfilter/text-classification-keras/</a></p>
+<h2 id="advanced">Advanced</h2>
+<h3 id="embeddings">Embeddings</h3>
+<p>Choose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set <code>embedding_type=None</code> to use a randomly initialized word embedding.</p>
+<pre><code class="python">factory = TokenModelFactory(embedding_type='fasttext.wiki.simple', embedding_dims=300)
+</code></pre>
+
+<h4 id="fasttext">FastText</h4>
+<p>Several pre-trained FastText embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.</p>
 <ul>
-<li>To represent you dataset as <code>(docs, words)</code> use <code>WordTokenizer</code></li>
-<li>To represent you dataset as <code>(docs, sentences, words)</code> use <code>SentenceWordTokenizer</code></li>
-<li>To create arbitrary hierarchies, extend <code>Tokenizer</code> and implement the <code>token_generator</code> method.</li>
+<li><a href="https://fasttext.cc/docs/en/english-vectors.html">English Vectors</a>: e.g. <code>fasttext.wn.1M.300d</code>, <a href="https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19">check out all avaiable embeddings</a></li>
+<li><a href="https://fasttext.cc/docs/en/crawl-vectors.html">Multilang Vectors</a>: in the format <code>fasttext.cc.LANG_CODE</code> e.g. <code>fasttext.cc.en</code></li>
+<li><a href="https://fasttext.cc/docs/en/pretrained-vectors.html">Wikipedia Vectors</a>: in the format <code>fasttext.wiki.LANG_CODE</code> e.g. <code>fasttext.wiki.en</code></li>
 </ul>
-<pre><code class="python">from keras_text.processing import WordTokenizer
-
-
-tokenizer = WordTokenizer()
-tokenizer.build_vocab(texts)
+<h4 id="glove">GloVe</h4>
+<p>Predecessor to FastText. The dimension varies.</p>
+<ul>
+<li><a href="https://nlp.stanford.edu/projects/glove/">GloVe</a>: e.g. <code>glove.6B.50d</code>, <a href="https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19">check out all avaiable embeddings</a></li>
+</ul>
+<h3 id="tokenzation">Tokenzation</h3>
+<ul>
+<li>To work on token (or word) level, use a TokenTokenizer such e.g. <code>TwokenizeTokenizer</code> or <code>SpacyTokenizer</code>.</li>
+<li>To work on token and sentence level, use <code>SpacySentenceTokenizer</code>.</li>
+<li>To create an custom Tokenizer, extend <code>Tokenizer</code> and implement the <code>token_generator</code> method.</li>
+</ul>
+<h4 id="spacy">Spacy</h4>
+<p>You may use Spacy for the tokenization. See instructions on how to
+<a href="https://spacy.io/docs/usage/models#download">download model</a> for your target language.</p>
+<pre><code class="bash">python -m spacy download en
 </code></pre>
 
-<p>Want to tokenize with character tokens to leverage character models? Use <code>CharTokenizer</code>.</p>
-<h3 id="build-a-dataset">Build a dataset</h3>
-<p>A dataset encapsulates tokenizer, X, y and the test set. This allows you to focus your efforts on
-trying various architectures/hyperparameters without having to worry about inconsistent evaluation. A dataset can be
-saved and loaded from the disk.</p>
-<pre><code class="python">from keras_text.data import Dataset
+<h3 id="models">Models</h3>
+<h4 id="token-based-models-words">Token-based Models (Words)</h4>
+<p>When working on token level, use <code>TokenModelFactory</code>.</p>
+<pre><code class="python">from keras_text.models import TokenModelFactory, YoonKimCNN
 
-
-ds = Dataset(X, y, tokenizer=tokenizer)
-ds.update_test_indices(test_size=0.1)
-ds.save('dataset')
-</code></pre>
-
-<p>The <code>update_test_indices</code> method automatically stratifies multi-class or multi-label data correctly.</p>
-<h3 id="build-text-classification-models">Build text classification models</h3>
-<p>See tests/ folder for usage.</p>
-<h4 id="word-based-models">Word based models</h4>
-<p>When dataset represented as <code>(docs, words)</code> word based models can be created using <code>TokenModelFactory</code>.</p>
-<pre><code class="python">from keras_text.models import TokenModelFactory
-from keras_text.models import YoonKimCNN, AttentionRNN, StackedRNN
-
-
-# RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.
-factory = TokenModelFactory(1, tokenizer.token_index, max_tokens=100, embedding_type='glove.6B.100d')
+factory = TokenModelFactory(tokenizer.num_classes, tokenizer.token_index,
+    max_tokens=100, embedding_type='glove.6B.100d')
 word_encoder_model = YoonKimCNN()
 model = factory.build_model(token_encoder_model=word_encoder_model)
-model.compile(optimizer='adam', loss='categorical_crossentropy')
-model.summary()
 </code></pre>
 
 <p>Currently supported models include:</p>
 <ul>
 <li><a href="https://arxiv.org/abs/1408.5882">Yoon Kim CNN</a></li>
-<li>Stacked RNNs</li>
-<li>Attention (with/without context) based RNN encoders.</li>
+<li><a href="https://arxiv.org/abs/1312.6026">Stacked RNNs</a></li>
+<li><a href="https://www.cs.cmu.edu/~hovy/papers/16HLT-hierarchical-attention-networks.pdf">Attention (with/without context) based RNN encoders</a></li>
 </ul>
-<p><code>TokenModelFactory.build_model</code> uses the provided word encoder which is then classified via <code>Dense</code> block.</p>
-<h4 id="sentence-based-models">Sentence based models</h4>
-<p>When dataset represented as <code>(docs, sentences, words)</code> sentence based models can be created using <code>SentenceModelFactory</code>.</p>
-<pre><code class="python">from keras_text.models import SentenceModelFactory
-from keras_text.models import YoonKimCNN, AttentionRNN, StackedRNN, AveragingEncoder
-
-
-# Pad max sentences per doc to 500 and max words per sentence to 200.
+<p><code>TokenModelFactory.build_model</code> uses the provided word encoder which is then classified via a <a href="https://keras.io/layers/core/#dense">Dense</a> layer.</p>
+<h4 id="sentence-basded-models">Sentence-basded Models</h4>
+<p>When working on token level, use <code>TokenModelFactory</code>.</p>
+<pre><code class="python"># Pad max sentences per doc to 500 and max words per sentence to 200.
 # Can also use `max_sents=None` to allow variable sized max_sents per mini-batch.
-factory = SentenceModelFactory(10, tokenizer.token_index, max_sents=500, max_tokens=200, embedding_type='glove.6B.100d')
+
+factory = SentenceModelFactory(10, tokenizer.token_index, max_sents=500,
+    max_tokens=200, embedding_type='glove.6B.100d')
 word_encoder_model = AttentionRNN()
 sentence_encoder_model = AttentionRNN()
 
 # Allows you to compose arbitrary word encoders followed by sentence encoder.
 model = factory.build_model(word_encoder_model, sentence_encoder_model)
-model.compile(optimizer='adam', loss='categorical_crossentropy')
-model.summary()
 </code></pre>
 
-<p>Currently supported models include:</p>
-<ul>
-<li><a href="https://arxiv.org/abs/1408.5882">Yoon Kim CNN</a></li>
-<li>Stacked RNNs</li>
-<li>Attention (with/without context) based RNN encoders.</li>
-</ul>
-<p><code>SentenceModelFactory.build_model</code> created a tiered model where words within a sentence is first encoded using
-<code>word_encoder_model</code>. All such encodings per sentence is then encoded using <code>sentence_encoder_model</code>.</p>
 <ul>
 <li><a href="http://www.cs.cmu.edu/~./hovy/papers/16HLT-hierarchical-attention-networks.pdf">Hierarchical attention networks</a>
     (HANs) can be build by composing two attention based RNN models. This is useful when a document is very large.</li>
@@ -288,38 +322,21 @@ model.summary()
     <code>token_encoder_model=AveragingEncoder()</code></li>
 <li>Mix and match encoders as you see fit for your problem.</li>
 </ul>
-<h2 id="resources">Resources</h2>
-<p>TODO: Update documentation and add notebook examples.</p>
-<p>Stay tuned for better documentation and examples.
-Until then, the best resource is to refer to the <a href="https://raghakot.github.io/keras-text/">API docs</a></p>
-<h2 id="installation">Installation</h2>
-<ol>
-<li>
-<p>Install <a href="https://github.com/fchollet/keras/blob/master/README.md#installation">Keras</a> with Tensorflow as backend (Theano and CNTK are not fully supported for now). Note that this library requires Keras &gt; 2.0</p>
-</li>
-<li>
-<p>Install keras-text</p>
-</li>
-</ol>
-<pre><code class="bash">pip install git+https://github.com/jfilter/text-classification-keras#egg=keras_text
-</code></pre>
-
-<ol>
-<li>Download target spacy model</li>
-</ol>
-<pre><code class="bash">python -m spacy download en
-</code></pre>
-
-<p>keras-text uses the excellent spacy library for tokenization. See instructions on how to
-<a href="https://spacy.io/docs/usage/models#download">download model</a> for target language.</p>
+<p><code>SentenceModelFactory.build_model</code> created a tiered model where words within a sentence is first encoded using
+<code>word_encoder_model</code>. All such encodings per sentence is then encoded using <code>sentence_encoder_model</code>.</p>
+<h2 id="contributing">Contributing</h2>
+<p>If you have a <strong>question</strong>, found a <strong>bug</strong> or want to propose a new <strong>feature</strong>, have a look at the <a href="https://github.com/jfilter/text-classification-keras/issues">issues page</a>.</p>
+<p><strong>Pull requests</strong> are especially welcomed when they fix bugs or improve the code quality.</p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>Built upon the work by Raghavendra Kotikalapudi: <a href="https://github.com/raghakot/keras-text">keras-text</a>.</p>
 <h2 id="citation">Citation</h2>
-<p>Please cite keras-text in your publications if it helped your research. Here is an example BibTeX entry:</p>
-<pre><code>@misc{raghakotkerastext
-  title={Text-Classification-Keras},
-  author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},
-  year={2018},
-  publisher={GitHub},
-  howpublished={\url{https://github.com/jfilter/text-classification-keras}},
+<p>If you find Text Classification Keras useful for an academic publication, then please use the following BibTeX to cite it:</p>
+<pre><code class="tex">@misc{raghakotfiltertexclakeras
+    title={Text Classification Keras},
+    author={Raghavendra Kotikalapudi, and Johannes Filter, and contributors},
+    year={2018},
+    publisher={GitHub},
+    howpublished={\url{https://github.com/jfilter/text-classification-keras}},
 }
 </code></pre>
 
@@ -332,7 +349,7 @@ Until then, the best resource is to refer to the <a href="https://raghakot.githu
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="keras_text.models.sequence_encoders/" class="btn btn-neutral float-right" title="Sequence Processing Models">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="texcla.models.sequence_encoders/" class="btn btn-neutral float-right" title="Sequence Processing Models">Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
     </div>
@@ -362,7 +379,7 @@ Until then, the best resource is to refer to the <a href="https://raghakot.githu
       
       
       
-        <span style="margin-left: 15px"><a href="keras_text.models.sequence_encoders/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="texcla.models.sequence_encoders/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
@@ -377,5 +394,5 @@ Until then, the best resource is to refer to the <a href="https://raghakot.githu
 
 <!--
 MkDocs version : 0.17.5
-Build Date UTC : 2018-07-30 11:26:17
+Build Date UTC : 2018-08-01 14:25:49
 -->
