@@ -18,23 +18,23 @@ pages:
   - Home: index.md
   - API Docs:
     - Models:
-      - Sequence Processing Models: keras_text.models.sequence_encoders.md
-      - Sequence Model Builder Factory: keras_text.models.token_model.md
-      - Sentence Model Builder Factory: keras_text.models.sentence_model.md
-      - Custom Layers: keras_text.models.layers.md
+      - Sequence Processing Models: texcla.models.sequence_encoders.md
+      - Sequence Model Builder Factory: texcla.models.token_model.md
+      - Sentence Model Builder Factory: texcla.models.sentence_model.md
+      - Custom Layers: texcla.models.layers.md
     - Preprocessing:
-      - Word Tokenizer: keras_text.preprocessing.word_tokenizer.md
-      - Sentence Tokenizer: keras_text.preprocessing.sentence_tokenizer.md
-      - Tokenizer: keras_text.preprocessing.tokenizer.md
-      - Char Tokenizer: keras_text.preprocessing.char_tokenizer.md
-      - Utils: keras_text.preprocessing.utils.md
-    - Embeddings: keras_text.embeddings.md
-    - Experiment: keras_text.experiment.md
-    - Corpus: keras_text.corpus.md
-    - Data: keras_text.data.md
+      - Word Tokenizer: texcla.preprocessing.word_tokenizer.md
+      - Sentence Tokenizer: texcla.preprocessing.sentence_tokenizer.md
+      - Tokenizer: texcla.preprocessing.tokenizer.md
+      - Char Tokenizer: texcla.preprocessing.char_tokenizer.md
+      - Utils: texcla.preprocessing.utils.md
+    - Embeddings: texcla.embeddings.md
+    - Experiment: texcla.experiment.md
+    - Corpus: texcla.corpus.md
+    - Data: texcla.data.md
     - Utils:
-        - Format: keras_text.utils.format.md
-        - Generators: keras_text.utils.generators.md
-        - IO: keras_text.utils.io.md
-        - Sampling: keras_text.utils.sampling.md
+        - Format: texcla.utils.format.md
+        - Generators: texcla.utils.generators.md
+        - IO: texcla.utils.io.md
+        - Sampling: texcla.utils.sampling.md
 
