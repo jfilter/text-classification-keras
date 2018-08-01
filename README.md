@@ -1,4 +1,4 @@
-# Text Classification Keras [![Build Status](https://travis-ci.com/jfilter/text-classification-keras.svg?branch=master)](https://travis-ci.com/jfilter/text-classification-keras)
+# Text Classification Keras [![Build Status](https://travis-ci.com/jfilter/text-classification-keras.svg?branch=master)](https://travis-ci.com/jfilter/text-classification-keras) [![PyPI](https://img.shields.io/pypi/v/text-classification-keras.svg)](https://pypi.org/project/text-classification-keras/) [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/text-classification-keras.svg)](https://pypi.org/project/text-classification-keras/) [![Gitter](https://img.shields.io/gitter/room/text-classification-keras/Lobby.svg)](https://gitter.im/text-classification-keras/Lobby)
 
 A high-level text classification library implementing various well-established models. With a clean and extendable interface to implement custom architectures.
 
@@ -10,7 +10,7 @@ A high-level text classification library implementing various well-established m
 pip install text-classification-keras[full]==0.1.0
 ```
 
-The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/deep-plots).
+The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/text-classification-keras).
 
 ### Usage
 
@@ -147,7 +147,7 @@ model = factory.build_model(word_encoder_model, sentence_encoder_model)
 
 ## Contributing
 
-If you have a **question**, found a **bug** or want to propose a new **feature**, have a look at the [issues page](https://github.com/jfilter/text-classificaiton-keras/issues).
+If you have a **question**, found a **bug** or want to propose a new **feature**, have a look at the [issues page](https://github.com/jfilter/text-classification-keras/issues).
 
 **Pull requests** are especially welcomed when they fix bugs or improve the code quality.
 
