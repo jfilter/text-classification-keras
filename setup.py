@@ -13,7 +13,7 @@ classifiers = [
     'Development Status :: 3 - Alpha'
 ]
 
-version = '0.0.0'
+version = '0.1.0'
 
 setup(name='text-classification-keras',
       version=version,
