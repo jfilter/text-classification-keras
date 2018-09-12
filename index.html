@@ -209,17 +209,17 @@
 <p>A high-level text classification library implementing various well-established models. With a clean and extendable interface to implement custom architectures.</p>
 <h2 id="quick-start">Quick start</h2>
 <h3 id="install">Install</h3>
-<pre><code class="bash">pip install text-classification-keras[full]==0.1.0
+<pre><code class="bash">pip install text-classification-keras[full]==0.1.1
 </code></pre>
 
-<p>The <code>[full]</code> will additionally install <a href="https://github.com/tensorflow/tensorflow">TensorFlow</a>, <a href="https://github.com/explosion/spaCy">Spacy</a>, and <a href="https://github.com/jfilter/text-classification-keras">Deep Plots</a>.</p>
+<p>The <code>[full]</code> will additionally install <a href="https://github.com/tensorflow/tensorflow">TensorFlow</a>, <a href="https://github.com/explosion/spaCy">Spacy</a>, and <a href="https://github.com/jfilter/text-classification-keras">Deep Plots</a>. Choose is want to get started right away.</p>
 <h3 id="usage">Usage</h3>
 <pre><code class="python">from texcla import experiment, data
 from texcla.models import TokenModelFactory, YoonKimCNN
 from texcla.preprocessing import FastTextWikiTokenizer
 
 # input text
-X = ['some random text', 'another random text', 'peter', ...]
+X = ['some random text', 'another random text lala', 'peter', ...]
 
 # input labels
 y = ['a', 'b', 'a', ...]
@@ -255,21 +255,21 @@ experiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,
 <p><a href="https://github.io/jfilter/text-classification-keras/">https://github.io/jfilter/text-classification-keras/</a></p>
 <h2 id="advanced">Advanced</h2>
 <h3 id="embeddings">Embeddings</h3>
-<p>Choose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set <code>embedding_type=None</code> to use a randomly initialized word embedding.</p>
+<p>Choose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set <code>embedding_type=None</code> to initialize the word embeddings randomly (but make sure to set <code>trainable_embeddings=True</code> so you actually train the embeddings).</p>
 <pre><code class="python">factory = TokenModelFactory(embedding_type='fasttext.wiki.simple', embedding_dims=300)
 </code></pre>
 
 <h4 id="fasttext">FastText</h4>
-<p>Several pre-trained FastText embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.</p>
+<p>Several pre-trained <a href="https://fasttext.cc/">FastText</a> embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.</p>
 <ul>
 <li><a href="https://fasttext.cc/docs/en/english-vectors.html">English Vectors</a>: e.g. <code>fasttext.wn.1M.300d</code>, <a href="https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19">check out all avaiable embeddings</a></li>
 <li><a href="https://fasttext.cc/docs/en/crawl-vectors.html">Multilang Vectors</a>: in the format <code>fasttext.cc.LANG_CODE</code> e.g. <code>fasttext.cc.en</code></li>
 <li><a href="https://fasttext.cc/docs/en/pretrained-vectors.html">Wikipedia Vectors</a>: in the format <code>fasttext.wiki.LANG_CODE</code> e.g. <code>fasttext.wiki.en</code></li>
 </ul>
 <h4 id="glove">GloVe</h4>
-<p>Predecessor to FastText. The dimension varies.</p>
+<p>The <a href="https://nlp.stanford.edu/projects/glove/">GloVe</a> embeddings are some kind of predecessor to FastText. In general choose FastText embeddings over GloVe. The dimension for the pre-trained embeddings varies.</p>
 <ul>
-<li><a href="https://nlp.stanford.edu/projects/glove/">GloVe</a>: e.g. <code>glove.6B.50d</code>, <a href="https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19">check out all avaiable embeddings</a></li>
+<li>: e.g. <code>glove.6B.50d</code>, <a href="https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19">check out all avaiable embeddings</a></li>
 </ul>
 <h3 id="tokenzation">Tokenzation</h3>
 <ul>
@@ -278,8 +278,8 @@ experiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,
 <li>To create an custom Tokenizer, extend <code>Tokenizer</code> and implement the <code>token_generator</code> method.</li>
 </ul>
 <h4 id="spacy">Spacy</h4>
-<p>You may use Spacy for the tokenization. See instructions on how to
-<a href="https://spacy.io/docs/usage/models#download">download model</a> for your target language.</p>
+<p>You may use <a href="https://spacy.io/">spaCy</a> for the tokenization. See instructions on how to
+<a href="https://spacy.io/docs/usage/models#download">download model</a> for your target language. E.g. for English:</p>
 <pre><code class="bash">python -m spacy download en
 </code></pre>
 
@@ -394,5 +394,5 @@ model = factory.build_model(word_encoder_model, sentence_encoder_model)
 
 <!--
 MkDocs version : 0.17.5
-Build Date UTC : 2018-09-12 21:27:06
+Build Date UTC : 2018-09-12 21:39:01
 -->
