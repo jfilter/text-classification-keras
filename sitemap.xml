@@ -2,92 +2,92 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
      <loc>/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.models.sequence_encoders/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.models.token_model/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.models.sentence_model/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.models.layers/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.preprocessing.word_tokenizer/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.preprocessing.sentence_tokenizer/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.preprocessing.tokenizer/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.preprocessing.char_tokenizer/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.preprocessing.utils/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.embeddings/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.experiment/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.corpus/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.data/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.utils.format/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.utils.generators/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.utils.io/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
      <loc>/texcla.utils.sampling/</loc>
-     <lastmod>2018-08-01</lastmod>
+     <lastmod>2018-09-12</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>

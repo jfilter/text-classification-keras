@@ -255,11 +255,11 @@
           <div role="main">
             <div class="section">
               
-                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L0">texcla/models/sequence_encoders.py#L0</a></p>
+                <p><strong>Source:</strong> <a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L0">texcla/models/sequence_encoders.py#L0</a></p>
 <hr />
-<h2 id="sequenceencoderbase"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L10">SequenceEncoderBase</a></h2>
+<h2 id="sequenceencoderbase"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L10">SequenceEncoderBase</a></h2>
 <hr />
-<h3 id="sequenceencoderbase__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L12">SequenceEncoderBase.<code>__init__</code></a></h3>
+<h3 id="sequenceencoderbase__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L12">SequenceEncoderBase.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, dropout_rate=0.5)
 </code></pre>
 
@@ -269,9 +269,9 @@
 <li><strong>dropout_rate</strong>:  The final encoded output dropout.</li>
 </ul>
 <hr />
-<h2 id="yoonkimcnn"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L56">YoonKimCNN</a></h2>
+<h2 id="yoonkimcnn"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L56">YoonKimCNN</a></h2>
 <hr />
-<h3 id="yoonkimcnn__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L58">YoonKimCNN.<code>__init__</code></a></h3>
+<h3 id="yoonkimcnn__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L58">YoonKimCNN.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, num_filters=64, filter_sizes=[3, 4, 5], dropout_rate=0.5, **conv_kwargs)
 </code></pre>
 
@@ -283,9 +283,9 @@
 **cnn_kwargs: Additional args for building the <code>Conv1D</code> layer.</li>
 </ul>
 <hr />
-<h2 id="alexcnn"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L92">AlexCNN</a></h2>
+<h2 id="alexcnn"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L92">AlexCNN</a></h2>
 <hr />
-<h3 id="alexcnn__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L93">AlexCNN.<code>__init__</code></a></h3>
+<h3 id="alexcnn__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L93">AlexCNN.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, num_filters=20, filter_sizes=[3, 8], dropout_rate=[0.5, 0.8], hidden_dims=20, \
     **conv_kwargs)
 </code></pre>
@@ -298,9 +298,9 @@
 <li><strong>dropout_rate</strong>:  Array for one dropout layer after the embedding and one before the final dense layer (Default value = [0.5, 0.8])</li>
 </ul>
 <hr />
-<h2 id="stackedrnn"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L137">StackedRNN</a></h2>
+<h2 id="stackedrnn"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L137">StackedRNN</a></h2>
 <hr />
-<h3 id="stackedrnn__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L138">StackedRNN.<code>__init__</code></a></h3>
+<h3 id="stackedrnn__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L138">StackedRNN.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, rnn_class=&lt;class 'keras.layers.recurrent.LSTM'&gt;, hidden_dims=[50, 50], \
     bidirectional=True, dropout_rate=0.5, **rnn_kwargs)
 </code></pre>
@@ -314,9 +314,9 @@
 **rnn_kwargs: Additional args for building the RNN.</li>
 </ul>
 <hr />
-<h2 id="basicrnn"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L178">BasicRNN</a></h2>
+<h2 id="basicrnn"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L178">BasicRNN</a></h2>
 <hr />
-<h3 id="basicrnn__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L179">BasicRNN.<code>__init__</code></a></h3>
+<h3 id="basicrnn__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L179">BasicRNN.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, rnn_class=&lt;class 'keras.layers.recurrent.LSTM'&gt;, hidden_dims=50, \
     bidirectional=True, dropout_rate=0.5, **rnn_kwargs)
 </code></pre>
@@ -330,9 +330,9 @@
 **rnn_kwargs: Additional args for building the RNN.</li>
 </ul>
 <hr />
-<h2 id="attentionrnn"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L194">AttentionRNN</a></h2>
+<h2 id="attentionrnn"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L194">AttentionRNN</a></h2>
 <hr />
-<h3 id="attentionrnn__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L196">AttentionRNN.<code>__init__</code></a></h3>
+<h3 id="attentionrnn__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L196">AttentionRNN.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, rnn_class=&lt;class 'keras.layers.recurrent.LSTM'&gt;, encoder_dims=50, \
     bidirectional=True, dropout_rate=0.5, **rnn_kwargs)
 </code></pre>
@@ -348,9 +348,9 @@ sentence level attention.</p>
 **rnn_kwargs: Additional args for building the RNN.</li>
 </ul>
 <hr />
-<h2 id="averagingencoder"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L244">AveragingEncoder</a></h2>
+<h2 id="averagingencoder"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L244">AveragingEncoder</a></h2>
 <hr />
-<h3 id="averagingencoder__init__"><a href="https://github.com/jfilter/text-classification-keras/texcla/models/sequence_encoders.py#L246">AveragingEncoder.<code>__init__</code></a></h3>
+<h3 id="averagingencoder__init__"><a href="https://github.com/jfilter/text-classification-keras/tree/master/texcla/models/sequence_encoders.py#L246">AveragingEncoder.<code>__init__</code></a></h3>
 <pre><code class="python">__init__(self, dropout_rate=0)
 </code></pre>
 
