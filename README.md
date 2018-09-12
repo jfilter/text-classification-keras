@@ -7,10 +7,10 @@ A high-level text classification library implementing various well-established m
 ### Install
 
 ```bash
-pip install text-classification-keras[full]==0.1.0
+pip install text-classification-keras[full]==0.1.1
 ```
 
-The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/text-classification-keras).
+The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/text-classification-keras). Choose is want to get started right away.
 
 ### Usage
 
@@ -20,7 +20,7 @@ from texcla.models import TokenModelFactory, YoonKimCNN
 from texcla.preprocessing import FastTextWikiTokenizer
 
 # input text
-X = ['some random text', 'another random text', 'peter', ...]
+X = ['some random text', 'another random text lala', 'peter', ...]
 
 # input labels
 y = ['a', 'b', 'a', ...]
@@ -61,7 +61,7 @@ Check out more [examples](./examples).
 
 ### Embeddings
 
-Choose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set `embedding_type=None` to use a randomly initialized word embedding.
+Choose a pre-trained word embedding by setting the embedding_type and the corresponding embedding dimensions. Set `embedding_type=None` to initialize the word embeddings randomly (but make sure to set `trainable_embeddings=True` so you actually train the embeddings).
 
 ```python
 factory = TokenModelFactory(embedding_type='fasttext.wiki.simple', embedding_dims=300)
@@ -69,7 +69,7 @@ factory = TokenModelFactory(embedding_type='fasttext.wiki.simple', embedding_dim
 
 #### FastText
 
-Several pre-trained FastText embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.
+Several pre-trained [FastText](https://fasttext.cc/) embeddings are included. For now, we only have the word embeddings and not the n-gram features. All embedding have 300 dimensions.
 
 -   [English Vectors](https://fasttext.cc/docs/en/english-vectors.html): e.g. `fasttext.wn.1M.300d`, [check out all avaiable embeddings](https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19)
 -   [Multilang Vectors](https://fasttext.cc/docs/en/crawl-vectors.html): in the format `fasttext.cc.LANG_CODE` e.g. `fasttext.cc.en`
@@ -77,9 +77,9 @@ Several pre-trained FastText embeddings are included. For now, we only have the 
 
 #### GloVe
 
-Predecessor to FastText. The dimension varies.
+The [GloVe](https://nlp.stanford.edu/projects/glove/) embeddings are some kind of predecessor to FastText. In general choose FastText embeddings over GloVe. The dimension for the pre-trained embeddings varies.
 
--   [GloVe](https://nlp.stanford.edu/projects/glove/): e.g. `glove.6B.50d`, [check out all avaiable embeddings](https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19)
+-   : e.g. `glove.6B.50d`, [check out all avaiable embeddings](https://github.com/jfilter/text-classification-keras/blob/master/texcla/embeddings.py#L19)
 
 ### Tokenzation
 
@@ -89,8 +89,8 @@ Predecessor to FastText. The dimension varies.
 
 #### Spacy
 
-You may use Spacy for the tokenization. See instructions on how to
-[download model](https://spacy.io/docs/usage/models#download) for your target language.
+You may use [spaCy](https://spacy.io/) for the tokenization. See instructions on how to
+[download model](https://spacy.io/docs/usage/models#download) for your target language. E.g. for English:
 
 ```bash
 python -m spacy download en
