@@ -1,7 +1,10 @@
-import spacy
+try:
+    import spacy
+except ImportError:
+    pass
 
 from . import utils
-from ..libs import twokenize, fastTextWikiTokenizer
+from ..libs import fastTextWikiTokenizer, twokenize
 from .tokenizer import Tokenizer
 
 

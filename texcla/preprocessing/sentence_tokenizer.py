@@ -1,4 +1,7 @@
-import spacy
+try:
+    import spacy
+except ImportError:
+    pass
 
 from . import utils
 from .word_tokenizer import SpacyTokenizer

@@ -8,12 +8,17 @@ from multiprocessing import cpu_count
 
 import numpy as np
 import six
-import spacy
 from keras.preprocessing.sequence import pad_sequences as keras_pad_sequences
 from keras.utils.generic_utils import Progbar
 
-from ..utils import io
 from . import utils
+from ..utils import io
+
+try:
+    import spacy
+except ImportError:
+    pass
+
 
 logger = logging.getLogger(__name__)
 
