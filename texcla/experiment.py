@@ -72,7 +72,7 @@ def train(model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patienc
     best_acc = str(max(history.history['val_acc']))[:6]
 
     # append best acc
-    deep_plots.from_keras_log(path.join(exp_path, 'log.txt'), exp_path)
+    deep_plots.from_keras_log(path.join(exp_path, 'log.csv'), exp_path)
     move(exp_path, exp_path + '_' + best_acc)
 
 
