@@ -10,7 +10,7 @@ A high-level text classification library implementing various well-established m
 pip install text-classification-keras[full]==0.1.1
 ```
 
-The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/text-classification-keras). Choose is want to get started right away.
+The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/text-classification-keras). Choose this if you want to get started right away.
 
 ### Usage
 
@@ -98,12 +98,12 @@ python -m spacy download en
 
 ### Models
 
-#### Token-based Models (Words)
+#### Token-based Models
 
 When working on token level, use `TokenModelFactory`.
 
 ```python
-from keras_text.models import TokenModelFactory, YoonKimCNN
+from texcla.models import TokenModelFactory, YoonKimCNN
 
 factory = TokenModelFactory(tokenizer.num_classes, tokenizer.token_index,
     max_tokens=100, embedding_type='glove.6B.100d')
@@ -119,9 +119,9 @@ Currently supported models include:
 
 `TokenModelFactory.build_model` uses the provided word encoder which is then classified via a [Dense](https://keras.io/layers/core/#dense) layer.
 
-#### Sentence-basded Models
+#### Sentence-based Models
 
-When working on token level, use `TokenModelFactory`.
+When working on sentence level, use `SentenceModelFactory`.
 
 ```python
 # Pad max sentences per doc to 500 and max words per sentence to 200.
