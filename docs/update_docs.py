@@ -22,7 +22,7 @@ def generate_api_docs():
     ]
 
     md_gen = MarkdownAPIGenerator(
-        "texcla", "https://github.com/jfilter/text-classification-keras")
+        "texcla", "https://github.com/jfilter/text-classification-keras/tree/master")
     for m in modules:
         md_string = md_gen.module2md(m)
         to_md_file(md_string, m.__name__, "sources")
