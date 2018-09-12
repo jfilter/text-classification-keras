@@ -212,7 +212,7 @@
 <pre><code class="bash">pip install text-classification-keras[full]==0.1.1
 </code></pre>
 
-<p>The <code>[full]</code> will additionally install <a href="https://github.com/tensorflow/tensorflow">TensorFlow</a>, <a href="https://github.com/explosion/spaCy">Spacy</a>, and <a href="https://github.com/jfilter/text-classification-keras">Deep Plots</a>. Choose is want to get started right away.</p>
+<p>The <code>[full]</code> will additionally install <a href="https://github.com/tensorflow/tensorflow">TensorFlow</a>, <a href="https://github.com/explosion/spaCy">Spacy</a>, and <a href="https://github.com/jfilter/text-classification-keras">Deep Plots</a>. Choose this if you want to get started right away.</p>
 <h3 id="usage">Usage</h3>
 <pre><code class="python">from texcla import experiment, data
 from texcla.models import TokenModelFactory, YoonKimCNN
@@ -284,9 +284,9 @@ experiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,
 </code></pre>
 
 <h3 id="models">Models</h3>
-<h4 id="token-based-models-words">Token-based Models (Words)</h4>
+<h4 id="token-based-models">Token-based Models</h4>
 <p>When working on token level, use <code>TokenModelFactory</code>.</p>
-<pre><code class="python">from keras_text.models import TokenModelFactory, YoonKimCNN
+<pre><code class="python">from texcla.models import TokenModelFactory, YoonKimCNN
 
 factory = TokenModelFactory(tokenizer.num_classes, tokenizer.token_index,
     max_tokens=100, embedding_type='glove.6B.100d')
@@ -301,8 +301,8 @@ model = factory.build_model(token_encoder_model=word_encoder_model)
 <li><a href="https://www.cs.cmu.edu/~hovy/papers/16HLT-hierarchical-attention-networks.pdf">Attention (with/without context) based RNN encoders</a></li>
 </ul>
 <p><code>TokenModelFactory.build_model</code> uses the provided word encoder which is then classified via a <a href="https://keras.io/layers/core/#dense">Dense</a> layer.</p>
-<h4 id="sentence-basded-models">Sentence-basded Models</h4>
-<p>When working on token level, use <code>TokenModelFactory</code>.</p>
+<h4 id="sentence-based-models">Sentence-based Models</h4>
+<p>When working on sentence level, use <code>SentenceModelFactory</code>.</p>
 <pre><code class="python"># Pad max sentences per doc to 500 and max words per sentence to 200.
 # Can also use `max_sents=None` to allow variable sized max_sents per mini-batch.
 
@@ -394,5 +394,5 @@ model = factory.build_model(word_encoder_model, sentence_encoder_model)
 
 <!--
 MkDocs version : 0.17.5
-Build Date UTC : 2018-09-12 21:39:01
+Build Date UTC : 2018-09-12 21:41:40
 -->
