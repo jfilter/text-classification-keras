@@ -28,7 +28,7 @@ setup(name='text-classification-keras',
                         'scikit-learn==0.*.*', 'joblib==0.*.*',
                         'jsonpickle==0.*.*', 'numpy==1.*.*'],
       extras_require={'full': ['spacy==2.*.*',
-                               'deep-plots==0.*.*', 'tensorflow=1.*.*']},
+                               'deep-plots==0.*.*', 'tensorflow==1.*.*']},
       include_package_data=True,
       classifiers=classifiers,
       packages=find_packages())
