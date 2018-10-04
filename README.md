@@ -10,7 +10,7 @@ A high-level text classification library implementing various well-established m
 pip install text-classification-keras[full]==0.1.1
 ```
 
-The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/text-classification-keras). Choose this if you want to get started right away.
+The `[full]` will additionally install [TensorFlow](https://github.com/tensorflow/tensorflow), [Spacy](https://github.com/explosion/spaCy), and [Deep Plots](https://github.com/jfilter/deep-plots). Choose this if you want to get started right away.
 
 ### Usage
 
