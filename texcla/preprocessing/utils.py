@@ -11,8 +11,6 @@ import six
 from keras.preprocessing.sequence import pad_sequences as keras_pad_sequences
 from keras.utils.generic_utils import Progbar
 
-from . import utils
-
 try:
     import spacy
 except ImportError:
