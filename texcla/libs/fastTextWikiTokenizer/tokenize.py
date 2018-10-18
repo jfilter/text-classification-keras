@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # taken from: https://gist.github.com/jfilter/28e019b5d6c62ebdc87721862ea0867c
 # Taken from: https: // gist.github.com/bittlingmayer/7139a6a75ba0dbbc3a06325394ae3a13
 
