@@ -25,18 +25,20 @@
 '''
 import subprocess
 
+from . import subprocess_fix
+
 SUBEXES = ["s/’/'/g", "s/′/'/g", "s/''/ /g", "s/'/ ' /g", 's/“/"/g', 's/”/"/g', 's/"/ /g', "s/\\./ \\. /g", "s/<br \\/>/ /g", "s/, / , /g",
            "s/(/ ( /g", "s/)/ ) /g", "s/\\!/ \\! /g", "s/\\?/ \\? /g", "s/\\;/ /g", "s/\\:/ /g", "s/-/ - /g", "s/=/ /g", "s/=/ /g", "s/*/ /g", "s/|/ /g", "s/«/ /g"]
 
 
 def __normalize_text(s):
-    commands = []
+    commands = ['sed']
     for sb in SUBEXES:
         commands.append('-e')
         commands.append(sb)
 
-    s = subprocess.check_output(
-        ['sed', *commands], input=s.encode()).decode("utf-8")
+    s = subprocess_fix.check_output_input(
+        commands, input=s.encode()).decode("utf-8")
     return s
 
 # Program to filter Wikipedia XML dumps to "clean" text consisting only of lowercase

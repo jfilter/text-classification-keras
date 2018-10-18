@@ -4,7 +4,7 @@ import keras
 import pytest
 
 from texcla.data import Dataset
-from texcla.preprocessing import SpacyTokenizer, SpacySentenceTokenizer, TwokenizeTokenizer, SimpleTokenizer
+from texcla.preprocessing import *
 from texcla.preprocessing.utils import unicodify
 
 
@@ -20,10 +20,8 @@ def test_token_preprocessing(tmpdir):
 
     X_enc = tokenizer.encode_texts(X)
     X_fin = tokenizer.pad_sequences(X_enc, fixed_token_seq_length=50)
-    y_fin = keras.utils.to_categorical(y, num_classes=2)
 
-    ds = Dataset(X_fin, y_fin, tokenizer=tokenizer)
-    ds.update_test_indices(test_size=0.5)
+    ds = Dataset(X_fin, y, tokenizer=tokenizer)
 
     path = str(tmpdir.mkdir("data").join("test"))
 
@@ -98,4 +96,16 @@ def test_simple_tokenizer():
     tokenizer = SimpleTokenizer()
     tokenizer.build_vocab(texts)
     assert('fox.' in tokenizer.token_index)
+    assert(' ' not in tokenizer.token_index)
+
+
+def test_fasttext_wiki_tokenizer():
+    texts = [
+        "HELLO world hello.",
+        "Quick brown fox. Ran over the, building 1234 1.2.3.5?",
+        "Peter is a cool guy.",
+    ]
+    tokenizer = FastTextWikiTokenizer()
+    tokenizer.build_vocab(texts)
+    assert('fox' in tokenizer.token_index)
     assert(' ' not in tokenizer.token_index)
