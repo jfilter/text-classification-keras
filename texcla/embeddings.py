@@ -169,7 +169,7 @@ def get_embedding_type(embedding_type):
     return data_obj
 
 
-def get_embeddings_index(embedding_type='glove.42B.300d', embedding_path=None, embedding_dims=None):
+def get_embeddings_index(embedding_type='glove.42B.300d', embedding_dims=None, embedding_path=None):
     """Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.
 
     Args:
