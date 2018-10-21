@@ -85,7 +85,8 @@ _EMBEDDING_TYPES = {
 def _build_embeddings_index(embeddings_path, embedding_dims):
     logger.info('Building embeddings index...')
     index = {}
-    with io.open(embeddings_path, encoding="utf-8") as f:
+    # is ignoring errors a good idea? 🤔
+    with io.open(embeddings_path, encoding="utf-8", errors='ignore') as f:
         for line in f:
             values = line.split()
 
