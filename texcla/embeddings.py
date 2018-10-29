@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 
+import gzip
+import io
 import logging
 import os
-import io
+from zipfile import ZipFile
 
 import numpy as np
 import six
 from keras.utils.data_utils import get_file
-from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
@@ -35,7 +36,7 @@ _EMBEDDING_TYPES = {
     },
     # 42 Billion tokens Common Crawl
     'glove.42B.300d': {
-        'file': 'glove.42B.300d.txt',
+        'file': 'glove.42B.300d.txt.zip',
         'url': 'http://nlp.stanford.edu/data/glove.42B.300d.zip'
     },
     # 6 Billion tokens from Wikipedia 2014 + Gigaword 5
@@ -99,28 +100,46 @@ _EMBEDDING_TYPES = {
 }
 
 
+def _build_line(embedding_dims, f):
+    index = {}
+
+    for line in f:
+        values = line.split()
+        assert len(values) >= embedding_dims or len(
+            values) == 2, 'is the file corrupted?'
+
+        # some hack for fasttext vectors where the first line is (num_token, dimensions)
+        if len(values) <= 2 and embedding_dims > 1:
+            continue
+
+        word = ' '.join(values[:-embedding_dims])
+        floats = values[-embedding_dims:]
+
+        if not isinstance(word, six.text_type):
+            word = word.decode()
+
+        vector = np.asarray(floats, dtype='float32')
+        index[word] = vector
+    return index
+
+
 def _build_embeddings_index(embeddings_path, embedding_dims):
     logger.info('Building embeddings index...')
-    index = {}
-    # is ignoring errors a good idea? 🤔
-    with io.open(embeddings_path, encoding="utf-8", errors='ignore') as f:
-        for line in f:
-            values = line.split()
-            assert len(values) >= embedding_dims or len(
-                values) == 2, 'is the file corrupted?'
+    print(embeddings_path)
+    if embeddings_path.endswith('.gz'):
+        with gzip.open(embeddings_path, 'rt') as f:
+            index = _build_line(embedding_dims, f)
 
-            # some hack for fasttext vectors where the first line is (num_token, dimensions)
-            if len(values) <= 2 and embedding_dims > 1:
-                continue
+            # content = f.read()
+            # print(content[:10])
+            # content = content.decode('utf-8').decode('string_escape'jk)
+            # print(content[:10])
+            # index = _build_line(embedding_dims, content)
+    else:
+        # is ignoring errors a good idea? 🤔
+        with io.open(embeddings_path, encoding="utf-8", errors='ignore') as f:
+            index = _build_line(embedding_dims, f)
 
-            word = ' '.join(values[:-embedding_dims])
-            floats = values[-embedding_dims:]
-
-            if not isinstance(word, six.text_type):
-                word = word.decode()
-
-            vector = np.asarray(floats, dtype='float32')
-            index[word] = vector
     logger.info('Done')
     return index
 
@@ -171,6 +190,7 @@ def build_fasttext_cc_embedding_obj(embedding_type):
     return {
         'file': 'cc.{}.300.vec.gz'.format(lang),
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/cc.{}.300.vec.gz'.format(lang),
+        'extract': False
     }
 
 
@@ -226,8 +246,8 @@ def get_embeddings_index(embedding_type='glove.42B.300d', embedding_dims=None, e
             if extract:
                 if file_path.endswith('.zip'):
                     file_path = file_path.split('.zip')[0]
-                if file_path.endswith('.gz'):
-                    file_path = file_path.split('.gz')[0]
+                # if file_path.endswith('.gz'):
+                #     file_path = file_path.split('.gz')[0]
     else:
         file_path = embedding_path
 
