@@ -8,6 +8,7 @@ import io
 import numpy as np
 import six
 from keras.utils.data_utils import get_file
+from zipfile import ZipFile
 
 logger = logging.getLogger(__name__)
 _EMBEDDINGS_CACHE = dict()
@@ -19,17 +20,17 @@ _EMBEDDINGS_CACHE = dict()
 _EMBEDDING_TYPES = {
     # 1 million word vectors trained on Wikipedia 2017, UMBC webbase corpus and statmt.org news dataset (16B tokens).
     'fasttext.wn.1M.300d': {
-        'file': 'fasttext.wn.1M.300d.vec',
+        'file': 'wiki-news-300d-1M.vec.zip',
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki-news-300d-1M.vec.zip'
     },
     # 1 million word vectors trained with subword infomation on Wikipedia 2017, UMBC webbase corpus and statmt.org news dataset (16B tokens).
     'fasttext.wn.1M.300d.subword': {
-        'file': 'fasttext.wn.1M.300d.subword.vec',
+        'file': 'wiki-news-300d-1M-subword.vec.zip',
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki-news-300d-1M-subword.vec.zip'
     },
     # 2 million word vectors trained on Common Crawl (600B tokens).
     'fasttext.crawl.2M.300d.subword': {
-        'file': 'fasttext.wn.1M.300d.subword.vec',
+        'file': 'fasttext.wn.1M.300d.subword.vec.zip',
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/crawl-300d-2M.vec.zip'
     },
     # 42 Billion tokens Common Crawl
@@ -39,45 +40,61 @@ _EMBEDDING_TYPES = {
     },
     # 6 Billion tokens from Wikipedia 2014 + Gigaword 5
     'glove.6B.50d': {
-        'file': 'glove.6B.50d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.6B.zip'
+        'file': 'glove.6B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.6B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.6B.50d.txt'
     },
 
     'glove.6B.100d': {
-        'file': 'glove.6B.100d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.6B.zip'
+        'file': 'glove.6B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.6B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.6B.100d.txt'
     },
 
     'glove.6B.200d': {
-        'file': 'glove.6B.200d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.6B.zip'
+        'file': 'glove.6B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.6B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.6B.200d.txt'
     },
 
     'glove.6B.300d': {
-        'file': 'glove.6B.300d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.6B.zip'
+        'file': 'glove.6B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.6B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.6B.300d.txt'
     },
     #  840 Billion tokens Common Crawl
     'glove.840B.300d': {
-        'file': 'glove.840B.300d.txt',
+        'file': 'glove.840B.300d.txt.zip',
         'url': 'http://nlp.stanford.edu/data/glove.840B.300d.zip'
     },
     # 2 Billion tweets, 27 Billion tokens Twitter
     'glove.twitter.27B.25d': {
-        'file': 'glove.twitter.27B.25d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+        'file': 'glove.twitter.27B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.twitter.27B.25d.txt'
     },
     'glove.twitter.27B.50d': {
-        'file': 'glove.twitter.27B.50d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+        'file': 'glove.twitter.27B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.twitter.27B.50d.txt'
     },
     'glove.twitter.27B.100d': {
-        'file': 'glove.twitter.27B.100d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+        'file': 'glove.twitter.27B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.twitter.27B.100d.txt'
     },
     'glove.twitter.27B.200d': {
-        'file': 'glove.twitter.27B.200d.txt',
-        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip'
+        'file': 'glove.twitter.27B.zip',
+        'url': 'http://nlp.stanford.edu/data/glove.twitter.27B.zip',
+        'extract': False,
+        'file_in_zip': 'glove.twitter.27B.200d.txt'
     },
 }
 
@@ -89,6 +106,8 @@ def _build_embeddings_index(embeddings_path, embedding_dims):
     with io.open(embeddings_path, encoding="utf-8", errors='ignore') as f:
         for line in f:
             values = line.split()
+            assert len(values) >= embedding_dims or len(
+                values) == 2, 'is the file corrupted?'
 
             # some hack for fasttext vectors where the first line is (num_token, dimensions)
             if len(values) <= 2 and embedding_dims > 1:
@@ -150,7 +169,7 @@ def build_fasttext_cc_embedding_obj(embedding_type):
     """
     lang = embedding_type.split('.')[2]
     return {
-        'file': 'cc.{}.300.vec'.format(lang),
+        'file': 'cc.{}.300.vec.gz'.format(lang),
         'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/cc.{}.300.vec.gz'.format(lang),
     }
 
@@ -190,8 +209,25 @@ def get_embeddings_index(embedding_type='glove.42B.300d', embedding_dims=None, e
 
     if embedding_path is None:
         embedding_type_obj = get_embedding_type(embedding_type)
+
+        # some very rough wrangling of zip files with the keras util `get_file`
+        # a special problem: when multiple files are in one zip file
+        extract = embedding_type_obj.get('extract', True)
         file_path = get_file(
-            embedding_type_obj['file'], origin=embedding_type_obj['url'], extract=embedding_type_obj.get('extract', True), cache_subdir='embeddings')
+            embedding_type_obj['file'], origin=embedding_type_obj['url'], extract=extract, cache_subdir='embeddings', file_hash=embedding_type_obj.get('file_hash',))
+
+        if 'file_in_zip' in embedding_type_obj:
+            zip_folder = file_path.split('.zip')[0]
+            with ZipFile(file_path, 'r') as zf:
+                zf.extractall(zip_folder)
+            file_path = os.path.join(
+                zip_folder, embedding_type_obj['file_in_zip'])
+        else:
+            if extract:
+                if file_path.endswith('.zip'):
+                    file_path = file_path.split('.zip')[0]
+                if file_path.endswith('.gz'):
+                    file_path = file_path.split('.gz')[0]
     else:
         file_path = embedding_path
 
