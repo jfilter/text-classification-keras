@@ -9,6 +9,7 @@ from texcla.corpus import imdb
 from texcla.data import Dataset
 from texcla.models import AttentionRNN, StackedRNN, TokenModelFactory, YoonKimCNN
 from texcla.preprocessing import SpacyTokenizer
+from texcla import experiment
 
 max_len = 50
 
@@ -16,35 +17,27 @@ max_len = 50
 def test_train():
     X, y, _, _ = imdb(10)
 
+    # use the special tokenizer used for constructing the embeddings
     tokenizer = SpacyTokenizer()
 
-    tokenizer.build_vocab(X)
+    # preprocess data (once)
+    experiment.setup_data(X, y, tokenizer, 'data.bin', max_len=100)
 
-    # only select top 10k tokens
-    tokenizer.apply_encoding_options(limit_top_tokens=20)
+    # load data
+    ds = Dataset.load('data.bin')
 
-    X_encoded = tokenizer.encode_texts(X)
-    X_padded = tokenizer.pad_sequences(
-        X_encoded, fixed_token_seq_length=max_len)
-
-    y_cat = keras.utils.to_categorical(y, num_classes=2)
-
-    ds = Dataset(X_padded, y_cat, tokenizer=tokenizer)
-
-    X_train, _, y_train, _ = ds.train_val_split()
-
-    # RNN models can use `max_tokens=None` to indicate variable length words per mini-batch.
+    # construct base
     factory = TokenModelFactory(
-        2, ds.tokenizer.token_index, max_tokens=max_len, embedding_type='glove.6B.300d')
-    word_encoder_model = YoonKimCNN(dropout_rate=0)
+        ds.num_classes, ds.tokenizer.token_index, max_tokens=100,
+        embedding_type='glove.6B.50d', embedding_dims=50)
+
+    # choose a model
+    word_encoder_model = YoonKimCNN()
+
+    # build a model
     model = factory.build_model(
         token_encoder_model=word_encoder_model, trainable_embeddings=False)
 
-    sgd = keras.optimizers.SGD(
-        lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-
-    model.compile(optimizer=sgd,
-                  loss='categorical_crossentropy', metrics=['accuracy'])
-    model.summary()
-
-    model.fit(X_train, y_train, epochs=1, batch_size=32, validation_split=0.1)
+    # use experiment.train as wrapper for Keras.fit()
+    experiment.train(x=ds.X, y=ds.y, validation_split=0.1, model=model,
+                     word_encoder_model=word_encoder_model, epochs=1, batch_size=32)
