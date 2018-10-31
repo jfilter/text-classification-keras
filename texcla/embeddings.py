@@ -100,13 +100,13 @@ _EMBEDDING_TYPES = {
 }
 
 
-def _build_line(embedding_dims, f):
+def _build_line(embedding_dims, f, is_gzip=False):
     index = {}
 
     for line in f:
 
         # has to be done for gziped files
-        if six.PY2:
+        if is_gzip and six.PY2:
             line = line.decode('utf-8')
 
         values = line.split()
@@ -133,7 +133,7 @@ def _build_embeddings_index(embeddings_path, embedding_dims):
     print(embeddings_path)
     if embeddings_path.endswith('.gz'):
         with gzip.open(embeddings_path, 'rt') as f:
-            index = _build_line(embedding_dims, f)
+            index = _build_line(embedding_dims, f, is_gzip=True)
 
     else:
         # is ignoring errors a good idea? 🤔
