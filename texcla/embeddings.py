@@ -209,7 +209,7 @@ def get_embedding_type(embedding_type):
     return data_obj
 
 
-def get_embeddings_index(embedding_type='glove.42B.300d', embedding_dims=None, embedding_path=None):
+def get_embeddings_index(embedding_type='glove.42B.300d', embedding_dims=None, embedding_path=None, cache=True):
     """Retrieves embeddings index from embedding name or path. Will automatically download and cache as needed.
 
     Args:
@@ -252,5 +252,7 @@ def get_embeddings_index(embedding_type='glove.42B.300d', embedding_dims=None, e
         file_path = embedding_path
 
     embeddings_index = _build_embeddings_index(file_path, embedding_dims)
-    _EMBEDDINGS_CACHE[embedding_type] = embeddings_index
+
+    if cache:
+        _EMBEDDINGS_CACHE[embedding_type] = embeddings_index
     return embeddings_index
