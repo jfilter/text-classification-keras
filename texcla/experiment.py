@@ -8,16 +8,22 @@ from shutil import copyfile, move
 
 import deep_plots
 import keras
+import six
 from sklearn.model_selection import train_test_split
 
 from .data import Dataset
 from .utils.format import to_fixed_digits
 
-# Python 3.5+ only
-
 
 def create_experiment_folder(base_dir, model, lr, batch_size):
-    pathlib.Path(base_dir).mkdir(parents=True, exist_ok=True)
+    if six.PY2:
+        try:
+            os.makedirs(path)
+        except:
+            pass
+    else:
+        pathlib.Path(base_dir).mkdir(parents=True, exist_ok=True)
+
     num_folders = len(next(os.walk(base_dir))[1])
 
     # 4 digits
