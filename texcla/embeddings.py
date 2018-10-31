@@ -130,7 +130,6 @@ def _build_line(embedding_dims, f, is_gzip=False):
 
 def _build_embeddings_index(embeddings_path, embedding_dims):
     logger.info('Building embeddings index...')
-    print(embeddings_path)
     if embeddings_path.endswith('.gz'):
         with gzip.open(embeddings_path, 'rt') as f:
             index = _build_line(embedding_dims, f, is_gzip=True)
