@@ -104,6 +104,11 @@ def _build_line(embedding_dims, f):
     index = {}
 
     for line in f:
+
+        # has to be done for gziped files
+        if six.PY2:
+            line = line.decode('utf-8')
+
         values = line.split()
         assert len(values) >= embedding_dims or len(
             values) == 2, 'is the file corrupted?'
@@ -130,11 +135,6 @@ def _build_embeddings_index(embeddings_path, embedding_dims):
         with gzip.open(embeddings_path, 'rt') as f:
             index = _build_line(embedding_dims, f)
 
-            # content = f.read()
-            # print(content[:10])
-            # content = content.decode('utf-8').decode('string_escape'jk)
-            # print(content[:10])
-            # index = _build_line(embedding_dims, content)
     else:
         # is ignoring errors a good idea? 🤔
         with io.open(embeddings_path, encoding="utf-8", errors='ignore') as f:
