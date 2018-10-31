@@ -66,8 +66,8 @@ def train(model, word_encoder_model, lr=0.001, batch_size=64, epochs=50, patienc
         the_file.write(
             '\n'.join([str(x) for x in [lr, word_encoder_model.dropout_rate, batch_size, datetime.datetime.now()]]))
 
-    history = model.fit(**fit_args, epochs=epochs,
-                        batch_size=batch_size, callbacks=create_callbacks(exp_path, patience))
+    history = model.fit(epochs=epochs,
+                        batch_size=batch_size, callbacks=create_callbacks(exp_path, patience), **fit_args)
 
     best_acc = str(max(history.history['val_acc']))[:6]
 
