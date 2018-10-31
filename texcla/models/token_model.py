@@ -29,7 +29,7 @@ class TokenModelFactory(object):
 
         if embedding_type is not None or embedding_path is not None:
             self.embeddings_index = get_embeddings_index(
-                embedding_type, embedding_path, embedding_dims)
+                embedding_type, embedding_dims, embedding_path)
             self.embedding_dims = list(self.embeddings_index.values())[
                 0].shape[-1]
         else:

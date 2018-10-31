@@ -34,7 +34,8 @@ class SentenceModelFactory(object):
             raise ValueError('`max_tokens` should be provided.')
 
         if embedding_type is not None:
-            self.embeddings_index = get_embeddings_index(embedding_type)
+            self.embeddings_index = get_embeddings_index(
+                embedding_type, embedding_dims)
             self.embedding_dims = list(self.embeddings_index.values())[
                 0].shape[-1]
         else:
