@@ -13,6 +13,7 @@ jsonpickle = "*"
 scikit-learn = "*"
 numpy = "*"
 deep-plots = "*"
+text-classification-keras = {editable = true, path = "."}
 
 [dev-packages]
 pylint = "*"
@@ -23,7 +24,3 @@ python-markdown-math = "*"
 
 [requires]
 python_version = "3.6"
-
-[packages.text-classification-keras]
-editable = true
-path = "."
