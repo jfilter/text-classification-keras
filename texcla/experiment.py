@@ -18,7 +18,7 @@ from .utils.format import to_fixed_digits
 def create_experiment_folder(base_dir, model, lr, batch_size):
     if six.PY2:
         try:
-            os.makedirs(path)
+            os.makedirs(base_dir)
         except:
             pass
     else:
