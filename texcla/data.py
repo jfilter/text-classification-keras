@@ -32,7 +32,7 @@ class Dataset(object):
         self.is_multi_label = isinstance(y[0], (set, list, tuple))
         if self.is_multi_label:
             self.label_encoder = MultiLabelBinarizer()
-            self.y = self.label_encoder.fit_transform(self.y).flatten()
+            self.y = self.label_encoder.fit_transform(self.y)
         else:
             self.label_encoder = LabelBinarizer()
             self.label_encoder = self.label_encoder.fit(self.y)
