@@ -22,17 +22,17 @@ _EMBEDDING_TYPES = {
     # 1 million word vectors trained on Wikipedia 2017, UMBC webbase corpus and statmt.org news dataset (16B tokens).
     'fasttext.wn.1M.300d': {
         'file': 'wiki-news-300d-1M.vec.zip',
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki-news-300d-1M.vec.zip'
+        'url': 'https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M.vec.zip'
     },
     # 1 million word vectors trained with subword infomation on Wikipedia 2017, UMBC webbase corpus and statmt.org news dataset (16B tokens).
     'fasttext.wn.1M.300d.subword': {
         'file': 'wiki-news-300d-1M-subword.vec.zip',
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki-news-300d-1M-subword.vec.zip'
+        'url': 'https://dl.fbaipublicfiles.com/fasttext/vectors-english/wiki-news-300d-1M-subword.vec.zip'
     },
     # 2 million word vectors trained on Common Crawl (600B tokens).
     'fasttext.crawl.2M.300d.subword': {
         'file': 'fasttext.wn.1M.300d.subword.vec.zip',
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/crawl-300d-2M.vec.zip'
+        'url': 'https://dl.fbaipublicfiles.com/fasttext/vectors-english/crawl-300d-2M.vec.zip'
     },
     # 42 Billion tokens Common Crawl
     'glove.42B.300d': {
@@ -172,7 +172,7 @@ def build_fasttext_wiki_embedding_obj(embedding_type):
     lang = embedding_type.split('.')[2]
     return {
         'file': 'wiki.{}.vec'.format(lang),
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.{}.vec'.format(lang),
+        'url': 'https://dl.fbaipublicfiles.com/fasttext/vectors-wiki/wiki.{}.vec'.format(lang),
         'extract': False,
     }
 
@@ -188,7 +188,7 @@ def build_fasttext_cc_embedding_obj(embedding_type):
     lang = embedding_type.split('.')[2]
     return {
         'file': 'cc.{}.300.vec.gz'.format(lang),
-        'url': 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/cc.{}.300.vec.gz'.format(lang),
+        'url': 'https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.{}.300.vec.gz'.format(lang),
         'extract': False
     }
 
