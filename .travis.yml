@@ -18,7 +18,9 @@ matrix:
           env: KERAS_BACKEND=tensorflow
 
 install:
-    - pip install pytest pytest-pep8 pytest-cov
+    - pip install pytest-pep8 pytest-cov
+
+    - pip install --upgrade pytest
 
     # install TensorFlow
     - pip install tensorflow
