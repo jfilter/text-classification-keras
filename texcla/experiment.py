@@ -103,14 +103,21 @@ def load_csv(data_path=None, text_col='text', class_col='class', limit=None):
     return X, y
 
 
-def process_save(X, y, tokenizer, proc_data_path, max_len=400, save_tokenizer=True):
+def process_save(X, y, tokenizer, proc_data_path, max_len=400, train=False, ngrams=None, limit_top_tokens=None):
     """Process text and save as Dataset
     """
+    if train and not limit_top_tokens is None:
+        tokenizer.apply_encoding_options(limit_top_tokens=limit_top_tokens)
+
     X_encoded = tokenizer.encode_texts(X)
+
+    if not ngrams is None:
+        X_encoded = tokenizer.add_ngrams(X_encoded, n=ngrams, train=train)
+
     X_padded = tokenizer.pad_sequences(
         X_encoded, fixed_token_seq_length=max_len)
 
-    if save_tokenizer:
+    if train:
         ds = Dataset(X_padded,
                      y, tokenizer=tokenizer)
     else:
@@ -129,12 +136,12 @@ def setup_data(X, y, tokenizer, proc_data_path, **kwargs):
             proc_data_path: Path for the processed data
     """
     # only build vocabulary once (e.g. training data)
-    build_needed = not tokenizer.has_vocab
-    if build_needed:
+    train = not tokenizer.has_vocab
+    if train:
         tokenizer.build_vocab(X)
 
     process_save(X, y, tokenizer, proc_data_path,
-                 save_tokenizer=build_needed, **kwargs)
+                 train=train, **kwargs)
     return tokenizer
 
 
@@ -172,11 +179,11 @@ def setup_data_split(X, y, tokenizer, proc_data_dir, **kwargs):
     tokenizer.build_vocab(X_train)
 
     process_save(X_train, y_train, tokenizer, path.join(
-        proc_data_dir, 'train.bin'), **kwargs)
+        proc_data_dir, 'train.bin'), train=True, **kwargs)
     process_save(X_val, y_val, tokenizer, path.join(
-        proc_data_dir, 'val.bin'), save_tokenizer=False, **kwargs)
+        proc_data_dir, 'val.bin'), **kwargs)
     process_save(X_test, y_test, tokenizer, path.join(
-        proc_data_dir, 'test.bin'), save_tokenizer=False, **kwargs)
+        proc_data_dir, 'test.bin'), **kwargs)
 
 
 def load_data_split(proc_data_dir):

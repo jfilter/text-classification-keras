@@ -11,6 +11,8 @@ import six
 from keras.preprocessing.sequence import pad_sequences as keras_pad_sequences
 from keras.utils.generic_utils import Progbar
 
+from ..libs import ngrams
+
 from . import utils
 from ..utils import io
 
@@ -172,6 +174,35 @@ class Tokenizer(object):
         utils._recursive_apply(encoded_texts,
                                lambda token_id: self._idx2token.get(token_id) or unknown_token)
         return encoded_texts
+
+    def add_tokens(self, ngram_set):
+        start_index = len(self._token2idx) + 1
+        print('start: ', start_index)
+        tmp = {}
+        for k, v in enumerate(ngram_set):
+            # print(k, v)
+            idx = k + start_index
+            self._token2idx[v] = idx
+            self._idx2token[idx] = v
+
+            tmp[v] = idx
+            # TODO: Counts?
+        return tmp
+
+    def add_ngrams(self, encoded_texts, train=False, n=2):
+        if train:
+            ngram_set = set()
+            for input_list in encoded_texts:
+                for i in range(2, n + 1):
+                    set_of_ngram = ngrams.create_ngram_set(
+                        input_list, ngram_value=i)
+                    ngram_set.update(set_of_ngram)
+            print(list(ngram_set)[:1000])
+            ngram_set = [x for x in ngram_set if 1 not in x]
+            print(ngram_set[:1000])
+            tmp = self.add_tokens(ngram_set)
+
+        return ngrams.add_ngram(encoded_texts, token_indice=tmp, ngram_range=n)
 
     def build_vocab(self, texts, verbose=1, **kwargs):
         """Builds the internal vocabulary and computes various statistics.

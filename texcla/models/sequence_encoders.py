@@ -248,6 +248,9 @@ class AveragingEncoder(SequenceEncoderBase):
         """
         super(AveragingEncoder, self).__init__(dropout_rate)
 
+    def __str__(self):
+        return 'avg_encoder'
+
     def build_model(self, x):
         x = GlobalAveragePooling1D()(x)
         return x
