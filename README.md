@@ -145,6 +145,14 @@ model = factory.build_model(word_encoder_model, sentence_encoder_model)
 `SentenceModelFactory.build_model` created a tiered model where words within a sentence is first encoded using
 `word_encoder_model`. All such encodings per sentence is then encoded using `sentence_encoder_model`.
 
+## Related
+
+-   https://github.com/brightmart/text_classification
+-   https://github.com/allenai/allennlp
+-   https://github.com/facebookresearch/pytext
+-   https://docs.fast.ai/text.html
+-   https://github.com/dkpro/dkpro-tc
+
 ## Contributing
 
 If you have a **question**, found a **bug** or want to propose a new **feature**, have a look at the [issues page](https://github.com/jfilter/text-classification-keras/issues).
