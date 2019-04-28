@@ -106,12 +106,12 @@ def load_csv(data_path=None, text_col='text', class_col='class', limit=None):
 def process_save(X, y, tokenizer, proc_data_path, max_len=400, train=False, ngrams=None, limit_top_tokens=None):
     """Process text and save as Dataset
     """
-    if train and not limit_top_tokens is None:
+    if train and limit_top_tokens is not None:
         tokenizer.apply_encoding_options(limit_top_tokens=limit_top_tokens)
 
     X_encoded = tokenizer.encode_texts(X)
 
-    if not ngrams is None:
+    if ngrams is not None:
         X_encoded = tokenizer.add_ngrams(X_encoded, n=ngrams, train=train)
 
     X_padded = tokenizer.pad_sequences(

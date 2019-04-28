@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 # https://github.com/keras-team/keras/blob/master/examples/imdb_fasttext.py
 
 # COPYRIGHT
