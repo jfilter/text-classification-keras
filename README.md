@@ -55,7 +55,7 @@ Check out more [examples](./examples).
 
 ## API Documenation
 
-<https://github.io/jfilter/text-classification-keras/>
+<https://jfilter.github.io/text-classification-keras/>
 
 ## Advanced
 
